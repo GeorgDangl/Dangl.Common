@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -59,6 +60,19 @@ namespace Dangl
             {
                 Handler(this, new PropertyChangedEventArgs(PropertyName));
             }
+        }
+
+        /// <summary>
+        /// Returns the name of a property as string.
+        /// Must be called in the form of:
+        /// GetPropertyName(() => this.Property);
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="GivenProperty">The property for which to return the string.</param>
+        /// <returns></returns>
+        public string GetPropertyName<T>(Expression<Func<T>> GivenProperty)
+        {
+            return ((MemberExpression)GivenProperty.Body).Member.Name;
         }
 
         public void Dispose()
