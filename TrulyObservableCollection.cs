@@ -21,7 +21,7 @@ namespace Dangl
 {
     /// <summary>
     /// This class extends the <see cref="System.Collections.ObjectModel.ObservableCollection{T}"/> for generic content types that
-    /// implement <see cref="INotifyPropertyChanged"/> and does send the <see cref="System.Collections.ObjectModel.CollectionChanged{T}"/>
+    /// implement <see cref="INotifyPropertyChanged"/> and does send the <see cref="System.Collections.ObjectModel.ObservableCollection{T}.CollectionChanged"/>
     /// event also when an element of the collection changes.
     /// This is the intended behaviour of the <see cref="System.Collections.ObjectModel.ObservableCollection{T}"/> and documented as such in
     /// the MSDN, however, it does not work as intended.

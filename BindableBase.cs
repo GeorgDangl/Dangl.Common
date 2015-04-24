@@ -1,6 +1,6 @@
 ﻿// **************************************
 // *									*
-// *  Last change: 2015-04-19			*
+// *  Last change: 2015-04-24			*
 // *  © 2015 Georg Dangl				*
 // *  info@georgdangl.de				*
 // *									*
@@ -13,12 +13,21 @@ using System.Runtime.CompilerServices;
 
 namespace Dangl
 {
+    /// <summary>
+    /// Implements <see cref="INotifyPropertyChanged"/> and <see cref="IDisposable"/>.
+    /// </summary>
     public abstract class BindableBase : INotifyPropertyChanged, IDisposable
     {
+        /// <summary>
+        /// Protected parameterless constructor.
+        /// </summary>
         protected BindableBase()
         {
         }
 
+        /// <summary>
+        /// <see cref="INotifyPropertyChanged"/> implementation.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
@@ -49,6 +58,11 @@ namespace Dangl
             return true;
         }
 
+        /// <summary>
+        /// Event to be raised for <see cref="INotifyPropertyChanged"/>.
+        /// </summary>
+        /// <param name="PropertyName">Optional, when not given the <see cref="CallerMemberName"/> is used to determine
+        /// the calling function.</param>
         protected virtual void OnPropertyChanged([CallerMemberName] string PropertyName = null)
         {
             PropertyChangedEventHandler Handler = this.PropertyChanged;
@@ -71,11 +85,20 @@ namespace Dangl
             return ((MemberExpression)GivenProperty.Body).Member.Name;
         }
 
+        /// <summary>
+        /// Implementation of <see cref="IDisposable"/>. Will always call the <see cref="OnDispose"/> method that
+        /// may be used in derived classes to implement behaviour upon being disposed, such as releasing event
+        /// handler listeners.
+        /// </summary>
         public void Dispose()
         {
             this.OnDispose();
         }
 
+        /// <summary>
+        /// This method is called by the <see cref="Dispose"/> method upon disposing of
+        /// this class via the <see cref="IDisposable"/> interface.
+        /// </summary>
         protected virtual void OnDispose()
         {
         }
