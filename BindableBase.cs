@@ -61,7 +61,7 @@ namespace Dangl
         /// <summary>
         /// Event to be raised for <see cref="INotifyPropertyChanged"/>.
         /// </summary>
-        /// <param name="PropertyName">Optional, when not given the <see cref="CallerMemberName"/> is used to determine
+        /// <param name="PropertyName">Optional, when not given the <see cref="System.Runtime.CompilerServices.CallerMemberNameAttribute"/> is used to determine
         /// the calling function.</param>
         protected virtual void OnPropertyChanged([CallerMemberName] string PropertyName = null)
         {
