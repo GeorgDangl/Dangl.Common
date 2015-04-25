@@ -49,6 +49,37 @@ namespace Dangl.Test.Common
         }
 
         [TestClass]
+        public class OnPropertyChanged
+        {
+            [TestMethod]
+            public void EventNotRaisedForNestedClass()
+            {
+                MockClass Mock = new MockClass();
+                Mock.PropertyChanged += Mock_PropertyChanged;
+                EventCatched = false;
+                Mock.ComplexProperty = new MockClass();
+                Assert.IsTrue(EventCatched);
+                EventCatched = false;
+                Mock.ComplexProperty.StringProperty = "Changed";
+                Assert.IsFalse(EventCatched);
+            }
+
+            private bool EventCatched;
+
+            private void Mock_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+            {
+                if (!EventCatched)
+                {
+                    EventCatched = true;
+                }
+                else
+                {
+                    Assert.Fail("Event catched multiple times.");
+                }
+            }
+        }
+
+        [TestClass]
         public class GetPropertyName
         {
             [TestMethod]
