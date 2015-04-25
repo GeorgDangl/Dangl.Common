@@ -50,6 +50,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="MockClass.cs" />
     <Compile Include="TestBindableBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestTrulyObservableCollection.cs" />

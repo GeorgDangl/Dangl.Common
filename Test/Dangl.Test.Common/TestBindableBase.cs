@@ -44,6 +44,8 @@ namespace Dangl.Test.Common
                     Assert.Fail("Event catched multiple times.");
                 }
             }
+
+            // TODO SHOULD NOT RAISE EVENT WHEN COMPLEX OBJECT INSIDE RAISES
         }
 
         [TestClass]
@@ -56,30 +58,5 @@ namespace Dangl.Test.Common
                 Assert.AreEqual("StringProperty", Mock.GetPropertyName(() => Mock.StringProperty));
             }
         }
-    }
-
-    public class MockClass : BindableBase
-    {
-        #region Fields
-
-        private string _StringProperty;
-
-        #endregion Fields
-
-        #region Properties
-
-        public string StringProperty
-        {
-            get
-            {
-                return _StringProperty;
-            }
-            set
-            {
-                SetProperty(ref _StringProperty, value);
-            }
-        }
-
-        #endregion Properties
     }
 }
