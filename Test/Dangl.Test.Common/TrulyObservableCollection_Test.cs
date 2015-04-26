@@ -4,7 +4,7 @@ using System;
 namespace Dangl.Test.Common
 {
     [TestClass]
-    public class TestTrulyObservableCollection
+    public class TrulyObservableCollection_Test
     {
         private bool EventCatched;
 

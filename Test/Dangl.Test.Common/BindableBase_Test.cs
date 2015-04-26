@@ -4,7 +4,7 @@ using System;
 namespace Dangl.Test.Common
 {
     [TestClass]
-    public class TestBindableBase
+    public class BindableBase_Test
     {
         [TestClass]
         public class SetProperty
