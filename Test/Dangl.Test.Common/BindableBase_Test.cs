@@ -88,6 +88,20 @@ namespace Dangl.Test.Common
                 MockClass Mock = new MockClass();
                 Assert.AreEqual("StringProperty", Mock.GetPropertyName(() => Mock.StringProperty));
             }
+
+            [TestMethod]
+            public void ReportNestedArrayLengthName()
+            {
+                SomeClassWithArrays TestInstance = new SomeClassWithArrays();
+
+                string RetrievedPropertyName = TestInstance.GetPropertyName(() => TestInstance.Array) + ".Length";
+                Assert.AreEqual("Array.Length", RetrievedPropertyName);
+            }
+
+            public class SomeClassWithArrays : BindableBase
+            {
+                public string[] Array { get; set; }
+            }
         }
     }
 }
