@@ -54,7 +54,7 @@ namespace Dangl
             }
 
             Storage = Value;
-            this.OnPropertyChanged(PropertyName);
+            OnPropertyChanged(PropertyName);
             return true;
         }
 
@@ -65,7 +65,7 @@ namespace Dangl
         /// the calling function.</param>
         protected virtual void OnPropertyChanged([CallerMemberName] string PropertyName = null)
         {
-            PropertyChangedEventHandler Handler = this.PropertyChanged;
+            PropertyChangedEventHandler Handler = PropertyChanged;
             if (Handler != null)
             {
                 Handler(this, new PropertyChangedEventArgs(PropertyName));
@@ -92,7 +92,7 @@ namespace Dangl
         /// </summary>
         public void Dispose()
         {
-            this.OnDispose();
+            OnDispose();
         }
 
         /// <summary>

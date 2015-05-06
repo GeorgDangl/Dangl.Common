@@ -44,8 +44,6 @@ namespace Dangl.Test.Common
                     Assert.Fail("Event catched multiple times.");
                 }
             }
-
-            // TODO SHOULD NOT RAISE EVENT WHEN COMPLEX OBJECT INSIDE RAISES
         }
 
         [TestClass]
