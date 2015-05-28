@@ -9,6 +9,51 @@ namespace Dangl.Test.Common
         [TestClass]
         public class SetProperty
         {
+            public class MockClassWithEvent : BindableBase
+            {
+                private MockClass _ChangeableProperty;
+
+                public MockClass ChangeableProperty
+                {
+                    get
+                    {
+                        return _ChangeableProperty;
+                    }
+                    set
+                    {
+                        SetProperty(ref _ChangeableProperty, value, ChangeableProperty_PropertyChanged);
+                    }
+                }
+
+                public bool EventCatcher { get; set; }
+
+                private void ChangeableProperty_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+                {
+                    EventCatcher = !EventCatcher;
+                }
+            }
+
+            [TestMethod]
+            public void AttachesEventHandlerHook()
+            {
+                MockClassWithEvent Instance = new MockClassWithEvent();
+
+                var InstanceThatWillBeWatched = new MockClass();
+
+                Assert.IsFalse(Instance.EventCatcher);
+                Instance.ChangeableProperty = null;
+                Instance.ChangeableProperty = InstanceThatWillBeWatched;
+                Assert.IsFalse(Instance.EventCatcher);
+                InstanceThatWillBeWatched.StringProperty = "New string";
+                Assert.IsTrue(Instance.EventCatcher);
+                InstanceThatWillBeWatched.StringProperty = "New string again";
+                Assert.IsFalse(Instance.EventCatcher);
+                Instance.ChangeableProperty = new MockClass();
+                Assert.IsFalse(Instance.EventCatcher);
+                InstanceThatWillBeWatched.StringProperty = "Noone listens anymore =(";
+                Assert.IsFalse(Instance.EventCatcher);
+            }
+
             [TestMethod]
             public void IsCalled()
             {
