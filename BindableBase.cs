@@ -1,10 +1,15 @@
 ﻿// **************************************
 // *									*
-// *  Last change: 2015-04-24			*
+// *  Last change: 2015-05-28			*
 // *  © 2015 Georg Dangl				*
 // *  info@georgdangl.de				*
 // *									*
 // **************************************
+
+/*
+ * 2015-05-28
+ * Added SetProperty overload to attach to given PropertyChangeEventHandler delegates.
+ */
 
 using System;
 using System.ComponentModel;
