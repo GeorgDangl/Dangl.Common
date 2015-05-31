@@ -36,9 +36,17 @@ namespace Dangl
         /// to the items in the collection.
         /// </summary>
         public TrulyObservableCollection()
-            : this(null) { }
+        {
+            CollectionChanged += FullObservableCollectionCollectionChanged;
+        }
 
+        /// <summary>
+        /// Will initialize with a hook to the <see cref="System.Collections.ObjectModel.ObservableCollection{T}.CollectionChanged"/> event and add or remove event listeners
+        /// to the items in the collection.
+        /// </summary>
+        /// <param name="GivenObjectType">The <see cref="IEnumerable{T}"/> from which to seed.</param>
         public TrulyObservableCollection(IEnumerable<T> GivenObjectType)
+            : base(GivenObjectType)
         {
             CollectionChanged += FullObservableCollectionCollectionChanged;
         }
