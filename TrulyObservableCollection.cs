@@ -13,6 +13,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -35,6 +36,9 @@ namespace Dangl
         /// to the items in the collection.
         /// </summary>
         public TrulyObservableCollection()
+            : this(null) { }
+
+        public TrulyObservableCollection(IEnumerable<T> GivenObjectType)
         {
             CollectionChanged += FullObservableCollectionCollectionChanged;
         }
