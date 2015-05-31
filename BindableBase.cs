@@ -95,7 +95,10 @@ namespace Dangl
             }
 
             Storage = Value;
-            Storage.PropertyChanged += ChangeEventHook;
+            if (Storage != null)
+            {
+                Storage.PropertyChanged += ChangeEventHook;
+            }
             OnPropertyChanged(PropertyName);
             return true;
         }
