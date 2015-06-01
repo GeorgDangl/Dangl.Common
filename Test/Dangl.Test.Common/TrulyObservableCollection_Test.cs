@@ -61,6 +61,26 @@ namespace Dangl.Test.Common
             Assert.AreSame(CatchedEventArgs.NewItems[0], TestCollection[0]);
         }
 
+        [TestMethod]
+        public void CollectionItemChangedNotified_OnInstanceFromIEnumerable_01()
+        {
+            TrulyObservableCollection<MockClass> TestCollection = new TrulyObservableCollection<MockClass>();
+            TestCollection.Add(new MockClass());
+            TestCollection.Add(new MockClass());
+            TestCollection.Add(new MockClass());
+            TestCollection.Add(new MockClass());
+            TrulyObservableCollection<MockClass> CopiedInstance = new TrulyObservableCollection<MockClass>(TestCollection);
+
+            CopiedInstance.CollectionChanged += TestCollection_CollectionChanged;
+            EventCatched = false;
+            CatchedEventArgs = null;
+            CopiedInstance[0].StringProperty = "Changed";
+            Assert.IsTrue(EventCatched);
+            Assert.IsNotNull(CatchedEventArgs);
+            Assert.AreEqual(CatchedEventArgs.Action, System.Collections.Specialized.NotifyCollectionChangedAction.Replace);
+            Assert.AreSame(CatchedEventArgs.NewItems[0], CopiedInstance[0]);
+        }
+
         private System.Collections.Specialized.NotifyCollectionChangedEventArgs CatchedEventArgs;
 
         private void TestCollection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
