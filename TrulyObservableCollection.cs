@@ -49,6 +49,10 @@ namespace Dangl
             : base(GivenObjectType)
         {
             CollectionChanged += FullObservableCollectionCollectionChanged;
+            foreach (var InstantiatedItem in this)
+            {
+                InstantiatedItem.PropertyChanged += ItemPropertyChanged;
+            }
         }
 
         private void FullObservableCollectionCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
