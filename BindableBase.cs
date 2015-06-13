@@ -12,6 +12,7 @@
  */
 
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
@@ -98,6 +99,46 @@ namespace Dangl
             if (Storage != null)
             {
                 Storage.PropertyChanged += ChangeEventHook;
+            }
+            OnPropertyChanged(PropertyName);
+            return true;
+        }
+
+        /// <summary>
+        ///     Checks if a property already matches a desired value.  Sets the property and
+        ///     notifies listeners only when necessary.
+        ///     Will automatically attach the <see cref="NotifyCollectionChangedEventHandler"/> to the new value
+        ///     and detach it from the old value.
+        /// </summary>
+        /// <typeparam name="T">Type of the property.</typeparam>
+        /// <param name="Storage">Reference to a property with both getter and setter.</param>
+        /// <param name="Value">Desired value for the property.</param>
+        /// <param name="ChangeEventHook"></param>
+        /// <param name="PropertyName">
+        ///     Name of the property used to notify listeners.  This
+        ///     value is optional and can be provided automatically when invoked from compilers that
+        ///     support CallerMemberName.
+        /// </param>
+        /// <returns>
+        ///     True if the value was changed, false if the existing value matched the
+        ///     desired value.
+        /// </returns>
+        protected bool SetProperty<T>(ref T Storage, T Value, NotifyCollectionChangedEventHandler ChangeEventHook, [CallerMemberName] String PropertyName = null) where T : INotifyCollectionChanged
+        {
+            if (Equals(Storage, Value))
+            {
+                return false;
+            }
+
+            if (Storage != null)
+            {
+                Storage.CollectionChanged -= ChangeEventHook;
+            }
+
+            Storage = Value;
+            if (Storage != null)
+            {
+                Storage.CollectionChanged += ChangeEventHook;
             }
             OnPropertyChanged(PropertyName);
             return true;

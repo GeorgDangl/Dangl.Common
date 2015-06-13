@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.ObjectModel;
 
 namespace Dangl.Test.Common
 {
@@ -25,6 +26,25 @@ namespace Dangl.Test.Common
                     }
                 }
 
+                public ObservableCollection<MockClass> _ChangeableCollection;
+
+                public ObservableCollection<MockClass> ChangeableCollection
+                {
+                    get
+                    {
+                        return _ChangeableCollection;
+                    }
+                    set
+                    {
+                        SetProperty(ref _ChangeableCollection, value, _ChangeableCollection_CollectionChanged);
+                    }
+                }
+
+                private void _ChangeableCollection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+                {
+                    EventCatcher = !EventCatcher;
+                }
+
                 public bool EventCatcher { get; set; }
 
                 private void ChangeableProperty_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -34,14 +54,31 @@ namespace Dangl.Test.Common
             }
 
             [TestMethod]
-            public void AttachesEventHandlerHook()
+            public void AttachesEventHandlerHook_PropertyChanged()
+            {
+                MockClassWithEvent Instance = new MockClassWithEvent();
+
+                var InstanceThatWillBeWatched = new ObservableCollection<MockClass>();
+
+                Assert.IsFalse(Instance.EventCatcher);
+                Instance.ChangeableCollection = null;
+                Instance.ChangeableCollection = InstanceThatWillBeWatched;
+                Assert.IsFalse(Instance.EventCatcher);
+                InstanceThatWillBeWatched.Add(new MockClass());
+                Assert.IsTrue(Instance.EventCatcher);
+                InstanceThatWillBeWatched.Add(new MockClass());
+                Assert.IsFalse(Instance.EventCatcher);
+            }
+
+            [TestMethod]
+            public void AttachesEventHandlerHook_CollectionChanged()
             {
                 MockClassWithEvent Instance = new MockClassWithEvent();
 
                 var InstanceThatWillBeWatched = new MockClass();
 
                 Assert.IsFalse(Instance.EventCatcher);
-                Instance.ChangeableProperty = null;
+                Instance.ChangeableCollection = null;
                 Instance.ChangeableProperty = InstanceThatWillBeWatched;
                 Assert.IsFalse(Instance.EventCatcher);
                 InstanceThatWillBeWatched.StringProperty = "New string";

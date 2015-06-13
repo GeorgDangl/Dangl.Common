@@ -36,6 +36,33 @@ namespace Dangl.Test.Common
 
         private bool EventCatched;
 
+        private System.Collections.Specialized.NotifyCollectionChangedEventArgs CatchedEventArgs;
+
+        private int EventCatchedCount;
+
+        private class MockClass_TrulyObservableCollection
+        {
+            private TrulyObservableCollection<MockClass> _MockCollection;
+
+            public TrulyObservableCollection<MockClass> MockCollection
+            {
+                get
+                {
+                    return _MockCollection ?? (_MockCollection = new TrulyObservableCollection<MockClass>());
+                }
+            }
+        }
+
+        [TestMethod]
+        public void CollectionChangedNotifiedWhenInClass()
+        {
+            MockClass_TrulyObservableCollection Instance = new MockClass_TrulyObservableCollection();
+            Instance.MockCollection.CollectionChanged += TestCollection_CollectionChanged;
+            Instance.MockCollection.Add(new MockClass());
+            Assert.IsTrue(EventCatched);
+            Assert.AreEqual(1, EventCatchedCount);
+        }
+
         [TestMethod]
         public void CollectionChangedNotified()
         {
@@ -44,6 +71,7 @@ namespace Dangl.Test.Common
             EventCatched = false;
             TestCollection.Add(new MockClass());
             Assert.IsTrue(EventCatched);
+            Assert.AreEqual(1, EventCatchedCount);
         }
 
         [TestMethod]
@@ -59,6 +87,7 @@ namespace Dangl.Test.Common
             Assert.IsNotNull(CatchedEventArgs);
             Assert.AreEqual(CatchedEventArgs.Action, System.Collections.Specialized.NotifyCollectionChangedAction.Replace);
             Assert.AreSame(CatchedEventArgs.NewItems[0], TestCollection[0]);
+            Assert.AreEqual(1, EventCatchedCount);
         }
 
         [TestMethod]
@@ -79,21 +108,22 @@ namespace Dangl.Test.Common
             Assert.IsNotNull(CatchedEventArgs);
             Assert.AreEqual(CatchedEventArgs.Action, System.Collections.Specialized.NotifyCollectionChangedAction.Replace);
             Assert.AreSame(CatchedEventArgs.NewItems[0], CopiedInstance[0]);
+            Assert.AreEqual(1, EventCatchedCount);
         }
-
-        private System.Collections.Specialized.NotifyCollectionChangedEventArgs CatchedEventArgs;
 
         private void TestCollection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             CatchedEventArgs = e;
-            if (!EventCatched)
-            {
-                EventCatched = true;
-            }
-            else
-            {
-                Assert.Fail("Event catched multiple times.");
-            }
+            EventCatchedCount++;
+            EventCatched = true;
+            //if (!EventCatched)
+            //{
+            //    EventCatched = true;
+            //}
+            //else
+            //{
+            //    Assert.Fail("Event catched multiple times.");
+            //}
         }
     }
 }
