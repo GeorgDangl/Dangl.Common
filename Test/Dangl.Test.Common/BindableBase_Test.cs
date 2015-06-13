@@ -58,23 +58,6 @@ namespace Dangl.Test.Common
             {
                 MockClassWithEvent Instance = new MockClassWithEvent();
 
-                var InstanceThatWillBeWatched = new ObservableCollection<MockClass>();
-
-                Assert.IsFalse(Instance.EventCatcher);
-                Instance.ChangeableCollection = null;
-                Instance.ChangeableCollection = InstanceThatWillBeWatched;
-                Assert.IsFalse(Instance.EventCatcher);
-                InstanceThatWillBeWatched.Add(new MockClass());
-                Assert.IsTrue(Instance.EventCatcher);
-                InstanceThatWillBeWatched.Add(new MockClass());
-                Assert.IsFalse(Instance.EventCatcher);
-            }
-
-            [TestMethod]
-            public void AttachesEventHandlerHook_CollectionChanged()
-            {
-                MockClassWithEvent Instance = new MockClassWithEvent();
-
                 var InstanceThatWillBeWatched = new MockClass();
 
                 Assert.IsFalse(Instance.EventCatcher);
@@ -88,6 +71,43 @@ namespace Dangl.Test.Common
                 Instance.ChangeableProperty = new MockClass();
                 Assert.IsFalse(Instance.EventCatcher);
                 InstanceThatWillBeWatched.StringProperty = "Noone listens anymore =(";
+                Assert.IsFalse(Instance.EventCatcher);
+            }
+
+            [TestMethod]
+            public void AttachesEventHandlerHook_CollectionChanged()
+            {
+                MockClassWithEvent Instance = new MockClassWithEvent();
+
+                var InstanceThatWillBeWatched = new ObservableCollection<MockClass>();
+
+                Assert.IsFalse(Instance.EventCatcher);
+                Instance.ChangeableCollection = null;
+                Instance.ChangeableCollection = InstanceThatWillBeWatched;
+                Assert.IsFalse(Instance.EventCatcher);
+                InstanceThatWillBeWatched.Add(new MockClass());
+                Assert.IsTrue(Instance.EventCatcher);
+                InstanceThatWillBeWatched.Add(new MockClass());
+                Assert.IsFalse(Instance.EventCatcher);
+            }
+
+            [TestMethod]
+            public void AttachesEventHandlerHook_CollectionChanged_DontThrowWhenSetToNull()
+            {
+                MockClassWithEvent Instance = new MockClassWithEvent();
+
+                var InstanceThatWillBeWatched = new ObservableCollection<MockClass>();
+
+                Assert.IsFalse(Instance.EventCatcher);
+                Instance.ChangeableCollection = null;
+                Instance.ChangeableCollection = InstanceThatWillBeWatched;
+                Assert.IsFalse(Instance.EventCatcher);
+                InstanceThatWillBeWatched.Add(new MockClass());
+                Assert.IsTrue(Instance.EventCatcher);
+                InstanceThatWillBeWatched.Add(new MockClass());
+                Assert.IsFalse(Instance.EventCatcher);
+                Instance.ChangeableCollection = null;
+                InstanceThatWillBeWatched.Add(new MockClass());
                 Assert.IsFalse(Instance.EventCatcher);
             }
 
