@@ -25,13 +25,6 @@ namespace Dangl
     public abstract class BindableBase : INotifyPropertyChanged, IDisposable
     {
         /// <summary>
-        /// Protected parameterless constructor.
-        /// </summary>
-        protected BindableBase()
-        {
-        }
-
-        /// <summary>
         /// <see cref="INotifyPropertyChanged"/> implementation.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
