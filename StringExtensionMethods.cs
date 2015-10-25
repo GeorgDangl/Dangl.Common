@@ -18,12 +18,27 @@ namespace Dangl
         {
             if (Input == null) return null;
             var Splitted = Regex.Split(Input, "\r\n?|\n");
-            var ReturnString = string.Empty;
-            for (int i = 0; i < Splitted.Length; i++)
-            {
-                ReturnString += Splitted[i].TrimEnd() + Environment.NewLine;
-            }
-            return ReturnString.TrimEnd();
+            return Splitted.Aggregate(string.Empty, (current, t) => current + (t.TrimEnd() + Environment.NewLine));
+        }
+
+        /// <summary>
+        /// Will return a Base64 representation of the string.
+        /// </summary>
+        /// <param name="Input"></param>
+        /// <returns></returns>
+        public static string ToBase64(this string Input)
+        {
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(Input));
+        }
+
+        /// <summary>
+        /// Will return the plain text deoced from a Base64 string representation.
+        /// </summary>
+        /// <param name="Input"></param>
+        /// <returns></returns>
+        public static string FromBase64(this string Input)
+        {
+            return Encoding.UTF8.GetString(Convert.FromBase64String(Input));
         }
     }
 }
