@@ -60,12 +60,9 @@
     <Compile Include="MockClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\PexAssemblyInfo.cs" />
-    <Compile Include="TrulyObservableCollectionTTest.Constructor.g.cs">
-      <DependentUpon>TrulyObservableCollectionTTest.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TrulyObservableCollectionTTest.cs" />
     <Compile Include="TrulyObservableCollection_Test.cs" />
     <Compile Include="StringExtensionMethodsTest.cs" />
+    <Compile Include="StringEncryptionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

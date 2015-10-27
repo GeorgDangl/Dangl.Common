@@ -7,6 +7,8 @@ namespace Dangl.Common.Tests
     public class StringExtensionMethodsTest
     {
 
+
+
         [TestClass]
         public class FromBase64
         {
