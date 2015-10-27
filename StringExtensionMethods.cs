@@ -18,7 +18,12 @@ namespace Dangl
         {
             if (Input == null) return null;
             var Splitted = Regex.Split(Input, "\r\n?|\n");
-            return Splitted.Aggregate(string.Empty, (current, t) => current + (t.TrimEnd() + Environment.NewLine)).TrimEnd();
+            var StringBuilder = new StringBuilder();
+            foreach (var CurrentLine in Splitted)
+            {
+                StringBuilder.AppendLine(CurrentLine.TrimEnd());
+            }
+            return StringBuilder.ToString().TrimEnd();
         }
 
         /// <summary>
