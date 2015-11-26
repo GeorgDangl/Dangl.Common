@@ -28,7 +28,7 @@ namespace Dangl
             var BytesFromPassword = Encoding.UTF8.GetBytes(Password);
             if (BytesFromPassword.Length > 32)
             {
-                throw new ArgumentOutOfRangeException(nameof(Password), nameof(Password) + " length is valid, but UTF-8 bytes of password exceed allowed amount of 32 bytes. This may be due to high unicode characters needing 4 instead of two bytes.");
+                throw new ArgumentOutOfRangeException(nameof(Password), nameof(Password) + " length is valid, but UTF-8 bytes of password exceed allowed amount of 32 bytes. This may be due to high unicode characters needing as many as 4 bytes.");
             }
             BytesFromPassword = BytesFromPassword.Length == 32
                 ? BytesFromPassword

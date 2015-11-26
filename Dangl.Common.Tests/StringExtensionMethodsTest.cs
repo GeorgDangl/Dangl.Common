@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Dangl.Common.Tests
@@ -128,6 +129,31 @@ namespace Dangl.Common.Tests
             }
         }
 
+        [TestClass]
+        public class CompressDecompress
+        {
+            [TestMethod]
+            public void CompressDecompress_01()
+            {
+                var Input = "Hello World!";
+                var Compressed = Input.Compress();
+                Assert.AreNotEqual(Input, Compressed);
+                var Decompressed = Compressed.Decompress();
+                Assert.AreEqual(Input, Decompressed);
+            }
+            [TestMethod]
+            public void CompressDecompress_02()
+            {
+                var Builder = new StringBuilder();
+                for (int i = 0; i < 100; i++)
+                {
+                    Builder.Append("Hello World!");
+                }
+                var Input = Builder.ToString();
+                var Compressed = Input.Compress();
+                Assert.IsTrue(Compressed.Length < Input.Length);
+            }
+        }
 
     }
 }
