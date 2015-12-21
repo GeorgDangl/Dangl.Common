@@ -4,33 +4,22 @@ using Xunit;
 
 namespace Dangl.Common.Tests
 {
-     
-    public class StringExtensionMethodsTest
+    public class StringExtensionMethodsTests
     {
-
-
-
-         
         public class FromBase64
         {
             [Fact]
             public void InvalidInput_HtmlWithNonBase64Chars()
             {
                 var Input = "<html>Body</html>";
-                Assert.Throws(typeof(FormatException), () =>
-                {
-                    Input.FromBase64();
-                });
+                Assert.Throws(typeof (FormatException), () => { Input.FromBase64(); });
             }
 
             [Fact]
             public void InvalidInput_RegularStringNonBase64()
             {
                 var Input = "SomeString";
-                Assert.Throws(typeof (FormatException), () =>
-                {
-                    Input.FromBase64();
-                });
+                Assert.Throws(typeof (FormatException), () => { Input.FromBase64(); });
             }
 
             [Fact]
@@ -51,7 +40,7 @@ namespace Dangl.Common.Tests
                 Assert.Equal(Expected, Actual);
             }
         }
-         
+
         public class ToBase64
         {
             [Fact]
@@ -72,7 +61,7 @@ namespace Dangl.Common.Tests
                 Assert.Equal(Expected, Actual);
             }
         }
-         
+
         public class Sanitize
         {
             [Fact]
@@ -83,6 +72,7 @@ namespace Dangl.Common.Tests
                 var Actual = Input.Sanitize();
                 Assert.Equal(Expected, Actual);
             }
+
             [Fact]
             public void Sanitize_01()
             {
@@ -91,6 +81,7 @@ namespace Dangl.Common.Tests
                 var Actual = Input.Sanitize();
                 Assert.Equal(Expected, Actual);
             }
+
             [Fact]
             public void Sanitize_02()
             {
@@ -99,6 +90,7 @@ namespace Dangl.Common.Tests
                 var Actual = Input.Sanitize();
                 Assert.Equal(Expected, Actual);
             }
+
             [Fact]
             public void Sanitize_03()
             {
@@ -107,6 +99,7 @@ namespace Dangl.Common.Tests
                 var Actual = Input.Sanitize();
                 Assert.Equal(Expected, Actual);
             }
+
             [Fact]
             public void Sanitize_04()
             {
@@ -115,6 +108,7 @@ namespace Dangl.Common.Tests
                 var Actual = Input.Sanitize();
                 Assert.Equal(Expected, Actual);
             }
+
             [Fact]
             public void Sanitize_05()
             {
@@ -123,6 +117,7 @@ namespace Dangl.Common.Tests
                 var Actual = Input.Sanitize();
                 Assert.Equal(Expected, Actual);
             }
+
             [Fact]
             public void Sanitize_06()
             {
@@ -131,6 +126,7 @@ namespace Dangl.Common.Tests
                 var Actual = Input.Sanitize();
                 Assert.Equal(Expected, Actual);
             }
+
             [Fact]
             public void Sanitize_07()
             {
@@ -141,7 +137,6 @@ namespace Dangl.Common.Tests
             }
         }
 
-         
         public class CompressDecompress
         {
             [Fact]
@@ -153,11 +148,12 @@ namespace Dangl.Common.Tests
                 var Decompressed = Compressed.Decompress();
                 Assert.Equal(Input, Decompressed);
             }
+
             [Fact]
             public void CompressDecompress_02()
             {
                 var Builder = new StringBuilder();
-                for (int i = 0; i < 100; i++)
+                for (var i = 0; i < 100; i++)
                 {
                     Builder.Append("Hello World!");
                 }
@@ -166,6 +162,5 @@ namespace Dangl.Common.Tests
                 Assert.True(Compressed.Length < Input.Length);
             }
         }
-
     }
 }

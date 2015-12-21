@@ -1,11 +1,11 @@
-﻿using Xunit;
-using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using Xunit;
 
-namespace Dangl.Test.Common
+namespace Dangl.Common.Tests
 {
-     
-    public class BindableBase_Test
+    public class BindableBaseTests
     {
         [Fact]
         public void WillIBeDiscovered()
@@ -13,57 +13,14 @@ namespace Dangl.Test.Common
             Assert.True(true);
         }
 
-
-         
         public class SetProperty
         {
-            public class MockClassWithEvent : BindableBase
-            {
-                private MockClass _ChangeableProperty;
-
-                public MockClass ChangeableProperty
-                {
-                    get
-                    {
-                        return _ChangeableProperty;
-                    }
-                    set
-                    {
-                        SetProperty(ref _ChangeableProperty, value, ChangeableProperty_PropertyChanged);
-                    }
-                }
-
-                public ObservableCollection<MockClass> _ChangeableCollection;
-
-                public ObservableCollection<MockClass> ChangeableCollection
-                {
-                    get
-                    {
-                        return _ChangeableCollection;
-                    }
-                    set
-                    {
-                        SetProperty(ref _ChangeableCollection, value, _ChangeableCollection_CollectionChanged);
-                    }
-                }
-
-                private void _ChangeableCollection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-                {
-                    EventCatcher = !EventCatcher;
-                }
-
-                public bool EventCatcher { get; set; }
-
-                private void ChangeableProperty_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-                {
-                    EventCatcher = !EventCatcher;
-                }
-            }
+            private bool EventCatched;
 
             [Fact]
             public void AttachesEventHandlerHook_PropertyChanged()
             {
-                MockClassWithEvent Instance = new MockClassWithEvent();
+                var Instance = new MockClassWithEvent();
 
                 var InstanceThatWillBeWatched = new MockClass();
 
@@ -84,7 +41,7 @@ namespace Dangl.Test.Common
             [Fact]
             public void AttachesEventHandlerHook_CollectionChanged()
             {
-                MockClassWithEvent Instance = new MockClassWithEvent();
+                var Instance = new MockClassWithEvent();
 
                 var InstanceThatWillBeWatched = new ObservableCollection<MockClass>();
 
@@ -101,7 +58,7 @@ namespace Dangl.Test.Common
             [Fact]
             public void AttachesEventHandlerHook_CollectionChanged_DontThrowWhenSetToNull()
             {
-                MockClassWithEvent Instance = new MockClassWithEvent();
+                var Instance = new MockClassWithEvent();
 
                 var InstanceThatWillBeWatched = new ObservableCollection<MockClass>();
 
@@ -121,7 +78,7 @@ namespace Dangl.Test.Common
             [Fact]
             public void IsCalled()
             {
-                MockClass Mock = new MockClass();
+                var Mock = new MockClass();
                 Mock.PropertyChanged += Mock_PropertyChanged;
                 EventCatched = false;
                 Mock.StringProperty = "changed";
@@ -131,7 +88,7 @@ namespace Dangl.Test.Common
             [Fact]
             public void IsNotCalledForSameValue()
             {
-                MockClass Mock = new MockClass();
+                var Mock = new MockClass();
 
                 Mock.StringProperty = "SomeValue";
                 Mock.PropertyChanged += Mock_PropertyChanged;
@@ -140,22 +97,63 @@ namespace Dangl.Test.Common
                 Assert.False(EventCatched);
             }
 
-            private bool EventCatched;
-
-            private void Mock_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+            private void Mock_PropertyChanged(object sender, PropertyChangedEventArgs e)
             {
                 Assert.False(EventCatched); // Catch event only once
                 EventCatched = true;
             }
-        }
 
+            public class MockClassWithEvent : BindableBase
+            {
+                public ObservableCollection<MockClass> _ChangeableCollection;
+                private MockClass _ChangeableProperty;
+
+                public MockClass ChangeableProperty
+                {
+                    get
+                    {
+                        return _ChangeableProperty;
+                    }
+                    set
+                    {
+                        SetProperty(ref _ChangeableProperty, value, ChangeableProperty_PropertyChanged);
+                    }
+                }
+
+                public ObservableCollection<MockClass> ChangeableCollection
+                {
+                    get
+                    {
+                        return _ChangeableCollection;
+                    }
+                    set
+                    {
+                        SetProperty(ref _ChangeableCollection, value, _ChangeableCollection_CollectionChanged);
+                    }
+                }
+
+                public bool EventCatcher { get; set; }
+
+                private void _ChangeableCollection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+                {
+                    EventCatcher = !EventCatcher;
+                }
+
+                private void ChangeableProperty_PropertyChanged(object sender, PropertyChangedEventArgs e)
+                {
+                    EventCatcher = !EventCatcher;
+                }
+            }
+        }
 
         public class OnPropertyChanged
         {
+            private bool EventCatched;
+
             [Fact]
             public void EventNotRaisedForNestedClass()
             {
-                MockClass Mock = new MockClass();
+                var Mock = new MockClass();
                 Mock.PropertyChanged += Mock_PropertyChanged;
                 EventCatched = false;
                 Mock.ComplexProperty = new MockClass();
@@ -165,31 +163,28 @@ namespace Dangl.Test.Common
                 Assert.False(EventCatched);
             }
 
-            private bool EventCatched;
-
-            private void Mock_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+            private void Mock_PropertyChanged(object sender, PropertyChangedEventArgs e)
             {
                 Assert.False(EventCatched); // Catch event only once
                 EventCatched = true;
             }
         }
 
-
         public class GetPropertyName
         {
             [Fact]
             public void ReportsCorrectName()
             {
-                MockClass Mock = new MockClass();
+                var Mock = new MockClass();
                 Assert.Equal("StringProperty", Mock.GetPropertyName(() => Mock.StringProperty));
             }
 
             [Fact]
             public void ReportNestedArrayLengthName()
             {
-                SomeClassWithArrays TestInstance = new SomeClassWithArrays();
+                var TestInstance = new SomeClassWithArrays();
 
-                string RetrievedPropertyName = TestInstance.GetPropertyName(() => TestInstance.Array) + ".Length";
+                var RetrievedPropertyName = TestInstance.GetPropertyName(() => TestInstance.Array) + ".Length";
                 Assert.Equal("Array.Length", RetrievedPropertyName);
             }
 

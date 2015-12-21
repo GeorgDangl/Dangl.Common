@@ -1,19 +1,15 @@
-﻿using KellermanSoftware.CompareNetObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using KellermanSoftware.CompareNetObjects;
 
-namespace Dangl.Test.Common
+namespace Dangl.Common.Tests
 {
     public static class Comparator
     {
         public static CompareLogic GetCompareLogic()
         {
-            return new CompareLogic()
+            return new CompareLogic
             {
-                Config = new ComparisonConfig()
+                Config = new ComparisonConfig
                 {
                     CompareChildren = true,
                     CompareFields = true,
@@ -24,7 +20,7 @@ namespace Dangl.Test.Common
                     CompareStaticFields = false,
                     CompareStaticProperties = false,
                     MaxMillisecondsDateDifference = 50,
-                    MembersToIgnore = new List<string> { "GUID" }
+                    MembersToIgnore = new List<string> {"GUID"}
                 }
             };
         }

@@ -3,25 +3,20 @@ using Xunit;
 
 namespace Dangl.Common.Tests
 {
-     
-    public class StringEncryptionTest
+    public class StringEncryptionTests
     {
         [Fact]
         public void Fail_PasswordTooShort()
         {
-            Assert.Throws(typeof (ArgumentOutOfRangeException), () =>
-            {
-                var Instance = new StringEncryption("0123456789ABCDE");
-            });
+            Assert.Throws(typeof (ArgumentOutOfRangeException), () => { var Instance = new StringEncryption("0123456789ABCDE"); });
         }
+
         [Fact]
         public void Fail_PasswordTooLong()
         {
-            Assert.Throws(typeof(ArgumentOutOfRangeException), () =>
-            {
-                var Instance = new StringEncryption("0123456789ABCDEF0123456789ABCDEF_");
-            });
+            Assert.Throws(typeof (ArgumentOutOfRangeException), () => { var Instance = new StringEncryption("0123456789ABCDEF0123456789ABCDEF_"); });
         }
+
         [Fact]
         public void EncryptDecrypt_RegularCharacters()
         {
@@ -41,6 +36,7 @@ namespace Dangl.Common.Tests
             Assert.NotEqual(TextToEncrypt, EncryptedString_01); // Encrypted string should not match original string
             Assert.NotEqual(EncryptedString_01, EncryptedString_02); // String should never be encrypted the same twice
         }
+
         [Fact]
         public void EncryptDecrypt_HighUnicodeCharacters()
         {
@@ -60,11 +56,12 @@ namespace Dangl.Common.Tests
             Assert.NotEqual(TextToEncrypt, EncryptedString_01); // Encrypted string should not match original string
             Assert.NotEqual(EncryptedString_01, EncryptedString_02); // String should never be encrypted the same twice
         }
+
         [Fact]
         public void EncryptDecrypt_HighUnicodeCharacters_ThrowsException()
         {
             // Arrange
-            Assert.Throws(typeof(ArgumentOutOfRangeException), () => new StringEncryption("\u26A1\u26A1\u26A1\u26A1\u26A1\u26A1\u26A1\u26A1\u26A1"));
+            Assert.Throws(typeof (ArgumentOutOfRangeException), () => new StringEncryption("\u26A1\u26A1\u26A1\u26A1\u26A1\u26A1\u26A1\u26A1\u26A1"));
         }
     }
 }

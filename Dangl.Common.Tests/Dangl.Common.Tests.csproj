@@ -63,13 +63,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BindableBase_Test.cs" />
+    <Compile Include="BindableBaseTests.cs" />
     <Compile Include="Comparator.cs" />
     <Compile Include="MockClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StringEncryptionTest.cs" />
-    <Compile Include="StringExtensionMethodsTest.cs" />
-    <Compile Include="TrulyObservableCollection_Test.cs" />
+    <Compile Include="StringEncryptionTests.cs" />
+    <Compile Include="StringExtensionMethodsTests.cs" />
+    <Compile Include="TrulyObservableCollectionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
