@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace Dangl
 {
+    /// <summary>
+    /// Extension methods for strings.
+    /// </summary>
     public static class StringExtensionMethods
     {
         /// <summary>
@@ -49,8 +52,11 @@ namespace Dangl
             return Encoding.UTF8.GetString(Convert.FromBase64String(Input));
         }
 
-        //TODO COMMENTS ALSO IN ENCRYPTION
-
+        /// <summary>
+        /// Returns the Base64 representation of the string after having applied GZip compression.
+        /// </summary>
+        /// <param name="Input"></param>
+        /// <returns></returns>
         public static string Compress(this string Input)
         {
             byte[] buffer = Encoding.UTF8.GetBytes(Input);
@@ -71,6 +77,11 @@ namespace Dangl
             return Convert.ToBase64String(gzBuffer);
         }
 
+        /// <summary>
+        /// Decompresses a string from a Base64 GZip string.
+        /// </summary>
+        /// <param name="Input"></param>
+        /// <returns></returns>
         public static string Decompress(this string Input)
         {
             byte[] gzBuffer = Convert.FromBase64String(Input);

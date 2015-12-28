@@ -19,6 +19,10 @@ namespace Dangl
         private readonly UTF8Encoding Encoder;
         private const int VectorSize = 16;
 
+        /// <summary>
+        /// Basic constructor, requires the password.
+        /// </summary>
+        /// <param name="Password">Must be between 16 and 32 characters. The characters must map to 16 to 32 bytes, so high unicode characters might count as up to 4.</param>
         public StringEncryption(string Password)
         {
             if (Password.Length > 32 || Password.Length < 16)
@@ -39,6 +43,11 @@ namespace Dangl
             Key= BytesFromPassword;
         }
 
+        /// <summary>
+        /// Returns the encrypted string.
+        /// </summary>
+        /// <param name="PlainText">The string to encrypt.</param>
+        /// <returns></returns>
         public string Encrypt(string PlainText)
         {
             var Vector = new byte[VectorSize];
@@ -47,6 +56,11 @@ namespace Dangl
             return Convert.ToBase64String(Cryptogram.ToArray());
         }
 
+        /// <summary>
+        /// Returns a decrypted string.
+        /// </summary>
+        /// <param name="EncryptedText">The encrypted string.</param>
+        /// <returns></returns>
         public string Decrypt(string EncryptedText)
         {
             var Cryptogram = Convert.FromBase64String(EncryptedText);
