@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Xunit;
 
 namespace Dangl.Common.Tests
@@ -15,6 +16,21 @@ namespace Dangl.Common.Tests
         public void Fail_PasswordTooLong()
         {
             Assert.Throws(typeof (ArgumentOutOfRangeException), () => { var Instance = new StringEncryption("0123456789ABCDEF0123456789ABCDEF_"); });
+        }
+
+        [Fact]
+        public void Fail_PasswordTooLongDueToHighASCIICharacters()
+        {
+            var PasswordInput = "0123456789012345678901234567891\u26A1";
+            Assert.Equal(32, PasswordInput.Length);
+            Assert.Throws(typeof(ArgumentOutOfRangeException), () => { var Instance = new StringEncryption(PasswordInput); });
+        }
+
+        [Fact]
+        public void Initialization_32CharacterPassword()
+        {
+            var PasswordInput = "01234567890123456789012345678912";
+            var Instance = new StringEncryption(PasswordInput);
         }
 
         [Fact]
@@ -62,6 +78,14 @@ namespace Dangl.Common.Tests
         {
             // Arrange
             Assert.Throws(typeof (ArgumentOutOfRangeException), () => new StringEncryption("\u26A1\u26A1\u26A1\u26A1\u26A1\u26A1\u26A1\u26A1\u26A1"));
+        }
+
+        [Fact]
+        public void Decrypt_ValidBase64StringButTooShort()
+        {
+            var Input = Convert.ToBase64String(Encoding.UTF8.GetBytes("123456"));
+            var EncryptionInstance = new StringEncryption("1234567890123456");
+            Assert.Throws(typeof (ArgumentException), () => EncryptionInstance.Decrypt(Input));
         }
     }
 }
