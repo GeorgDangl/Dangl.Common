@@ -36,6 +36,7 @@ namespace Dangl.Common.Tests
                 Assert.False(Instance.EventCatcher);
                 InstanceThatWillBeWatched.StringProperty = "Noone listens anymore =(";
                 Assert.False(Instance.EventCatcher);
+                Assert.NotNull(Instance.ChangeableProperty);
             }
 
             [Fact]
@@ -53,6 +54,7 @@ namespace Dangl.Common.Tests
                 Assert.True(Instance.EventCatcher);
                 InstanceThatWillBeWatched.Add(new MockClass());
                 Assert.False(Instance.EventCatcher);
+                Assert.NotNull(Instance.ChangeableCollection);
             }
 
             [Fact]
@@ -94,6 +96,43 @@ namespace Dangl.Common.Tests
                 Mock.PropertyChanged += Mock_PropertyChanged;
                 EventCatched = false;
                 Mock.StringProperty = "SomeValue";
+                Assert.False(EventCatched);
+            }
+
+            [Fact]
+            public void IsNotCalledForSameValue_MockClassWithEvent()
+            {
+                var Mock = new MockClassWithEvent();
+
+                var complexProperty = new MockClass();
+                Mock.ChangeableProperty = complexProperty;
+                Mock.PropertyChanged += Mock_PropertyChanged;
+                EventCatched = false;
+                Mock.ChangeableProperty = complexProperty;
+                Assert.False(EventCatched);
+            }
+
+            [Fact]
+            public void IsNotCalledForSameValue_ComplexProperty()
+            {
+                var Mock = new MockClass();
+                var complexProperty = new MockClass();
+                Mock.ComplexProperty = complexProperty;
+                Mock.PropertyChanged += Mock_PropertyChanged;
+                EventCatched = false;
+                Mock.ComplexProperty = complexProperty;
+                Assert.False(EventCatched);
+            }
+
+            [Fact]
+            public void IsNotCalledForSameValue_CollectionProperty()
+            {
+                var Mock = new MockClassWithEvent();
+                var collectionProperty = new ObservableCollection<MockClass>();
+                Mock.ChangeableCollection = collectionProperty;
+                Mock.PropertyChanged += Mock_PropertyChanged;
+                EventCatched = false;
+                Mock.ChangeableCollection = collectionProperty;
                 Assert.False(EventCatched);
             }
 
@@ -170,6 +209,53 @@ namespace Dangl.Common.Tests
             }
         }
 
+        public class IDisposableImplementation
+        {
+            [Fact]
+            public void DisposingDoesntThrow_NoEventHandlersAttached()
+            {
+                var Mock = new MockClass();
+                Mock.Dispose();
+            }
+
+            [Fact]
+            public void DisposingDoesntThrow_EventHandlerAttached()
+            {
+                var Mock = new MockClass();
+                Mock.PropertyChanged += Mock_PropertyChanged;
+                Mock.Dispose();
+            }
+
+            [Fact]
+            public void EventGetsHandled()
+            {
+                var Mock = new MockClass();
+                Mock.PropertyChanged += Mock_PropertyChanged;
+                Mock.StringProperty = "New value";
+                Assert.True(EventCatched);
+            }
+
+            [Fact]
+            public void DoesntFireEventWhenDisposed()
+            {
+                var Mock = new MockClass();
+                Mock.PropertyChanged += Mock_PropertyChanged;
+                Mock.Dispose();
+                Mock.StringProperty = "New value";
+                Assert.False(EventCatched);
+            }
+
+            private bool EventCatched;
+
+            private void Mock_PropertyChanged(object sender, PropertyChangedEventArgs e)
+            {
+                if (!EventCatched)
+                {
+                    EventCatched = true;
+                }
+            }
+        }
+
         public class GetPropertyName
         {
             [Fact]
@@ -185,6 +271,11 @@ namespace Dangl.Common.Tests
                 var TestInstance = new SomeClassWithArrays();
 
                 var RetrievedPropertyName = TestInstance.GetPropertyName(() => TestInstance.Array) + ".Length";
+                Assert.Equal("Array.Length", RetrievedPropertyName);
+                Assert.Null(TestInstance.Array);
+                TestInstance.Array = new string[2];
+                Assert.NotNull(TestInstance.Array);
+                RetrievedPropertyName = TestInstance.GetPropertyName(() => TestInstance.Array) + ".Length";
                 Assert.Equal("Array.Length", RetrievedPropertyName);
             }
 

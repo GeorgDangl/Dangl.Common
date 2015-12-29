@@ -1,4 +1,6 @@
-﻿namespace Dangl.Common.Tests
+﻿using System.Collections.ObjectModel;
+
+namespace Dangl.Common.Tests
 {
     public class MockClass : BindableBase
     {

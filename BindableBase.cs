@@ -180,6 +180,7 @@ namespace Dangl
         /// </summary>
         protected virtual void OnDispose()
         {
+            PropertyChanged = null;
         }
     }
 }
