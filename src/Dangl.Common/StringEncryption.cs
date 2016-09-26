@@ -15,7 +15,7 @@ namespace Dangl
     {
         private readonly Random Random;
         private readonly byte[] Key;
-        private readonly RijndaelManaged RijndaelManagedInstance;
+        private readonly Aes RijndaelManagedInstance = Aes.Create();
         private readonly UTF8Encoding Encoder;
         private const int VectorSize = 16;
 
@@ -38,7 +38,8 @@ namespace Dangl
                 ? BytesFromPassword
                 : BytesFromPassword.Concat(new byte[32 - BytesFromPassword.Length]).ToArray();
             Random = new Random();
-            RijndaelManagedInstance = new RijndaelManaged();
+            //System.Security.Cryptography.Aes.Create();
+            //RijndaelManagedInstance = new RijndaelManaged();
             Encoder = new UTF8Encoding();
             Key= BytesFromPassword;
         }
