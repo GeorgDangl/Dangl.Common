@@ -1,9 +1,7 @@
 ﻿{
   "version": "1.0.0-*",
-
   "dependencies": {
   },
-
   "frameworks": {
     "netcoreapp1.0": {
       "imports": [
@@ -17,6 +15,9 @@
         }
       }
     },
-    "net45": {} 
+    "net45": {}
+  },
+  "buildOptions": {
+    "xmlDoc": true
   }
 }
