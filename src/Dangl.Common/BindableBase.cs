@@ -34,9 +34,9 @@ namespace Dangl
         ///     notifies listeners only when necessary.
         /// </summary>
         /// <typeparam name="T">Type of the property.</typeparam>
-        /// <param name="Storage">Reference to a property with both getter and setter.</param>
-        /// <param name="Value">Desired value for the property.</param>
-        /// <param name="PropertyName">
+        /// <param name="storage">Reference to a property with both getter and setter.</param>
+        /// <param name="value">Desired value for the property.</param>
+        /// <param name="propertyName">
         ///     Name of the property used to notify listeners.  This
         ///     value is optional and can be provided automatically when invoked from compilers that
         ///     support CallerMemberName.
@@ -45,15 +45,15 @@ namespace Dangl
         ///     True if the value was changed, false if the existing value matched the
         ///     desired value.
         /// </returns>
-        protected bool SetProperty<T>(ref T Storage, T Value, [CallerMemberName] String PropertyName = null)
+        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
         {
-            if (Equals(Storage, Value))
+            if (Equals(storage, value))
             {
                 return false;
             }
 
-            Storage = Value;
-            OnPropertyChanged(PropertyName);
+            storage = value;
+            OnPropertyChanged(propertyName);
             return true;
         }
 
@@ -64,10 +64,10 @@ namespace Dangl
         ///     and detach it from the old value.
         /// </summary>
         /// <typeparam name="T">Type of the property.</typeparam>
-        /// <param name="Storage">Reference to a property with both getter and setter.</param>
-        /// <param name="Value">Desired value for the property.</param>
-        /// <param name="ChangeEventHook"></param>
-        /// <param name="PropertyName">
+        /// <param name="storage">Reference to a property with both getter and setter.</param>
+        /// <param name="value">Desired value for the property.</param>
+        /// <param name="changeEventHook"></param>
+        /// <param name="propertyName">
         ///     Name of the property used to notify listeners.  This
         ///     value is optional and can be provided automatically when invoked from compilers that
         ///     support CallerMemberName.
@@ -76,24 +76,24 @@ namespace Dangl
         ///     True if the value was changed, false if the existing value matched the
         ///     desired value.
         /// </returns>
-        protected bool SetProperty<T>(ref T Storage, T Value, PropertyChangedEventHandler ChangeEventHook, [CallerMemberName] String PropertyName = null) where T : INotifyPropertyChanged
+        protected bool SetProperty<T>(ref T storage, T value, PropertyChangedEventHandler changeEventHook, [CallerMemberName] String propertyName = null) where T : INotifyPropertyChanged
         {
-            if (Equals(Storage, Value))
+            if (Equals(storage, value))
             {
                 return false;
             }
 
-            if (Storage != null)
+            if (storage != null)
             {
-                Storage.PropertyChanged -= ChangeEventHook;
+                storage.PropertyChanged -= changeEventHook;
             }
 
-            Storage = Value;
-            if (Storage != null)
+            storage = value;
+            if (storage != null)
             {
-                Storage.PropertyChanged += ChangeEventHook;
+                storage.PropertyChanged += changeEventHook;
             }
-            OnPropertyChanged(PropertyName);
+            OnPropertyChanged(propertyName);
             return true;
         }
 
@@ -104,10 +104,10 @@ namespace Dangl
         ///     and detach it from the old value.
         /// </summary>
         /// <typeparam name="T">Type of the property.</typeparam>
-        /// <param name="Storage">Reference to a property with both getter and setter.</param>
-        /// <param name="Value">Desired value for the property.</param>
-        /// <param name="ChangeEventHook"></param>
-        /// <param name="PropertyName">
+        /// <param name="storage">Reference to a property with both getter and setter.</param>
+        /// <param name="value">Desired value for the property.</param>
+        /// <param name="changeEventHook"></param>
+        /// <param name="propertyName">
         ///     Name of the property used to notify listeners.  This
         ///     value is optional and can be provided automatically when invoked from compilers that
         ///     support CallerMemberName.
@@ -116,39 +116,35 @@ namespace Dangl
         ///     True if the value was changed, false if the existing value matched the
         ///     desired value.
         /// </returns>
-        protected bool SetProperty<T>(ref T Storage, T Value, NotifyCollectionChangedEventHandler ChangeEventHook, [CallerMemberName] String PropertyName = null) where T : INotifyCollectionChanged
+        protected bool SetProperty<T>(ref T storage, T value, NotifyCollectionChangedEventHandler changeEventHook, [CallerMemberName] String propertyName = null) where T : INotifyCollectionChanged
         {
-            if (Equals(Storage, Value))
+            if (Equals(storage, value))
             {
                 return false;
             }
 
-            if (Storage != null)
+            if (storage != null)
             {
-                Storage.CollectionChanged -= ChangeEventHook;
+                storage.CollectionChanged -= changeEventHook;
             }
 
-            Storage = Value;
-            if (Storage != null)
+            storage = value;
+            if (storage != null)
             {
-                Storage.CollectionChanged += ChangeEventHook;
+                storage.CollectionChanged += changeEventHook;
             }
-            OnPropertyChanged(PropertyName);
+            OnPropertyChanged(propertyName);
             return true;
         }
 
         /// <summary>
         /// Event to be raised for <see cref="INotifyPropertyChanged"/>.
         /// </summary>
-        /// <param name="PropertyName">Optional, when not given the <see cref="System.Runtime.CompilerServices.CallerMemberNameAttribute"/> is used to determine
+        /// <param name="propertyName">Optional, when not given the <see cref="System.Runtime.CompilerServices.CallerMemberNameAttribute"/> is used to determine
         /// the calling function.</param>
-        protected virtual void OnPropertyChanged([CallerMemberName] string PropertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChangedEventHandler Handler = PropertyChanged;
-            if (Handler != null)
-            {
-                Handler(this, new PropertyChangedEventArgs(PropertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
@@ -157,11 +153,11 @@ namespace Dangl
         /// GetPropertyName(() => this.Property);
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="GivenProperty">The property for which to return the string.</param>
+        /// <param name="givenProperty">The property for which to return the string.</param>
         /// <returns></returns>
-        public string GetPropertyName<T>(Expression<Func<T>> GivenProperty)
+        public string GetPropertyName<T>(Expression<Func<T>> givenProperty)
         {
-            return ((MemberExpression)GivenProperty.Body).Member.Name;
+            return ((MemberExpression)givenProperty.Body).Member.Name;
         }
 
         /// <summary>

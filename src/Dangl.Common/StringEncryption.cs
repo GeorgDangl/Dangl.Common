@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Dangl
 {
@@ -13,88 +11,88 @@ namespace Dangl
     /// </summary>
     public class StringEncryption
     {
-        private readonly Random Random;
-        private readonly byte[] Key;
-        private readonly Aes RijndaelManagedInstance = Aes.Create();
-        private readonly UTF8Encoding Encoder;
+        private readonly Random _random;
+        private readonly byte[] _key;
+        private readonly Aes _aes = Aes.Create();
+        private readonly UTF8Encoding _encoder;
         private const int VectorSize = 16;
 
         /// <summary>
         /// Basic constructor, requires the password.
         /// </summary>
-        /// <param name="Password">Must be between 16 and 32 characters. The characters must map to 16 to 32 bytes, so high unicode characters might count as up to 4.</param>
-        public StringEncryption(string Password)
+        /// <param name="password">Must be between 16 and 32 characters. The characters must map to 16 to 32 bytes, so high unicode characters might count as up to 4.</param>
+        public StringEncryption(string password)
         {
-            if (Password.Length > 32 || Password.Length < 16)
+            if (password.Length > 32 || password.Length < 16)
             {
-                throw new ArgumentOutOfRangeException(nameof(Password), nameof(Password) + " must be between 16 and 32 characters.");
+                throw new ArgumentOutOfRangeException(nameof(password), nameof(password) + " must be between 16 and 32 characters.");
             }
-            var BytesFromPassword = Encoding.UTF8.GetBytes(Password);
-            if (BytesFromPassword.Length > 32)
+            var bytesFromPassword = Encoding.UTF8.GetBytes(password);
+            if (bytesFromPassword.Length > 32)
             {
-                throw new ArgumentOutOfRangeException(nameof(Password), nameof(Password) + " length is valid, but UTF-8 bytes of password exceed allowed amount of 32 bytes. This may be due to high unicode characters needing as many as 4 bytes.");
+                throw new ArgumentOutOfRangeException(nameof(password), nameof(password) + " length is valid, but UTF-8 bytes of password exceed allowed amount of 32 bytes. This may be due to high unicode characters needing as many as 4 bytes.");
             }
-            BytesFromPassword = BytesFromPassword.Length == 32
-                ? BytesFromPassword
-                : BytesFromPassword.Concat(new byte[32 - BytesFromPassword.Length]).ToArray();
-            Random = new Random();
+            bytesFromPassword = bytesFromPassword.Length == 32
+                ? bytesFromPassword
+                : bytesFromPassword.Concat(new byte[32 - bytesFromPassword.Length]).ToArray();
+            _random = new Random();
             //System.Security.Cryptography.Aes.Create();
             //RijndaelManagedInstance = new RijndaelManaged();
-            Encoder = new UTF8Encoding();
-            Key= BytesFromPassword;
+            _encoder = new UTF8Encoding();
+            _key= bytesFromPassword;
         }
 
         /// <summary>
         /// Returns the encrypted string.
         /// </summary>
-        /// <param name="PlainText">The string to encrypt.</param>
+        /// <param name="plainText">The string to encrypt.</param>
         /// <returns></returns>
-        public string Encrypt(string PlainText)
+        public string Encrypt(string plainText)
         {
-            var Vector = new byte[VectorSize];
-            Random.NextBytes(Vector);
-            var Cryptogram = Vector.Concat(Encrypt(Encoder.GetBytes(PlainText), Vector));
-            return Convert.ToBase64String(Cryptogram.ToArray());
+            var vector = new byte[VectorSize];
+            _random.NextBytes(vector);
+            var cryptogram = vector.Concat(Encrypt(_encoder.GetBytes(plainText), vector));
+            return Convert.ToBase64String(cryptogram.ToArray());
         }
 
         /// <summary>
         /// Returns a decrypted string.
         /// </summary>
-        /// <param name="EncryptedText">The encrypted string.</param>
+        /// <param name="encryptedText">The encrypted string.</param>
         /// <returns></returns>
-        public string Decrypt(string EncryptedText)
+        public string Decrypt(string encryptedText)
         {
-            var Cryptogram = Convert.FromBase64String(EncryptedText);
-            if (Cryptogram.Length < VectorSize + 1)
+            var cryptogram = Convert.FromBase64String(encryptedText);
+            if (cryptogram.Length < VectorSize + 1)
             {
-                throw new ArgumentException("Not a valid encrypted string", nameof(EncryptedText));
+                throw new ArgumentException("Not a valid encrypted string", nameof(encryptedText));
             }
 
-            var Vector = Cryptogram.Take(VectorSize).ToArray();
-            var Buffer = Cryptogram.Skip(VectorSize).ToArray();
-            return Encoder.GetString(Decrypt(Buffer, Vector));
+            var vector = cryptogram.Take(VectorSize).ToArray();
+            var buffer = cryptogram.Skip(VectorSize).ToArray();
+            return _encoder.GetString(Decrypt(buffer, vector));
         }
 
-        private byte[] Encrypt(byte[] Buffer, byte[] Vector)
+        private byte[] Encrypt(byte[] buffer, byte[] vector)
         {
-            var Encryptor = RijndaelManagedInstance.CreateEncryptor(Key, Vector);
-            return Transform(Buffer, Encryptor);
+            var encryptor = _aes.CreateEncryptor(_key, vector);
+            return Transform(buffer, encryptor);
         }
 
-        private byte[] Decrypt(byte[] Buffer, byte[] Vector)
+        private byte[] Decrypt(byte[] buffer, byte[] vector)
         {
-            var Decryptor = RijndaelManagedInstance.CreateDecryptor(Key, Vector);
-            return Transform(Buffer, Decryptor);
+            var decryptor = _aes.CreateDecryptor(_key, vector);
+            return Transform(buffer, decryptor);
         }
 
-        private byte[] Transform(byte[] Buffer, ICryptoTransform Transform)
+        private byte[] Transform(byte[] buffer, ICryptoTransform transform)
         {
-            var Stream = new MemoryStream();
-            using (var CryptoStream = new CryptoStream(Stream, Transform, CryptoStreamMode.Write))
+            var stream = new MemoryStream();
+            using (var cryptoStream = new CryptoStream(stream, transform, CryptoStreamMode.Write))
             {
-                CryptoStream.Write(Buffer, 0, Buffer.Length);
+                cryptoStream.Write(buffer, 0, buffer.Length);
             }
-            return Stream.ToArray();
+            return stream.ToArray();
         }
     }
 }
