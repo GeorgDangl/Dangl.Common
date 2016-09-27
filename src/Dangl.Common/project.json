@@ -1,0 +1,31 @@
+﻿{
+  "authors": [ "Georg Dangl" ],
+  "copyright": "(c) 2016 Georg Dangl",
+  "description": "Common functionality",
+  "title": "Dangl.Common",
+  "packOptions": {
+    "projectUrl": "https://git.dan.gl/Repository/Dangl.Common",
+    "owners": [ "Georg Dangl" ]
+  },
+  "version": "1.2.0",
+  "dependencies": {
+  },
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": [
+        "dnxcore50",
+        "portable-net45+win8"
+      ],
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "version": "1.0.1",
+          "type": "platform"
+        }
+      }
+    },
+    "net45": {}
+  },
+  "buildOptions": {
+    "xmlDoc": true
+  }
+}

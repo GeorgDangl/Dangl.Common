@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Dangl
 {
@@ -18,73 +14,72 @@ namespace Dangl
         /// <summary>
         /// Will replace all linebreaks with <see cref="Environment.NewLine"/> and remove white spaces as line ends as well as any trailing white spaces.
         /// </summary>
-        /// <param name="Input"></param>
+        /// <param name="source"></param>
         /// <returns></returns>
-        public static string Sanitize(this string Input)
+        public static string Sanitize(this string source)
         {
-            if (Input == null) return null;
-            var Splitted = Regex.Split(Input, "\r\n?|\n");
-            var StringBuilder = new StringBuilder();
-            foreach (var CurrentLine in Splitted)
+            if (source == null) return null;
+            var splitted = Regex.Split(source, "\r\n?|\n");
+            var stringBuilder = new StringBuilder();
+            foreach (var currentLine in splitted)
             {
-                StringBuilder.AppendLine(CurrentLine.TrimEnd());
+                stringBuilder.AppendLine(currentLine.TrimEnd());
             }
-            return StringBuilder.ToString().TrimEnd();
+            return stringBuilder.ToString().TrimEnd();
         }
 
         /// <summary>
         /// Will return a Base64 representation of the string.
         /// </summary>
-        /// <param name="Input"></param>
+        /// <param name="source"></param>
         /// <returns></returns>
-        public static string ToBase64(this string Input)
+        public static string ToBase64(this string source)
         {
-            return Convert.ToBase64String(Encoding.UTF8.GetBytes(Input));
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(source));
         }
 
         /// <summary>
         /// Will return the plain text deoced from a Base64 string representation.
         /// </summary>
-        /// <param name="Input"></param>
+        /// <param name="source"></param>
         /// <returns></returns>
-        public static string FromBase64(this string Input)
+        public static string FromBase64(this string source)
         {
-            return Encoding.UTF8.GetString(Convert.FromBase64String(Input));
+            return Encoding.UTF8.GetString(Convert.FromBase64String(source));
         }
 
         /// <summary>
         /// Returns the Base64 representation of the string after having applied GZip compression.
         /// </summary>
-        /// <param name="Input"></param>
+        /// <param name="source"></param>
         /// <returns></returns>
-        public static string Compress(this string Input)
+        public static string Compress(this string source)
         {
-            byte[] buffer = Encoding.UTF8.GetBytes(Input);
+            byte[] buffer = Encoding.UTF8.GetBytes(source);
             MemoryStream ms = new MemoryStream();
             using (GZipStream zip = new GZipStream(ms, CompressionMode.Compress, true))
             {
                 zip.Write(buffer, 0, buffer.Length);
             }
             ms.Position = 0;
-            MemoryStream outStream = new MemoryStream();
 
             byte[] compressed = new byte[ms.Length];
             ms.Read(compressed, 0, compressed.Length);
 
             byte[] gzBuffer = new byte[compressed.Length + 4];
-            System.Buffer.BlockCopy(compressed, 0, gzBuffer, 4, compressed.Length);
-            System.Buffer.BlockCopy(BitConverter.GetBytes(buffer.Length), 0, gzBuffer, 0, 4);
+            Buffer.BlockCopy(compressed, 0, gzBuffer, 4, compressed.Length);
+            Buffer.BlockCopy(BitConverter.GetBytes(buffer.Length), 0, gzBuffer, 0, 4);
             return Convert.ToBase64String(gzBuffer);
         }
 
         /// <summary>
         /// Decompresses a string from a Base64 GZip string.
         /// </summary>
-        /// <param name="Input"></param>
+        /// <param name="souce"></param>
         /// <returns></returns>
-        public static string Decompress(this string Input)
+        public static string Decompress(this string souce)
         {
-            byte[] gzBuffer = Convert.FromBase64String(Input);
+            byte[] gzBuffer = Convert.FromBase64String(souce);
             using (MemoryStream ms = new MemoryStream())
             {
                 int msgLength = BitConverter.ToInt32(gzBuffer, 0);
