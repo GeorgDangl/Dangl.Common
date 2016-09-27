@@ -1,5 +1,13 @@
 ﻿{
-  "version": "1.0.0-*",
+  "authors": [ "Georg Dangl" ],
+  "copyright": "(c) 2016 Georg Dangl",
+  "description": "Common functionality",
+  "title": "Dangl.Common",
+  "packOptions": {
+    "projectUrl": "https://git.dan.gl/Repository/Dangl.Common",
+    "owners": [ "Georg Dangl" ]
+  },
+  "version": "1.2.0",
   "dependencies": {
   },
   "frameworks": {
