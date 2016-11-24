@@ -10,11 +10,11 @@ $dotnetArguments = "test", "`"`"$PSScriptRoot`"`"", "-xml `"`"$PSScriptRoot\xUni
 & $latestOpenCover `
 -register:user `
 -target:dotnet.exe `
--targetargs:"`"$dotnetArguments`"" `
+"-targetargs:$dotnetArguments" `
 -returntargetcode `
 -output:"$PSScriptRoot\OpenCover.coverageresults" `
 -excludebyattribute:System.CodeDom.Compiler.GeneratedCodeAttribute `
--filter:"+[Dangl*]* -[*.Tests]* -[*.Tests.*]*"
+"-filter:+[Dangl*]* -[*.Tests]* -[*.Tests.*]*"
 "Converting coverage reports to Cobertura format"
 & $latestCoberturaConverter `
 -input:"$PSScriptRoot\OpenCover.coverageresults" `
