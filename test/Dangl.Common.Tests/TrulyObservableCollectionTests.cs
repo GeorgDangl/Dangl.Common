@@ -6,93 +6,93 @@ namespace Dangl.Common.Tests
 {
     public class TrulyObservableCollectionTests
     {
-        private NotifyCollectionChangedEventArgs CatchedEventArgs;
-        private bool EventCatched;
-        private int EventCatchedCount;
+        private NotifyCollectionChangedEventArgs _catchedEventArgs;
+        private bool _eventCatched;
+        private int _eventCatchedCount;
 
         [Fact]
         public void CollectionChangedNotifiedWhenInClass()
         {
-            var Instance = new MockClass_TrulyObservableCollection();
-            Instance.MockCollection.CollectionChanged += TestCollection_CollectionChanged;
-            Instance.MockCollection.Add(new MockClass());
-            Assert.True(EventCatched);
-            Assert.Equal(1, EventCatchedCount);
+            var instance = new MockClass_TrulyObservableCollection();
+            instance.MockCollection.CollectionChanged += TestCollection_CollectionChanged;
+            instance.MockCollection.Add(new MockClass());
+            Assert.True(_eventCatched);
+            Assert.Equal(1, _eventCatchedCount);
         }
 
         [Fact]
         public void CollectionChangedNotified()
         {
-            var TestCollection = new TrulyObservableCollection<MockClass>();
-            TestCollection.CollectionChanged += TestCollection_CollectionChanged;
-            EventCatched = false;
-            TestCollection.Add(new MockClass());
-            Assert.True(EventCatched);
-            Assert.Equal(1, EventCatchedCount);
+            var testCollection = new TrulyObservableCollection<MockClass>();
+            testCollection.CollectionChanged += TestCollection_CollectionChanged;
+            _eventCatched = false;
+            testCollection.Add(new MockClass());
+            Assert.True(_eventCatched);
+            Assert.Equal(1, _eventCatchedCount);
         }
 
         [Fact]
         public void CollectionItemChangedNotified()
         {
-            var TestCollection = new TrulyObservableCollection<MockClass>();
-            TestCollection.Add(new MockClass());
-            TestCollection.CollectionChanged += TestCollection_CollectionChanged;
-            EventCatched = false;
-            CatchedEventArgs = null;
-            TestCollection[0].StringProperty = "Changed";
-            Assert.True(EventCatched);
-            Assert.NotNull(CatchedEventArgs);
-            Assert.Equal(CatchedEventArgs.Action, NotifyCollectionChangedAction.Replace);
-            Assert.Same(CatchedEventArgs.NewItems[0], TestCollection[0]);
-            Assert.Equal(1, EventCatchedCount);
+            var testCollection = new TrulyObservableCollection<MockClass>();
+            testCollection.Add(new MockClass());
+            testCollection.CollectionChanged += TestCollection_CollectionChanged;
+            _eventCatched = false;
+            _catchedEventArgs = null;
+            testCollection[0].StringProperty = "Changed";
+            Assert.True(_eventCatched);
+            Assert.NotNull(_catchedEventArgs);
+            Assert.Equal(_catchedEventArgs.Action, NotifyCollectionChangedAction.Replace);
+            Assert.Same(_catchedEventArgs.NewItems[0], testCollection[0]);
+            Assert.Equal(1, _eventCatchedCount);
         }
 
         [Fact]
         public void CollectionItemChangedNotified_OnInstanceFromIEnumerable_01()
         {
-            var TestCollection = new TrulyObservableCollection<MockClass>();
-            TestCollection.Add(new MockClass());
-            TestCollection.Add(new MockClass());
-            TestCollection.Add(new MockClass());
-            TestCollection.Add(new MockClass());
-            var CopiedInstance = new TrulyObservableCollection<MockClass>(TestCollection);
+            var testCollection = new TrulyObservableCollection<MockClass>();
+            testCollection.Add(new MockClass());
+            testCollection.Add(new MockClass());
+            testCollection.Add(new MockClass());
+            testCollection.Add(new MockClass());
+            var copiedInstance = new TrulyObservableCollection<MockClass>(testCollection);
 
-            CopiedInstance.CollectionChanged += TestCollection_CollectionChanged;
-            EventCatched = false;
-            CatchedEventArgs = null;
-            CopiedInstance[0].StringProperty = "Changed";
-            Assert.True(EventCatched);
-            Assert.NotNull(CatchedEventArgs);
-            Assert.Equal(CatchedEventArgs.Action, NotifyCollectionChangedAction.Replace);
-            Assert.Same(CatchedEventArgs.NewItems[0], CopiedInstance[0]);
-            Assert.Equal(1, EventCatchedCount);
+            copiedInstance.CollectionChanged += TestCollection_CollectionChanged;
+            _eventCatched = false;
+            _catchedEventArgs = null;
+            copiedInstance[0].StringProperty = "Changed";
+            Assert.True(_eventCatched);
+            Assert.NotNull(_catchedEventArgs);
+            Assert.Equal(_catchedEventArgs.Action, NotifyCollectionChangedAction.Replace);
+            Assert.Same(_catchedEventArgs.NewItems[0], copiedInstance[0]);
+            Assert.Equal(1, _eventCatchedCount);
         }
 
         [Fact]
         public void CollectionItemChangedNotified_DetachEventWhenItemRemovedFromList()
         {
-            var TestCollection = new TrulyObservableCollection<MockClass>();
+            var testCollection = new TrulyObservableCollection<MockClass>();
             var mockInstance = new MockClass();
-            TestCollection.Add(mockInstance);
-            TestCollection.CollectionChanged += TestCollection_CollectionChanged;
-            Assert.False(EventCatched);
+            testCollection.Add(mockInstance);
+            testCollection.CollectionChanged += TestCollection_CollectionChanged;
+            Assert.False(_eventCatched);
             mockInstance.StringProperty = "First Change";
-            Assert.True(EventCatched);
-            EventCatched = false;
-            Assert.False(EventCatched);
-            TestCollection.Remove(mockInstance);
-            Assert.True(EventCatched);
-            EventCatched = false;
-            Assert.False(EventCatched);
+            Assert.True(_eventCatched);
+            _eventCatched = false;
+            Assert.False(_eventCatched);
+            testCollection.Remove(mockInstance);
+            Assert.True(_eventCatched);
+            _eventCatched = false;
+            Assert.False(_eventCatched);
             mockInstance.StringProperty = "Second Change";
-            Assert.False(EventCatched);
+            Assert.False(_eventCatched);
         }
 
         private void TestCollection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            CatchedEventArgs = e;
-            EventCatchedCount++;
-            EventCatched = true;
+            _catchedEventArgs = e;
+            _eventCatchedCount++;
+            _eventCatched = true;
         }
 
         public class Constructor
@@ -100,36 +100,36 @@ namespace Dangl.Common.Tests
             [Fact]
             public void InstantiationFromIEnumerable()
             {
-                var TempList = new List<MockClass> {new MockClass {StringProperty = "One"}, new MockClass {StringProperty = "Two"}, new MockClass {StringProperty = "Three"}};
-                var ObsCol = new TrulyObservableCollection<MockClass>(TempList);
-                Assert.Equal(TempList[0].StringProperty, ObsCol[0].StringProperty);
-                Assert.Equal(TempList[1].StringProperty, ObsCol[1].StringProperty);
-                Assert.Equal(TempList[2].StringProperty, ObsCol[2].StringProperty);
+                var tempList = new List<MockClass> {new MockClass {StringProperty = "One"}, new MockClass {StringProperty = "Two"}, new MockClass {StringProperty = "Three"}};
+                var obsCol = new TrulyObservableCollection<MockClass>(tempList);
+                Assert.Equal(tempList[0].StringProperty, obsCol[0].StringProperty);
+                Assert.Equal(tempList[1].StringProperty, obsCol[1].StringProperty);
+                Assert.Equal(tempList[2].StringProperty, obsCol[2].StringProperty);
             }
 
             [Fact]
             public void InstantiateAndGetEventHooks()
             {
-                var TempList = new List<MockClass> {new MockClass {StringProperty = "One"}, new MockClass {StringProperty = "Two"}, new MockClass {StringProperty = "Three"}};
-                var Origin = new TrulyObservableCollection<MockClass>();
-                foreach (var CurrentItem in TempList)
+                var tempList = new List<MockClass> {new MockClass {StringProperty = "One"}, new MockClass {StringProperty = "Two"}, new MockClass {StringProperty = "Three"}};
+                var origin = new TrulyObservableCollection<MockClass>();
+                foreach (var currentItem in tempList)
                 {
-                    Origin.Add(CurrentItem);
+                    origin.Add(currentItem);
                 }
-                var ObsCol = new TrulyObservableCollection<MockClass>(Origin);
-                Assert.True(Comparator.GetCompareLogic().Compare(Origin, ObsCol).AreEqual, Comparator.GetCompareLogic().Compare(Origin, ObsCol).DifferencesString);
+                var obsCol = new TrulyObservableCollection<MockClass>(origin);
+                Assert.True(Comparator.GetCompareLogic().Compare(origin, obsCol).AreEqual, Comparator.GetCompareLogic().Compare(origin, obsCol).DifferencesString);
             }
         }
 
         private class MockClass_TrulyObservableCollection
         {
-            private TrulyObservableCollection<MockClass> _MockCollection;
+            private TrulyObservableCollection<MockClass> _mockCollection;
 
             public TrulyObservableCollection<MockClass> MockCollection
             {
                 get
                 {
-                    return _MockCollection ?? (_MockCollection = new TrulyObservableCollection<MockClass>());
+                    return _mockCollection ?? (_mockCollection = new TrulyObservableCollection<MockClass>());
                 }
             }
         }

@@ -6,9 +6,9 @@ namespace Dangl.Common.Tests
     {
         #region Fields
 
-        private string _StringProperty;
+        private string _stringProperty;
 
-        private MockClass _ComplexProperty;
+        private MockClass _complexProperty;
 
         #endregion Fields
 
@@ -18,11 +18,11 @@ namespace Dangl.Common.Tests
         {
             get
             {
-                return _StringProperty;
+                return _stringProperty;
             }
             set
             {
-                SetProperty(ref _StringProperty, value);
+                SetProperty(ref _stringProperty, value);
             }
         }
 
@@ -30,11 +30,11 @@ namespace Dangl.Common.Tests
         {
             get
             {
-                return _ComplexProperty;
+                return _complexProperty;
             }
             set
             {
-                SetProperty(ref _ComplexProperty, value);
+                SetProperty(ref _complexProperty, value);
             }
         }
 
