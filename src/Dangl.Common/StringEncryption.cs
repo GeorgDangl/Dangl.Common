@@ -15,6 +15,12 @@ namespace Dangl
         private const int SALT_SIZE_BYTES = 32;
         private const int PBKDF2_ITERATIONS = 1000;
 
+        /// <summary>
+        /// Returns the encrypted string.
+        /// </summary>
+        /// <param name="plainText">May not be null, empty or only whitespace</param>
+        /// <param name="password">May not be null, empty or only whitespace</param>
+        /// <returns></returns>
         public static string EncryptString(string plainText, string password)
         {
             if (string.IsNullOrWhiteSpace(plainText))
@@ -49,6 +55,12 @@ namespace Dangl
             }
         }
 
+        /// <summary>
+        /// Will decrypt a string given the encrypted text and a password.
+        /// </summary>
+        /// <param name="encryptedText">May not be null, empty or only whitespace</param>
+        /// <param name="password">May not be null, empty or only whitespace</param>
+        /// <returns></returns>
         public static string DecryptString(string encryptedText, string password)
         {
             if (string.IsNullOrWhiteSpace(encryptedText))
