@@ -11,33 +11,33 @@ namespace Dangl.Common.Tests
             [Fact]
             public void InvalidInput_HtmlWithNonBase64Chars()
             {
-                var Input = "<html>Body</html>";
-                Assert.Throws(typeof (FormatException), () => { Input.FromBase64(); });
+                var input = "<html>Body</html>";
+                Assert.Throws(typeof (FormatException), () => { input.FromBase64(); });
             }
 
             [Fact]
             public void InvalidInput_RegularStringNonBase64()
             {
-                var Input = "SomeString";
-                Assert.Throws(typeof (FormatException), () => { Input.FromBase64(); });
+                var input = "SomeString";
+                Assert.Throws(typeof (FormatException), () => { input.FromBase64(); });
             }
 
             [Fact]
             public void Convert_01()
             {
-                var Input = "SGVsbG8gV29ybGQh";
-                var Expected = "Hello World!";
-                var Actual = Input.FromBase64();
-                Assert.Equal(Expected, Actual);
+                var input = "SGVsbG8gV29ybGQh";
+                var expected = "Hello World!";
+                var actual = input.FromBase64();
+                Assert.Equal(expected, actual);
             }
 
             [Fact]
             public void Convert_02()
             {
-                var Input = "PGh0bWw+Qm9keTwvaHRtbD4=";
-                var Expected = "<html>Body</html>";
-                var Actual = Input.FromBase64();
-                Assert.Equal(Expected, Actual);
+                var input = "PGh0bWw+Qm9keTwvaHRtbD4=";
+                var expected = "<html>Body</html>";
+                var actual = input.FromBase64();
+                Assert.Equal(expected, actual);
             }
         }
 
@@ -46,19 +46,19 @@ namespace Dangl.Common.Tests
             [Fact]
             public void Convert_01()
             {
-                var Input = "<html>Body</html>";
-                var Expected = "PGh0bWw+Qm9keTwvaHRtbD4=";
-                var Actual = Input.ToBase64();
-                Assert.Equal(Expected, Actual);
+                var input = "<html>Body</html>";
+                var expected = "PGh0bWw+Qm9keTwvaHRtbD4=";
+                var actual = input.ToBase64();
+                Assert.Equal(expected, actual);
             }
 
             [Fact]
             public void Convert_02()
             {
-                var Input = "<html>Body</html>";
-                var Expected = "PGh0bWw+Qm9keTwvaHRtbD4=";
-                var Actual = Input.ToBase64();
-                Assert.Equal(Expected, Actual);
+                var input = "<html>Body</html>";
+                var expected = "PGh0bWw+Qm9keTwvaHRtbD4=";
+                var actual = input.ToBase64();
+                Assert.Equal(expected, actual);
             }
         }
 
@@ -67,73 +67,73 @@ namespace Dangl.Common.Tests
             [Fact]
             public void SanitizeNullString()
             {
-                string Input = null;
-                string Expected = null;
-                var Actual = Input.Sanitize();
-                Assert.Equal(Expected, Actual);
+                string input = null;
+                string expected = null;
+                var actual = input.Sanitize();
+                Assert.Equal(expected, actual);
             }
 
             [Fact]
             public void Sanitize_01()
             {
-                var Input = string.Empty;
-                var Expected = string.Empty;
-                var Actual = Input.Sanitize();
-                Assert.Equal(Expected, Actual);
+                var input = string.Empty;
+                var expected = string.Empty;
+                var actual = input.Sanitize();
+                Assert.Equal(expected, actual);
             }
 
             [Fact]
             public void Sanitize_02()
             {
-                var Input = "Hello world!";
-                var Expected = "Hello world!";
-                var Actual = Input.Sanitize();
-                Assert.Equal(Expected, Actual);
+                var input = "Hello world!";
+                var expected = "Hello world!";
+                var actual = input.Sanitize();
+                Assert.Equal(expected, actual);
             }
 
             [Fact]
             public void Sanitize_03()
             {
-                var Input = "Hello world! " + " ";
-                var Expected = "Hello world!";
-                var Actual = Input.Sanitize();
-                Assert.Equal(Expected, Actual);
+                var input = "Hello world! " + " ";
+                var expected = "Hello world!";
+                var actual = input.Sanitize();
+                Assert.Equal(expected, actual);
             }
 
             [Fact]
             public void Sanitize_04()
             {
-                var Input = "Hello world!" + Environment.NewLine;
-                var Expected = "Hello world!";
-                var Actual = Input.Sanitize();
-                Assert.Equal(Expected, Actual);
+                var input = "Hello world!" + Environment.NewLine;
+                var expected = "Hello world!";
+                var actual = input.Sanitize();
+                Assert.Equal(expected, actual);
             }
 
             [Fact]
             public void Sanitize_05()
             {
-                var Input = "Hello world! " + " " + Environment.NewLine;
-                var Expected = "Hello world!";
-                var Actual = Input.Sanitize();
-                Assert.Equal(Expected, Actual);
+                var input = "Hello world! " + " " + Environment.NewLine;
+                var expected = "Hello world!";
+                var actual = input.Sanitize();
+                Assert.Equal(expected, actual);
             }
 
             [Fact]
             public void Sanitize_06()
             {
-                var Input = "Hello world!" + " " + Environment.NewLine + " ";
-                var Expected = "Hello world!";
-                var Actual = Input.Sanitize();
-                Assert.Equal(Expected, Actual);
+                var input = "Hello world!" + " " + Environment.NewLine + " ";
+                var expected = "Hello world!";
+                var actual = input.Sanitize();
+                Assert.Equal(expected, actual);
             }
 
             [Fact]
             public void Sanitize_07()
             {
-                var Input = Environment.NewLine + "Hello world!" + " " + Environment.NewLine + " ";
-                var Expected = Environment.NewLine + "Hello world!";
-                var Actual = Input.Sanitize();
-                Assert.Equal(Expected, Actual);
+                var input = Environment.NewLine + "Hello world!" + " " + Environment.NewLine + " ";
+                var expected = Environment.NewLine + "Hello world!";
+                var actual = input.Sanitize();
+                Assert.Equal(expected, actual);
             }
         }
 
@@ -142,24 +142,24 @@ namespace Dangl.Common.Tests
             [Fact]
             public void CompressDecompress_01()
             {
-                var Input = "Hello World!";
-                var Compressed = Input.Compress();
-                Assert.NotEqual(Input, Compressed);
-                var Decompressed = Compressed.Decompress();
-                Assert.Equal(Input, Decompressed);
+                var input = "Hello World!";
+                var compressed = input.Compress();
+                Assert.NotEqual(input, compressed);
+                var decompressed = compressed.Decompress();
+                Assert.Equal(input, decompressed);
             }
 
             [Fact]
             public void CompressDecompress_02()
             {
-                var Builder = new StringBuilder();
+                var builder = new StringBuilder();
                 for (var i = 0; i < 100; i++)
                 {
-                    Builder.Append("Hello World!");
+                    builder.Append("Hello World!");
                 }
-                var Input = Builder.ToString();
-                var Compressed = Input.Compress();
-                Assert.True(Compressed.Length < Input.Length);
+                var input = builder.ToString();
+                var compressed = input.Compress();
+                Assert.True(compressed.Length < input.Length);
             }
         }
     }

@@ -15,147 +15,161 @@ namespace Dangl.Common.Tests
 
         public class SetProperty
         {
-            private bool EventCatched;
+            private bool _eventCatched;
 
             [Fact]
             public void AttachesEventHandlerHook_PropertyChanged()
             {
-                var Instance = new MockClassWithEvent();
+                var instance = new MockClassWithEvent();
 
-                var InstanceThatWillBeWatched = new MockClass();
+                var instanceThatWillBeWatched = new MockClass();
 
-                Assert.False(Instance.EventCatcher);
-                Instance.ChangeableCollection = null;
-                Instance.ChangeableProperty = InstanceThatWillBeWatched;
-                Assert.False(Instance.EventCatcher);
-                InstanceThatWillBeWatched.StringProperty = "New string";
-                Assert.True(Instance.EventCatcher);
-                InstanceThatWillBeWatched.StringProperty = "New string again";
-                Assert.False(Instance.EventCatcher);
-                Instance.ChangeableProperty = new MockClass();
-                Assert.False(Instance.EventCatcher);
-                InstanceThatWillBeWatched.StringProperty = "Noone listens anymore =(";
-                Assert.False(Instance.EventCatcher);
-                Assert.NotNull(Instance.ChangeableProperty);
+                Assert.False(instance.EventCatcher);
+                instance.ChangeableCollection = null;
+                instance.ChangeableProperty = instanceThatWillBeWatched;
+                Assert.False(instance.EventCatcher);
+                instanceThatWillBeWatched.StringProperty = "New string";
+                Assert.True(instance.EventCatcher);
+                instanceThatWillBeWatched.StringProperty = "New string again";
+                Assert.False(instance.EventCatcher);
+                instance.ChangeableProperty = new MockClass();
+                Assert.False(instance.EventCatcher);
+                instanceThatWillBeWatched.StringProperty = "Noone listens anymore =(";
+                Assert.False(instance.EventCatcher);
+                Assert.NotNull(instance.ChangeableProperty);
+            }
+
+            [Fact]
+            public void AttachesEventHandlerHook_PropertyChanged_DontThrowWhenSetToNull()
+            {
+                var instance = new MockClassWithEvent();
+                var instanceThatWillBeWatched = new MockClass();
+                Assert.Null(instance.ChangeableProperty);
+                Assert.False(instance.EventCatcher);
+                instance.ChangeableProperty = instanceThatWillBeWatched;
+                Assert.NotNull(instance.ChangeableProperty);
+                instance.ChangeableProperty = null;
+                Assert.Null(instance.ChangeableProperty);
+                Assert.False(instance.EventCatcher);
             }
 
             [Fact]
             public void AttachesEventHandlerHook_CollectionChanged()
             {
-                var Instance = new MockClassWithEvent();
+                var instance = new MockClassWithEvent();
 
-                var InstanceThatWillBeWatched = new ObservableCollection<MockClass>();
+                var instanceThatWillBeWatched = new ObservableCollection<MockClass>();
 
-                Assert.False(Instance.EventCatcher);
-                Instance.ChangeableCollection = null;
-                Instance.ChangeableCollection = InstanceThatWillBeWatched;
-                Assert.False(Instance.EventCatcher);
-                InstanceThatWillBeWatched.Add(new MockClass());
-                Assert.True(Instance.EventCatcher);
-                InstanceThatWillBeWatched.Add(new MockClass());
-                Assert.False(Instance.EventCatcher);
-                Assert.NotNull(Instance.ChangeableCollection);
+                Assert.False(instance.EventCatcher);
+                instance.ChangeableCollection = null;
+                instance.ChangeableCollection = instanceThatWillBeWatched;
+                Assert.False(instance.EventCatcher);
+                instanceThatWillBeWatched.Add(new MockClass());
+                Assert.True(instance.EventCatcher);
+                instanceThatWillBeWatched.Add(new MockClass());
+                Assert.False(instance.EventCatcher);
+                Assert.NotNull(instance.ChangeableCollection);
             }
 
             [Fact]
             public void AttachesEventHandlerHook_CollectionChanged_DontThrowWhenSetToNull()
             {
-                var Instance = new MockClassWithEvent();
+                var instance = new MockClassWithEvent();
 
-                var InstanceThatWillBeWatched = new ObservableCollection<MockClass>();
+                var instanceThatWillBeWatched = new ObservableCollection<MockClass>();
 
-                Assert.False(Instance.EventCatcher);
-                Instance.ChangeableCollection = null;
-                Instance.ChangeableCollection = InstanceThatWillBeWatched;
-                Assert.False(Instance.EventCatcher);
-                InstanceThatWillBeWatched.Add(new MockClass());
-                Assert.True(Instance.EventCatcher);
-                InstanceThatWillBeWatched.Add(new MockClass());
-                Assert.False(Instance.EventCatcher);
-                Instance.ChangeableCollection = null;
-                InstanceThatWillBeWatched.Add(new MockClass());
-                Assert.False(Instance.EventCatcher);
+                Assert.False(instance.EventCatcher);
+                instance.ChangeableCollection = null;
+                instance.ChangeableCollection = instanceThatWillBeWatched;
+                Assert.False(instance.EventCatcher);
+                instanceThatWillBeWatched.Add(new MockClass());
+                Assert.True(instance.EventCatcher);
+                instanceThatWillBeWatched.Add(new MockClass());
+                Assert.False(instance.EventCatcher);
+                instance.ChangeableCollection = null;
+                instanceThatWillBeWatched.Add(new MockClass());
+                Assert.False(instance.EventCatcher);
             }
 
             [Fact]
             public void IsCalled()
             {
-                var Mock = new MockClass();
-                Mock.PropertyChanged += Mock_PropertyChanged;
-                EventCatched = false;
-                Mock.StringProperty = "changed";
-                Assert.True(EventCatched);
+                var mock = new MockClass();
+                mock.PropertyChanged += Mock_PropertyChanged;
+                _eventCatched = false;
+                mock.StringProperty = "changed";
+                Assert.True(_eventCatched);
             }
 
             [Fact]
             public void IsNotCalledForSameValue()
             {
-                var Mock = new MockClass();
+                var mock = new MockClass();
 
-                Mock.StringProperty = "SomeValue";
-                Mock.PropertyChanged += Mock_PropertyChanged;
-                EventCatched = false;
-                Mock.StringProperty = "SomeValue";
-                Assert.False(EventCatched);
+                mock.StringProperty = "SomeValue";
+                mock.PropertyChanged += Mock_PropertyChanged;
+                _eventCatched = false;
+                mock.StringProperty = "SomeValue";
+                Assert.False(_eventCatched);
             }
 
             [Fact]
             public void IsNotCalledForSameValue_MockClassWithEvent()
             {
-                var Mock = new MockClassWithEvent();
+                var mock = new MockClassWithEvent();
 
                 var complexProperty = new MockClass();
-                Mock.ChangeableProperty = complexProperty;
-                Mock.PropertyChanged += Mock_PropertyChanged;
-                EventCatched = false;
-                Mock.ChangeableProperty = complexProperty;
-                Assert.False(EventCatched);
+                mock.ChangeableProperty = complexProperty;
+                mock.PropertyChanged += Mock_PropertyChanged;
+                _eventCatched = false;
+                mock.ChangeableProperty = complexProperty;
+                Assert.False(_eventCatched);
             }
 
             [Fact]
             public void IsNotCalledForSameValue_ComplexProperty()
             {
-                var Mock = new MockClass();
+                var mock = new MockClass();
                 var complexProperty = new MockClass();
-                Mock.ComplexProperty = complexProperty;
-                Mock.PropertyChanged += Mock_PropertyChanged;
-                EventCatched = false;
-                Mock.ComplexProperty = complexProperty;
-                Assert.False(EventCatched);
+                mock.ComplexProperty = complexProperty;
+                mock.PropertyChanged += Mock_PropertyChanged;
+                _eventCatched = false;
+                mock.ComplexProperty = complexProperty;
+                Assert.False(_eventCatched);
             }
 
             [Fact]
             public void IsNotCalledForSameValue_CollectionProperty()
             {
-                var Mock = new MockClassWithEvent();
+                var mock = new MockClassWithEvent();
                 var collectionProperty = new ObservableCollection<MockClass>();
-                Mock.ChangeableCollection = collectionProperty;
-                Mock.PropertyChanged += Mock_PropertyChanged;
-                EventCatched = false;
-                Mock.ChangeableCollection = collectionProperty;
-                Assert.False(EventCatched);
+                mock.ChangeableCollection = collectionProperty;
+                mock.PropertyChanged += Mock_PropertyChanged;
+                _eventCatched = false;
+                mock.ChangeableCollection = collectionProperty;
+                Assert.False(_eventCatched);
             }
 
             private void Mock_PropertyChanged(object sender, PropertyChangedEventArgs e)
             {
-                Assert.False(EventCatched); // Catch event only once
-                EventCatched = true;
+                Assert.False(_eventCatched); // Catch event only once
+                _eventCatched = true;
             }
 
             public class MockClassWithEvent : BindableBase
             {
-                public ObservableCollection<MockClass> _ChangeableCollection;
-                private MockClass _ChangeableProperty;
+                private ObservableCollection<MockClass> _changeableCollection;
+                private MockClass _changeableProperty;
 
                 public MockClass ChangeableProperty
                 {
                     get
                     {
-                        return _ChangeableProperty;
+                        return _changeableProperty;
                     }
                     set
                     {
-                        SetProperty(ref _ChangeableProperty, value, ChangeableProperty_PropertyChanged);
+                        SetProperty(ref _changeableProperty, value, ChangeableProperty_PropertyChanged);
                     }
                 }
 
@@ -163,11 +177,11 @@ namespace Dangl.Common.Tests
                 {
                     get
                     {
-                        return _ChangeableCollection;
+                        return _changeableCollection;
                     }
                     set
                     {
-                        SetProperty(ref _ChangeableCollection, value, _ChangeableCollection_CollectionChanged);
+                        SetProperty(ref _changeableCollection, value, _ChangeableCollection_CollectionChanged);
                     }
                 }
 
@@ -187,25 +201,25 @@ namespace Dangl.Common.Tests
 
         public class OnPropertyChanged
         {
-            private bool EventCatched;
+            private bool _eventCatched;
 
             [Fact]
             public void EventNotRaisedForNestedClass()
             {
-                var Mock = new MockClass();
-                Mock.PropertyChanged += Mock_PropertyChanged;
-                EventCatched = false;
-                Mock.ComplexProperty = new MockClass();
-                Assert.True(EventCatched);
-                EventCatched = false;
-                Mock.ComplexProperty.StringProperty = "Changed";
-                Assert.False(EventCatched);
+                var mock = new MockClass();
+                mock.PropertyChanged += Mock_PropertyChanged;
+                _eventCatched = false;
+                mock.ComplexProperty = new MockClass();
+                Assert.True(_eventCatched);
+                _eventCatched = false;
+                mock.ComplexProperty.StringProperty = "Changed";
+                Assert.False(_eventCatched);
             }
 
             private void Mock_PropertyChanged(object sender, PropertyChangedEventArgs e)
             {
-                Assert.False(EventCatched); // Catch event only once
-                EventCatched = true;
+                Assert.False(_eventCatched); // Catch event only once
+                _eventCatched = true;
             }
         }
 
@@ -214,44 +228,44 @@ namespace Dangl.Common.Tests
             [Fact]
             public void DisposingDoesntThrow_NoEventHandlersAttached()
             {
-                var Mock = new MockClass();
-                Mock.Dispose();
+                var mock = new MockClass();
+                mock.Dispose();
             }
 
             [Fact]
             public void DisposingDoesntThrow_EventHandlerAttached()
             {
-                var Mock = new MockClass();
-                Mock.PropertyChanged += Mock_PropertyChanged;
-                Mock.Dispose();
+                var mock = new MockClass();
+                mock.PropertyChanged += Mock_PropertyChanged;
+                mock.Dispose();
             }
 
             [Fact]
             public void EventGetsHandled()
             {
-                var Mock = new MockClass();
-                Mock.PropertyChanged += Mock_PropertyChanged;
-                Mock.StringProperty = "New value";
-                Assert.True(EventCatched);
+                var mock = new MockClass();
+                mock.PropertyChanged += Mock_PropertyChanged;
+                mock.StringProperty = "New value";
+                Assert.True(_eventCatched);
             }
 
             [Fact]
             public void DoesntFireEventWhenDisposed()
             {
-                var Mock = new MockClass();
-                Mock.PropertyChanged += Mock_PropertyChanged;
-                Mock.Dispose();
-                Mock.StringProperty = "New value";
-                Assert.False(EventCatched);
+                var mock = new MockClass();
+                mock.PropertyChanged += Mock_PropertyChanged;
+                mock.Dispose();
+                mock.StringProperty = "New value";
+                Assert.False(_eventCatched);
             }
 
-            private bool EventCatched;
+            private bool _eventCatched;
 
             private void Mock_PropertyChanged(object sender, PropertyChangedEventArgs e)
             {
-                if (!EventCatched)
+                if (!_eventCatched)
                 {
-                    EventCatched = true;
+                    _eventCatched = true;
                 }
             }
         }
@@ -261,22 +275,22 @@ namespace Dangl.Common.Tests
             [Fact]
             public void ReportsCorrectName()
             {
-                var Mock = new MockClass();
-                Assert.Equal("StringProperty", Mock.GetPropertyName(() => Mock.StringProperty));
+                var mock = new MockClass();
+                Assert.Equal("StringProperty", mock.GetPropertyName(() => mock.StringProperty));
             }
 
             [Fact]
             public void ReportNestedArrayLengthName()
             {
-                var TestInstance = new SomeClassWithArrays();
+                var testInstance = new SomeClassWithArrays();
 
-                var RetrievedPropertyName = TestInstance.GetPropertyName(() => TestInstance.Array) + ".Length";
-                Assert.Equal("Array.Length", RetrievedPropertyName);
-                Assert.Null(TestInstance.Array);
-                TestInstance.Array = new string[2];
-                Assert.NotNull(TestInstance.Array);
-                RetrievedPropertyName = TestInstance.GetPropertyName(() => TestInstance.Array) + ".Length";
-                Assert.Equal("Array.Length", RetrievedPropertyName);
+                var retrievedPropertyName = testInstance.GetPropertyName(() => testInstance.Array) + ".Length";
+                Assert.Equal("Array.Length", retrievedPropertyName);
+                Assert.Null(testInstance.Array);
+                testInstance.Array = new string[2];
+                Assert.NotNull(testInstance.Array);
+                retrievedPropertyName = testInstance.GetPropertyName(() => testInstance.Array) + ".Length";
+                Assert.Equal("Array.Length", retrievedPropertyName);
             }
 
             public class SomeClassWithArrays : BindableBase
