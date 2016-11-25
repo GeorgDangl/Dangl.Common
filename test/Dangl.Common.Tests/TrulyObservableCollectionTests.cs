@@ -68,6 +68,26 @@ namespace Dangl.Common.Tests
             Assert.Equal(1, EventCatchedCount);
         }
 
+        [Fact]
+        public void CollectionItemChangedNotified_DetachEventWhenItemRemovedFromList()
+        {
+            var TestCollection = new TrulyObservableCollection<MockClass>();
+            var mockInstance = new MockClass();
+            TestCollection.Add(mockInstance);
+            TestCollection.CollectionChanged += TestCollection_CollectionChanged;
+            Assert.False(EventCatched);
+            mockInstance.StringProperty = "First Change";
+            Assert.True(EventCatched);
+            EventCatched = false;
+            Assert.False(EventCatched);
+            TestCollection.Remove(mockInstance);
+            Assert.True(EventCatched);
+            EventCatched = false;
+            Assert.False(EventCatched);
+            mockInstance.StringProperty = "Second Change";
+            Assert.False(EventCatched);
+        }
+
         private void TestCollection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             CatchedEventArgs = e;

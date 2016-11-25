@@ -40,6 +40,20 @@ namespace Dangl.Common.Tests
             }
 
             [Fact]
+            public void AttachesEventHandlerHook_PropertyChanged_DontThrowWhenSetToNull()
+            {
+                var Instance = new MockClassWithEvent();
+                var InstanceThatWillBeWatched = new MockClass();
+                Assert.Null(Instance.ChangeableProperty);
+                Assert.False(Instance.EventCatcher);
+                Instance.ChangeableProperty = InstanceThatWillBeWatched;
+                Assert.NotNull(Instance.ChangeableProperty);
+                Instance.ChangeableProperty = null;
+                Assert.Null(Instance.ChangeableProperty);
+                Assert.False(Instance.EventCatcher);
+            }
+
+            [Fact]
             public void AttachesEventHandlerHook_CollectionChanged()
             {
                 var Instance = new MockClassWithEvent();
