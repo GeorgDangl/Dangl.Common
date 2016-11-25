@@ -19,4 +19,4 @@ $dotnetArguments = "test", "`"`"$PSScriptRoot`"`"", "-xml `"`"$PSScriptRoot\xUni
 & $latestCoberturaConverter `
 -input:"$PSScriptRoot\OpenCover.coverageresults" `
 -output:"$PSScriptRoot\Cobertura.coverageresults" `
--sources:"$PSScriptRoot"
+-sources:"..\..\$PSScriptRoot"
