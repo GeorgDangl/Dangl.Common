@@ -15,4 +15,4 @@ $dotnetArguments = "test", "`"`"$PSScriptRoot`"`"", "-xml `"`"$PSScriptRoot\xUni
 -output:"$PSScriptRoot\OpenCover.coverageresults" `
 -excludebyattribute:System.CodeDom.Compiler.GeneratedCodeAttribute `
 "-filter:+[Dangl*]* -[*.Tests]* -[*.Tests.*]*"
-"Creating Code Coverage Html report"& $latestReportGenerator `"-reports:$PSScriptRoot\OpenCover.coverageresults" `"-targetdir:$PSScriptRoot\CoverageReport" `"-historydir:$PSScriptRoot\CoverageHistories"
+"Creating Code Coverage Html report"& $latestReportGenerator `"-reports:$PSScriptRoot\OpenCover.coverageresults" `"-targetdir:$PSScriptRoot\CoverageReport" `"-historydir:C:\CoverageHistories\Dangl.Common"
