@@ -158,7 +158,7 @@ namespace Dangl.Common.Tests
 
             public class MockClassWithEvent : BindableBase
             {
-                public ObservableCollection<MockClass> _ChangeableCollection;
+                private ObservableCollection<MockClass> _changeableCollection;
                 private MockClass _changeableProperty;
 
                 public MockClass ChangeableProperty
@@ -177,11 +177,11 @@ namespace Dangl.Common.Tests
                 {
                     get
                     {
-                        return _ChangeableCollection;
+                        return _changeableCollection;
                     }
                     set
                     {
-                        SetProperty(ref _ChangeableCollection, value, _ChangeableCollection_CollectionChanged);
+                        SetProperty(ref _changeableCollection, value, _ChangeableCollection_CollectionChanged);
                     }
                 }
 
