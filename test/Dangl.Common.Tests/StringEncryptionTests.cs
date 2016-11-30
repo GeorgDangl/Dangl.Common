@@ -27,12 +27,60 @@ namespace Dangl.Common.Tests
         }
 
         [Fact]
+        public void EncryptDecrypt_EmptyPassword()
+        {
+            // Arrange
+            var text = "Hello World!";
+
+            // Act
+            var encryptedString01 = StringEncryption.EncryptString(text, string.Empty);
+            var encryptedString02 = StringEncryption.EncryptString(text, string.Empty);
+            var decryptedString01 = StringEncryption.DecryptString(encryptedString01, string.Empty);
+            var decryptedString02 = StringEncryption.DecryptString(encryptedString02, string.Empty);
+
+            // Assert
+            Assert.Equal(text, decryptedString01); // Decrypted string should match original string
+            Assert.Equal(text, decryptedString02); // Decrypted string should match original string
+            Assert.NotEqual(text, encryptedString01); // Encrypted string should not match original string
+            Assert.NotEqual(encryptedString01, encryptedString02); // String should never be encrypted the same twice
+        }
+
+        [Fact]
+        public void EncryptDecrypt_EmptyMessage()
+        {
+            // Arrange
+            var password = "1234ffddddddddf5666";
+            var text = string.Empty;
+
+            // Act
+            var encryptedString01 = StringEncryption.EncryptString(text, password);
+            var encryptedString02 = StringEncryption.EncryptString(text, password);
+            var decryptedString01 = StringEncryption.DecryptString(encryptedString01, password);
+            var decryptedString02 = StringEncryption.DecryptString(encryptedString02, password);
+
+            // Assert
+            Assert.Equal(text, decryptedString01); // Decrypted string should match original string
+            Assert.Equal(text, decryptedString02); // Decrypted string should match original string
+            Assert.NotEqual(text, encryptedString01); // Encrypted string should not match original string
+            Assert.NotEqual(encryptedString01, encryptedString02); // String should never be encrypted the same twice
+        }
+
+        [Fact]
         public void EncryptTwiceWithSamePassword_DifferentRepresentation()
         {
             var password = "SomePassword";
             var text = "Hello World!";
             var encryptedString01 = StringEncryption.EncryptString(text, password);
             var encryptedString02 = StringEncryption.EncryptString(text, password);
+            Assert.NotEqual(encryptedString01, encryptedString02);
+        }
+
+        [Fact]
+        public void EncryptTwiceWithEmptyPassword_DifferentRepresentation()
+        {
+            var text = "Hello World!";
+            var encryptedString01 = StringEncryption.EncryptString(text, string.Empty);
+            var encryptedString02 = StringEncryption.EncryptString(text, string.Empty);
             Assert.NotEqual(encryptedString01, encryptedString02);
         }
 
@@ -100,11 +148,13 @@ namespace Dangl.Common.Tests
         }
 
         [Fact]
-        public void ArgumentNullExceptionOnEmptyText_Encrypt()
+        public void NoArgumentNullExceptionOnEmptyText_Encrypt()
         {
             string inputText = string.Empty;
             string password = "Hello Password!";
-            Assert.Throws(typeof(ArgumentNullException), () => StringEncryption.EncryptString(inputText, password));
+            var result = StringEncryption.EncryptString(inputText, password);
+            Assert.False(string.IsNullOrWhiteSpace(result));
+            Assert.NotEqual(inputText, result);
         }
 
         [Fact]
@@ -116,11 +166,13 @@ namespace Dangl.Common.Tests
         }
 
         [Fact]
-        public void ArgumentNullExceptionOnEmptyPassword_Encrypt()
+        public void NoArgumentNullExceptionOnEmptyPassword_Encrypt()
         {
             string inputText = "Hello World";
             string password = string.Empty;
-            Assert.Throws(typeof(ArgumentNullException), () => StringEncryption.EncryptString(inputText, password));
+            var result =  StringEncryption.EncryptString(inputText, password);
+            Assert.False(string.IsNullOrWhiteSpace(result));
+            Assert.NotEqual(inputText, result);
         }
 
         [Fact]
@@ -132,11 +184,13 @@ namespace Dangl.Common.Tests
         }
 
         [Fact]
-        public void ArgumentNullExceptionOnEmptyTextAndPassword_Encrypt()
+        public void NoArgumentNullExceptionOnEmptyTextAndPassword_Encrypt()
         {
             string inputText = string.Empty;
             string password = string.Empty;
-            Assert.Throws(typeof(ArgumentNullException), () => StringEncryption.EncryptString(inputText, password));
+            var result = StringEncryption.EncryptString(inputText, password);
+            Assert.False(string.IsNullOrWhiteSpace(result));
+            Assert.NotEqual(inputText, result);
         }
 
         [Fact]
@@ -164,11 +218,14 @@ namespace Dangl.Common.Tests
         }
 
         [Fact]
-        public void ArgumentNullExceptionOnEmptyPassword_Decrypt()
+        public void NoArgumentNullExceptionOnEmptyPassword_Decrypt()
         {
-            string inputText = "Hello World!";
             string password = string.Empty;
-            Assert.Throws(typeof(ArgumentNullException), () => StringEncryption.DecryptString(inputText, password));
+            string inputText = StringEncryption.EncryptString("Hello World!", password);
+            var result =  StringEncryption.DecryptString(inputText, password);
+            Assert.False(string.IsNullOrWhiteSpace(result));
+            Assert.NotEqual(inputText, result);
+            Assert.Equal("Hello World!", result);
         }
 
         [Fact]
