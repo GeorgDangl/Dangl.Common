@@ -23,11 +23,11 @@ namespace Dangl
         /// <returns></returns>
         public static string EncryptString(string plainText, string password)
         {
-            if (string.IsNullOrWhiteSpace(plainText))
+            if (plainText == null)
             {
                 throw new ArgumentNullException(nameof(plainText));
             }
-            if (string.IsNullOrWhiteSpace(password))
+            if (password == null)
             {
                 throw new ArgumentNullException(nameof(password));
             }
@@ -67,7 +67,7 @@ namespace Dangl
             {
                 throw new ArgumentNullException(nameof(encryptedText));
             }
-            if (string.IsNullOrWhiteSpace(password))
+            if (password == null)
             {
                 throw new ArgumentNullException(nameof(password));
             }
