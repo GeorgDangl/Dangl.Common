@@ -1,5 +1,5 @@
 $testProjects = "Dangl.Common.Tests"
-$testFrameworks = "net461", "netcoreapp1.0"
+$testFrameworks = "net461", "netcoreapp1.1"
 
 # Get the most recent OpenCover NuGet package from the dotnet nuget packages
 $nugetOpenCoverPackage = Join-Path -Path $env:USERPROFILE -ChildPath "\.nuget\packages\OpenCover"
@@ -13,7 +13,8 @@ $testRuns = 1;
 foreach ($testProject in $testProjects){
     foreach ($testFramework in $testFrameworks) {
         # Arguments for running dotnet
-        $dotnetArguments = "test", "`"`"$PSScriptRoot\test\$testProject`"`"", "-xml `"`"$PSScriptRoot\testRuns_$testRuns.testresults`"`""
+        $testFramework
+        $dotnetArguments = "test", "`"`"$PSScriptRoot\test\$testProject`"`"", "-f $testFramework", "-xml `"`"$PSScriptRoot\testRuns_$testRuns.testresults`"`""
 
         "Running tests with OpenCover"
         & $latestOpenCover `
