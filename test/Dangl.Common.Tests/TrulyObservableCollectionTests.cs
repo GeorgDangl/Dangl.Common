@@ -117,7 +117,16 @@ namespace Dangl.Common.Tests
                     origin.Add(currentItem);
                 }
                 var obsCol = new TrulyObservableCollection<MockClass>(origin);
-                Assert.True(Comparator.GetCompareLogic().Compare(origin, obsCol).AreEqual, Comparator.GetCompareLogic().Compare(origin, obsCol).DifferencesString);
+
+                var changeDetected = false;
+                obsCol.CollectionChanged += (x, y) =>
+                {
+                    changeDetected = true;
+                };
+
+                Assert.False(changeDetected);
+                origin[0].StringProperty = "Another Value";
+                Assert.True(changeDetected);
             }
         }
 
