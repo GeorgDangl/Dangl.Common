@@ -1,5 +1,5 @@
 $testProjects = "Dangl.Common.Tests"
-$testFrameworks = "net461", "netcoreapp1.1"
+$testFrameworks = "netcoreapp1.1", "netcoreapp1.0"
 
 # Get the most recent OpenCover NuGet package from the dotnet nuget packages
 $nugetOpenCoverPackage = Join-Path -Path $env:USERPROFILE -ChildPath "\.nuget\packages\OpenCover"
@@ -24,6 +24,7 @@ foreach ($testProject in $testProjects){
             -returntargetcode `
             -output:"$PSScriptRoot\OpenCover.coverageresults" `
             -mergeoutput `
+            -oldStyle `
             -excludebyattribute:System.CodeDom.Compiler.GeneratedCodeAttribute `
             "-filter:+[Dangl*]* -[*.Tests]* -[*.Tests.*]*"
 
