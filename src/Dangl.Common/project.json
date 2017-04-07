@@ -3,6 +3,7 @@
   "copyright": "(c) 2016 Georg Dangl",
   "description": "Common functionality",
   "title": "Dangl.Common",
+  "iconUrl": "https://blog.dangl.me/media/1114/gd_icon_256.png",
   "packOptions": {
     "projectUrl": "https://github.com/GeorgDangl/Dangl.Common",
     "owners": [ "Georg Dangl" ],
