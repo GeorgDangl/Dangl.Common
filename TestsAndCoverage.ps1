@@ -14,12 +14,13 @@ foreach ($testProject in $testProjects){
     foreach ($testFramework in $testFrameworks) {
         # Arguments for running dotnet
         $testFramework
-        $dotnetArguments = "test", "`"`"$PSScriptRoot\test\$testProject`"`"", "-f $testFramework", "-xml `"`"$PSScriptRoot\testRuns_$testRuns.testresults`"`""
+        $dotnetArguments = "xunit", "-f $testFramework", "-xml `"`"$PSScriptRoot\testRuns_$testRuns.testresults`"`""
 
         "Running tests with OpenCover"
         & $latestOpenCover `
             -register:user `
             -target:dotnet.exe `
+            -targetdir:$PSScriptRoot\test\$testProject `
             "-targetargs:$dotnetArguments" `
             -returntargetcode `
             -output:"$PSScriptRoot\OpenCover.coverageresults" `

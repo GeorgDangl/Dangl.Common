@@ -1,21 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{23A42A3D-F766-426A-A40B-7944698C8C7B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{29628338-516D-4216-8421-F5C14118659B}"
 	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
 		TestsAndCoverage.ps1 = TestsAndCoverage.ps1
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Dangl.Common", "src\Dangl.Common\Dangl.Common.xproj", "{EC3DEC59-A9C9-4D22-B430-7130A6F9CEF4}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{95083FA9-F7FE-4431-A563-06D05DE3E5DB}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Dangl.Common.Tests", "test\Dangl.Common.Tests\Dangl.Common.Tests.xproj", "{F5A41EF3-9E9A-4533-93A7-CB1E4408CBC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dangl.Common", "src\Dangl.Common\Dangl.Common.csproj", "{EC3DEC59-A9C9-4D22-B430-7130A6F9CEF4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dangl.Common.Tests", "test\Dangl.Common.Tests\Dangl.Common.Tests.csproj", "{F5A41EF3-9E9A-4533-93A7-CB1E4408CBC1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
