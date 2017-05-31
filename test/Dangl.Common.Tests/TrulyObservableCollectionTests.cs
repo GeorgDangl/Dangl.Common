@@ -42,7 +42,7 @@ namespace Dangl.Common.Tests
             testCollection[0].StringProperty = "Changed";
             Assert.True(_eventCatched);
             Assert.NotNull(_catchedEventArgs);
-            Assert.Equal(_catchedEventArgs.Action, NotifyCollectionChangedAction.Replace);
+            Assert.Equal(NotifyCollectionChangedAction.Replace, _catchedEventArgs.Action);
             Assert.Same(_catchedEventArgs.NewItems[0], testCollection[0]);
             Assert.Equal(1, _eventCatchedCount);
         }
@@ -63,7 +63,7 @@ namespace Dangl.Common.Tests
             copiedInstance[0].StringProperty = "Changed";
             Assert.True(_eventCatched);
             Assert.NotNull(_catchedEventArgs);
-            Assert.Equal(_catchedEventArgs.Action, NotifyCollectionChangedAction.Replace);
+            Assert.Equal(NotifyCollectionChangedAction.Replace, _catchedEventArgs.Action);
             Assert.Same(_catchedEventArgs.NewItems[0], copiedInstance[0]);
             Assert.Equal(1, _eventCatchedCount);
         }
