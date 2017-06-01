@@ -7,6 +7,16 @@ namespace Dangl.Common.Tests
     public class StringEncryptionTests
     {
         [Fact]
+        public void DecryptKnownString()
+        {
+            var encryptedPassword = "98499D68A1DBB303EBD77F814CC178E95DAA323BD71DC3D942627A149DEB9A51:189BB9A021F5040C9B8572C7C2933248:etyJjoHnziStmEVedWM0iQ==";
+            var password = "P4$$w0|2|)";
+            var expectedPlaintext = "Hello World!";
+            var actualPlaintext = StringEncryption.DecryptString(encryptedPassword, password);
+            Assert.Equal(expectedPlaintext, actualPlaintext);
+        }
+
+        [Fact]
         public void EncryptDecrypt_RegularCharacters()
         {
             // Arrange
@@ -68,7 +78,7 @@ namespace Dangl.Common.Tests
         [Fact]
         public void EncryptTwiceWithSamePassword_DifferentRepresentation()
         {
-            var password = "SomePassword";
+            var password = "P4$$w0|2|)";
             var text = "Hello World!";
             var encryptedString01 = StringEncryption.EncryptString(text, password);
             var encryptedString02 = StringEncryption.EncryptString(text, password);
