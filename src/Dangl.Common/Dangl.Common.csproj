@@ -4,7 +4,8 @@
     <Description>Common functionality</Description>
     <Copyright>(c) 2016 Georg Dangl</Copyright>
     <AssemblyTitle>Dangl.Common</AssemblyTitle>
-    <VersionPrefix>1.3.2</VersionPrefix>
+    <Version>1.3.2</Version>
+    <GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">True</GeneratePackageOnBuild>
     <Authors>Georg Dangl</Authors>
     <TargetFrameworks>netstandard1.3;net46</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
