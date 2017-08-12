@@ -8,6 +8,14 @@ $latestOpenCover = Join-Path -Path ((Get-ChildItem -Path $nugetOpenCoverPackage 
 $nugetCoberturaConverterPackage = Join-Path -Path $env:USERPROFILE -ChildPath "\.nuget\packages\OpenCoverToCoberturaConverter"
 $latestCoberturaConverter = Join-Path -Path (Get-ChildItem -Path $nugetCoberturaConverterPackage | Sort-Object Fullname -Descending)[0].FullName -ChildPath "tools\OpenCoverToCoberturaConverter.exe"
 
+If (Test-Path "$PSScriptRoot\OpenCover.coverageresults"){
+	Remove-Item "$PSScriptRoot\OpenCover.coverageresults"
+}
+
+If (Test-Path "$PSScriptRoot\Cobertura.coverageresults"){
+	Remove-Item "$PSScriptRoot\Cobertura.coverageresults"
+}
+
 $testRuns = 1;
 
 foreach ($testProject in $testProjects){
