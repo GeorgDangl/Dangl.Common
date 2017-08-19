@@ -1,17 +1,4 @@
-﻿// **************************************
-// *									*
-// *  Last change: 2015-05-28			*
-// *  © 2015 Georg Dangl				*
-// *  info@georgdangl.de				*
-// *									*
-// **************************************
-
-/*
- * 2015-05-28
- * Added SetProperty overload to attach to given PropertyChangeEventHandler delegates.
- */
-
-using System;
+﻿using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq.Expressions;
@@ -51,7 +38,6 @@ namespace Dangl
             {
                 return false;
             }
-
             storage = value;
             OnPropertyChanged(propertyName);
             return true;
@@ -82,12 +68,10 @@ namespace Dangl
             {
                 return false;
             }
-
             if (storage != null)
             {
                 storage.PropertyChanged -= changeEventHook;
             }
-
             storage = value;
             if (storage != null)
             {
@@ -122,12 +106,10 @@ namespace Dangl
             {
                 return false;
             }
-
             if (storage != null)
             {
                 storage.CollectionChanged -= changeEventHook;
             }
-
             storage = value;
             if (storage != null)
             {
@@ -153,11 +135,11 @@ namespace Dangl
         /// GetPropertyName(() => this.Property);
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="givenProperty">The property for which to return the string.</param>
+        /// <param name="property">The property for which to return the string.</param>
         /// <returns></returns>
-        public string GetPropertyName<T>(Expression<Func<T>> givenProperty)
+        public string GetPropertyName<T>(Expression<Func<T>> property)
         {
-            return ((MemberExpression)givenProperty.Body).Member.Name;
+            return ((MemberExpression)property.Body).Member.Name;
         }
 
         /// <summary>

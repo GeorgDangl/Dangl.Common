@@ -31,7 +31,6 @@ namespace Dangl
             {
                 throw new ArgumentNullException(nameof(password));
             }
-
             var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
             var saltBytes = new byte[SALT_SIZE_BYTES];
             var randomNumberGenerator = RandomNumberGenerator.Create();
@@ -89,7 +88,6 @@ namespace Dangl
             {
                 throw new FormatException("Expecting the IV to be " + (KEY_SIZE_BITS / (8 * 2)) + " bytes");
             }
-
             var encryptedTextBytes = Convert.FromBase64String(splitText[2]);
             using (var memoryStream = new MemoryStream(encryptedTextBytes))
             {
@@ -121,7 +119,6 @@ namespace Dangl
                 }
             }
         }
-
 
         private static byte[] StringToByteArray(string hex)
         {

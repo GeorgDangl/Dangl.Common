@@ -1,18 +1,9 @@
-﻿// **************************************
-// *									*
-// *  Last change: 2015-04-23			*
-// *  © 2015 Georg Dangl				*
-// *  info@georgdangl.de				*
-// *									*
-// **************************************
-
-/*
+﻿/*
  * Taken from simon's answer at:
  * http://stackoverflow.com/questions/1427471/observablecollection-not-noticing-when-item-in-it-changes-even-with-inotifyprop
  *
  */
 
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -44,9 +35,9 @@ namespace Dangl
         /// Will initialize with a hook to the <see cref="System.Collections.ObjectModel.ObservableCollection{T}.CollectionChanged"/> event and add or remove event listeners
         /// to the items in the collection.
         /// </summary>
-        /// <param name="givenObjectType">The <see cref="IEnumerable{T}"/> from which to seed.</param>
-        public TrulyObservableCollection(IEnumerable<T> givenObjectType)
-            : base(givenObjectType)
+        /// <param name="collection">The <see cref="IEnumerable{T}"/> from which to seed.</param>
+        public TrulyObservableCollection(IEnumerable<T> collection)
+            : base(collection)
         {
             CollectionChanged += FullObservableCollectionCollectionChanged;
             foreach (var instantiatedItem in this)
@@ -59,14 +50,14 @@ namespace Dangl
         {
             if (e.NewItems != null)
             {
-                foreach (Object item in e.NewItems)
+                foreach (var item in e.NewItems)
                 {
                     ((INotifyPropertyChanged)item).PropertyChanged += ItemPropertyChanged;
                 }
             }
             if (e.OldItems != null)
             {
-                foreach (Object item in e.OldItems)
+                foreach (var item in e.OldItems)
                 {
                     ((INotifyPropertyChanged)item).PropertyChanged -= ItemPropertyChanged;
                 }

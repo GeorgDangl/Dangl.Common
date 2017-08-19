@@ -21,9 +21,9 @@ namespace Dangl
             if (source == null) return null;
             var splitted = Regex.Split(source, "\r\n?|\n");
             var stringBuilder = new StringBuilder();
-            foreach (var currentLine in splitted)
+            foreach (var line in splitted)
             {
-                stringBuilder.AppendLine(currentLine.TrimEnd());
+                stringBuilder.AppendLine(line.TrimEnd());
             }
             return stringBuilder.ToString().TrimEnd();
         }
@@ -55,19 +55,17 @@ namespace Dangl
         /// <returns></returns>
         public static string Compress(this string source)
         {
-            byte[] buffer = Encoding.UTF8.GetBytes(source);
-            MemoryStream ms = new MemoryStream();
-            using (GZipStream zip = new GZipStream(ms, CompressionMode.Compress, true))
+            var buffer = Encoding.UTF8.GetBytes(source);
+            var ms = new MemoryStream();
+            using (var zipStream = new GZipStream(ms, CompressionMode.Compress, true))
             {
-                zip.Write(buffer, 0, buffer.Length);
+                zipStream.Write(buffer, 0, buffer.Length);
             }
             ms.Position = 0;
-
-            byte[] compressed = new byte[ms.Length];
-            ms.Read(compressed, 0, compressed.Length);
-
-            byte[] gzBuffer = new byte[compressed.Length + 4];
-            Buffer.BlockCopy(compressed, 0, gzBuffer, 4, compressed.Length);
+            var compressedBytes = new byte[ms.Length];
+            ms.Read(compressedBytes, 0, compressedBytes.Length);
+            var gzBuffer = new byte[compressedBytes.Length + 4];
+            Buffer.BlockCopy(compressedBytes, 0, gzBuffer, 4, compressedBytes.Length);
             Buffer.BlockCopy(BitConverter.GetBytes(buffer.Length), 0, gzBuffer, 0, 4);
             return Convert.ToBase64String(gzBuffer);
         }
@@ -79,20 +77,17 @@ namespace Dangl
         /// <returns></returns>
         public static string Decompress(this string souce)
         {
-            byte[] gzBuffer = Convert.FromBase64String(souce);
-            using (MemoryStream ms = new MemoryStream())
+            var gzBuffer = Convert.FromBase64String(souce);
+            using (var ms = new MemoryStream())
             {
-                int msgLength = BitConverter.ToInt32(gzBuffer, 0);
+                var msgLength = BitConverter.ToInt32(gzBuffer, 0);
                 ms.Write(gzBuffer, 4, gzBuffer.Length - 4);
-
-                byte[] buffer = new byte[msgLength];
-
+                var buffer = new byte[msgLength];
                 ms.Position = 0;
-                using (GZipStream zip = new GZipStream(ms, CompressionMode.Decompress))
+                using (var zip = new GZipStream(ms, CompressionMode.Decompress))
                 {
                     zip.Read(buffer, 0, buffer.Length);
                 }
-
                 return Encoding.UTF8.GetString(buffer);
             }
         }
