@@ -1,5 +1,4 @@
 $testProjects = "Dangl.Common.Tests"
-$testFrameworks = "netcoreapp2.0", "netcoreapp1.1", "netcoreapp1.0", "net47", "net461", "net46"
 
 # Get the most recent OpenCover NuGet package from the dotnet nuget packages
 $nugetOpenCoverPackage = Join-Path -Path $env:USERPROFILE -ChildPath "\.nuget\packages\OpenCover"
@@ -17,28 +16,24 @@ If (Test-Path "$PSScriptRoot\Cobertura.coverageresults"){
 }
 
 $testRuns = 1;
-
 foreach ($testProject in $testProjects){
-    foreach ($testFramework in $testFrameworks) {
-        # Arguments for running dotnet
-        $testFramework
-        $dotnetArguments = "xunit", "-f $testFramework", "-xml `"`"$PSScriptRoot\testRuns_$testRuns.testresults`"`""
+    # Arguments for running dotnet
+    $dotnetArguments = "xunit", "-xml `"`"$PSScriptRoot\testRuns_$testRuns.testresults`"`""
 
-        "Running tests with OpenCover"
-        & $latestOpenCover `
-            -register:user `
-            -target:dotnet.exe `
-            -targetdir:$PSScriptRoot\test\$testProject `
-            "-targetargs:$dotnetArguments" `
-            -returntargetcode `
-            -output:"$PSScriptRoot\OpenCover.coverageresults" `
-            -mergeoutput `
-            -oldStyle `
-            -excludebyattribute:System.CodeDom.Compiler.GeneratedCodeAttribute `
-            "-filter:+[Dangl*]* -[*.Tests]* -[*.Tests.*]*"
+    "Running tests with OpenCover"
+    & $latestOpenCover `
+        -register:user `
+        -target:dotnet.exe `
+        -targetdir:$PSScriptRoot\test\$testProject `
+        "-targetargs:$dotnetArguments" `
+        -returntargetcode `
+        -output:"$PSScriptRoot\OpenCover.coverageresults" `
+        -mergeoutput `
+        -oldStyle `
+        -excludebyattribute:System.CodeDom.Compiler.GeneratedCodeAttribute `
+        "-filter:+[Dangl*]* -[*.Tests]* -[*.Tests.*]*"
 
-            $testRuns++
-    }
+        $testRuns++
 }
 
 "Converting coverage reports to Cobertura format"
