@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using Xunit;
@@ -267,35 +268,6 @@ namespace Dangl.Common.Tests
                 {
                     _eventCatched = true;
                 }
-            }
-        }
-
-        public class GetPropertyName
-        {
-            [Fact]
-            public void ReportsCorrectName()
-            {
-                var mock = new MockClass();
-                Assert.Equal("StringProperty", mock.GetPropertyName(() => mock.StringProperty));
-            }
-
-            [Fact]
-            public void ReportNestedArrayLengthName()
-            {
-                var testInstance = new SomeClassWithArrays();
-
-                var retrievedPropertyName = testInstance.GetPropertyName(() => testInstance.Array) + ".Length";
-                Assert.Equal("Array.Length", retrievedPropertyName);
-                Assert.Null(testInstance.Array);
-                testInstance.Array = new string[2];
-                Assert.NotNull(testInstance.Array);
-                retrievedPropertyName = testInstance.GetPropertyName(() => testInstance.Array) + ".Length";
-                Assert.Equal("Array.Length", retrievedPropertyName);
-            }
-
-            public class SomeClassWithArrays : BindableBase
-            {
-                public string[] Array { get; set; }
             }
         }
     }

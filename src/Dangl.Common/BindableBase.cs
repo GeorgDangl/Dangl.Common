@@ -130,19 +130,6 @@ namespace Dangl
         }
 
         /// <summary>
-        /// Returns the name of a property as string.
-        /// Must be called in the form of:
-        /// GetPropertyName(() => this.Property);
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="property">The property for which to return the string.</param>
-        /// <returns></returns>
-        public string GetPropertyName<T>(Expression<Func<T>> property)
-        {
-            return ((MemberExpression)property.Body).Member.Name;
-        }
-
-        /// <summary>
         /// Implementation of <see cref="IDisposable"/>. Will always call the <see cref="OnDispose"/> method that
         /// may be used in derived classes to implement behaviour upon being disposed, such as releasing event
         /// handler listeners.
