@@ -1,5 +1,5 @@
 $testProjects = "Dangl.Common.Tests"
-$testFrameworks = "netcoreapp1.1", "netcoreapp1.0", "net46", "net461"
+$testFrameworks = "netcoreapp2.0", "netcoreapp1.1", "netcoreapp1.0", "net47", "net461", "net46"
 
 # Get the most recent OpenCover NuGet package from the dotnet nuget packages
 $nugetOpenCoverPackage = Join-Path -Path $env:USERPROFILE -ChildPath "\.nuget\packages\OpenCover"
