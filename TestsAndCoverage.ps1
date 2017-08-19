@@ -15,6 +15,8 @@ If (Test-Path "$PSScriptRoot\Cobertura.coverageresults"){
 	Remove-Item "$PSScriptRoot\Cobertura.coverageresults"
 }
 
+& dotnet restore
+
 $testRuns = 1;
 foreach ($testProject in $testProjects){
     # Arguments for running dotnet
