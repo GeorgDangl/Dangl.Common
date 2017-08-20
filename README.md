@@ -8,10 +8,10 @@ Currently, there is:
 #### BindableBase
 Base class for property binding with INotifyPropertyChanged.
 
-#### StringEncryption
+#### StringEncryptionExtensions
 Encryption and decryption methods using AES and PBKDF2.
 
-#### StringExtensionMethods
+#### StringExtensions
 * Sanitize method to normalize line endings to current environments default and to also trim whitespaces at each line end
 * ToBase64 and FromBase64 methods
 * Compress / Decompress methods using GZip and returning Base64 output

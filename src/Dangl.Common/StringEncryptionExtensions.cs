@@ -9,7 +9,7 @@ namespace Dangl
     /// <summary>
     /// Taken from: http://stackoverflow.com/questions/165808/simple-two-way-encryption-for-c-sharp/26177005#26177005
     /// </summary>
-    public class StringEncryption
+    public static class StringEncryptionExtensions
     {
         private const int KEY_SIZE_BITS = 256;
         private const int SALT_SIZE_BYTES = 32;
@@ -22,7 +22,7 @@ namespace Dangl
         /// <param name="password">May not be null, empty or only whitespace</param>
         /// <param name="pbkdf2Iterations">Iterations to use in the PBKDF2 password bytes derivation algorithm</param>
         /// <returns></returns>
-        public static string EncryptString(string plainText, string password, int pbkdf2Iterations = PBKDF2_ITERATIONS)
+        public static string Encrypt(this string plainText, string password, int pbkdf2Iterations = PBKDF2_ITERATIONS)
         {
             if (plainText == null)
             {
@@ -42,6 +42,7 @@ namespace Dangl
             randomNumberGenerator.GetBytes(saltBytes);
             var passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, pbkdf2Iterations).GetBytes(KEY_SIZE_BITS / 8);
             var aes = Aes.Create();
+            System.Diagnostics.Debug.Assert(aes != null);
             aes.Mode = CipherMode.CBC;
             aes.Key = passwordBytes;
             aes.GenerateIV();
@@ -68,7 +69,7 @@ namespace Dangl
         /// <param name="encryptedText">May not be null, empty or only whitespace</param>
         /// <param name="password">May not be null, empty or only whitespace</param>
         /// <returns></returns>
-        public static string DecryptString(string encryptedText, string password)
+        public static string DecryptString(this string encryptedText, string password)
         {
             if (string.IsNullOrWhiteSpace(encryptedText))
             {
@@ -119,6 +120,7 @@ namespace Dangl
                 var initVectorBytes = StringToByteArray(keyRaw);
                 var passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, Convert.ToInt32(pbkdf2Iterations)).GetBytes(KEY_SIZE_BITS / 8);
                 var aes = Aes.Create();
+                System.Diagnostics.Debug.Assert(aes != null);
                 aes.Mode = CipherMode.CBC;
                 if (useZeroPadding)
                 {

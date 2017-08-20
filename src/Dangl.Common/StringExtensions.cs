@@ -9,7 +9,7 @@ namespace Dangl
     /// <summary>
     /// Extension methods for strings.
     /// </summary>
-    public static class StringExtensionMethods
+    public static class StringExtensions
     {
         /// <summary>
         /// Will replace all linebreaks with <see cref="Environment.NewLine"/> and remove white spaces as line ends as well as any trailing white spaces.
