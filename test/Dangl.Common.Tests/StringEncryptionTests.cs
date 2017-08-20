@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Text;
+using System.IO;
 using Xunit;
 
 namespace Dangl.Common.Tests
@@ -7,9 +7,19 @@ namespace Dangl.Common.Tests
     public class StringEncryptionTests
     {
         [Fact]
-        public void DecryptKnownString()
+        public void DecryptKnownStringOfPreviousVersion()
         {
             var encryptedPassword = "98499D68A1DBB303EBD77F814CC178E95DAA323BD71DC3D942627A149DEB9A51:189BB9A021F5040C9B8572C7C2933248:etyJjoHnziStmEVedWM0iQ==";
+            var password = "P4$$w0|2|)";
+            var expectedPlaintext = "Hello World!";
+            var actualPlaintext = StringEncryption.DecryptString(encryptedPassword, password);
+            Assert.Equal(expectedPlaintext, actualPlaintext);
+        }
+
+        [Fact]
+        public void DecryptKnownString()
+        {
+            var encryptedPassword = "1000:98499D68A1DBB303EBD77F814CC178E95DAA323BD71DC3D942627A149DEB9A51:189BB9A021F5040C9B8572C7C2933248:etyJjoHnziStmEVedWM0iQ==";
             var password = "P4$$w0|2|)";
             var expectedPlaintext = "Hello World!";
             var actualPlaintext = StringEncryption.DecryptString(encryptedPassword, password);
@@ -86,11 +96,30 @@ namespace Dangl.Common.Tests
         }
 
         [Fact]
+        public void EncryptTwiceWithSamePassword_DifferentRepresentationWithCustomPbkdf2IterationCount()
+        {
+            var password = "P4$$w0|2|)";
+            var text = "Hello World!";
+            var encryptedString01 = StringEncryption.EncryptString(text, password, 50);
+            var encryptedString02 = StringEncryption.EncryptString(text, password, 50);
+            Assert.NotEqual(encryptedString01, encryptedString02);
+        }
+
+        [Fact]
         public void EncryptTwiceWithEmptyPassword_DifferentRepresentation()
         {
             var text = "Hello World!";
             var encryptedString01 = StringEncryption.EncryptString(text, string.Empty);
             var encryptedString02 = StringEncryption.EncryptString(text, string.Empty);
+            Assert.NotEqual(encryptedString01, encryptedString02);
+        }
+
+        [Fact]
+        public void EncryptTwiceWithEmptyPassword_DifferentRepresentationWithCustomPbkdf2IterationCount()
+        {
+            var text = "Hello World!";
+            var encryptedString01 = StringEncryption.EncryptString(text, string.Empty, 50);
+            var encryptedString02 = StringEncryption.EncryptString(text, string.Empty, 50);
             Assert.NotEqual(encryptedString01, encryptedString02);
         }
 
@@ -127,7 +156,6 @@ namespace Dangl.Common.Tests
                 Assert.NotEqual(text, invalidDecryptedString);
             }
         }
-
 
         [Fact]
         public void EncryptDecrypt_HighUnicodeCharacters()
@@ -257,7 +285,7 @@ namespace Dangl.Common.Tests
         [Fact]
         public void FormatException_IVTooShort()
         {
-            var fabricatedDecryptedText = "2DEC9C6991943FCC4CEDE77173AF229E149ACF1877F1F2DD0BE332CD43429418:0DD41EE10F3FE2EA9328C898F03F231:H8LR+VN7diSBZeylsYVVGw==";
+            var fabricatedDecryptedText = "1000:2DEC9C6991943FCC4CEDE77173AF229E149ACF1877F1F2DD0BE332CD43429418:0DD41EE10F3FE2EA9328C898F03F231:H8LR+VN7diSBZeylsYVVGw==";
             var password = "Hello Password!";
             Assert.Throws(typeof(FormatException), () => StringEncryption.DecryptString(fabricatedDecryptedText, password));
         }
@@ -265,7 +293,7 @@ namespace Dangl.Common.Tests
         [Fact]
         public void FormatException_IVTooLong()
         {
-            var fabricatedDecryptedText = "2DEC9C6991943FCC4CEDE77173AF229E149ACF1877F1F2DD0BE332CD43429418:760DD41EE10F3FE2EA9328C898F03F231:H8LR+VN7diSBZeylsYVVGw==";
+            var fabricatedDecryptedText = "1000:2DEC9C6991943FCC4CEDE77173AF229E149ACF1877F1F2DD0BE332CD43429418:760DD41EE10F3FE2EA9328C898F03F231:H8LR+VN7diSBZeylsYVVGw==";
             var password = "Hello Password!";
             Assert.Throws(typeof(FormatException), () => StringEncryption.DecryptString(fabricatedDecryptedText, password));
         }
@@ -273,7 +301,7 @@ namespace Dangl.Common.Tests
         [Fact]
         public void FormatException_SaltTooShort()
         {
-            var fabricatedDecryptedText = "DEC9C6991943FCC4CEDE77173AF229E149ACF1877F1F2DD0BE332CD43429418:60DD41EE10F3FE2EA9328C898F03F231:H8LR+VN7diSBZeylsYVVGw==";
+            var fabricatedDecryptedText = "1000:DEC9C6991943FCC4CEDE77173AF229E149ACF1877F1F2DD0BE332CD43429418:60DD41EE10F3FE2EA9328C898F03F231:H8LR+VN7diSBZeylsYVVGw==";
             var password = "Hello Password!";
             Assert.Throws(typeof(FormatException), () => StringEncryption.DecryptString(fabricatedDecryptedText, password));
         }
@@ -281,15 +309,23 @@ namespace Dangl.Common.Tests
         [Fact]
         public void FormatException_SaltTooLong()
         {
-            var fabricatedDecryptedText = "22DEC9C6991943FCC4CEDE77173AF229E149ACF1877F1F2DD0BE332CD43429418:60DD41EE10F3FE2EA9328C898F03F231:H8LR+VN7diSBZeylsYVVGw==";
+            var fabricatedDecryptedText = "1000:22DEC9C6991943FCC4CEDE77173AF229E149ACF1877F1F2DD0BE332CD43429418:60DD41EE10F3FE2EA9328C898F03F231:H8LR+VN7diSBZeylsYVVGw==";
             var password = "Hello Password!";
             Assert.Throws(typeof(FormatException), () => StringEncryption.DecryptString(fabricatedDecryptedText, password));
         }
 
         [Fact]
-        public void FormatException_EncryptedPartNotBase64()
+        public void FormatException_EncryptedPartNotBase64_1()
         {
-            var fabricatedDecryptedText = "2DEC9C6991943FCC4CEDE77173AF229E149ACF1877F1F2DD0BE332CD43429418:60DD41EE10F3FE2EA93ü8C898F03F231:H8LR+VN7diSBZeylsYVVGw==";
+            var fabricatedDecryptedText = "1000:2DEC9C6991943FCC4CEDE77173AF229E149ACF1877F1F2DD0BE332CD43429418:189BB9A021F5040C9B8572C7C2933248:H8LR+VN7diSBZeylsYVVGw===";
+            var password = "Hello Password!";
+            Assert.Throws(typeof(FormatException), () => StringEncryption.DecryptString(fabricatedDecryptedText, password));
+        }
+
+        [Fact]
+        public void FormatException_EncryptedPartNotBase64_2()
+        {
+            var fabricatedDecryptedText = "1000:2DEC9C6991943FCC4CEDE77173AF229E149ACF1877F1F2DD0BE332CD43429418:189BB9A021F5040C9B8572C7C2933248:bob@example.com";
             var password = "Hello Password!";
             Assert.Throws(typeof(FormatException), () => StringEncryption.DecryptString(fabricatedDecryptedText, password));
         }
@@ -305,9 +341,77 @@ namespace Dangl.Common.Tests
         [Fact]
         public void FormatException_TooManySegments()
         {
-            var fabricatedDecryptedText = "2DEC9C6991943FCC4CEDE77173AF229E149ACF1877F1F2DD0BE332CD43429418:60DD41EE10F3FE2EA9328C898F03F231:43:H8LR+VN7diSBZeylsYVVGw==";
+            var fabricatedDecryptedText = "1000:2DEC9C6991943FCC4CEDE77173AF229E149ACF1877F1F2DD0BE332CD43429418:60DD41EE10F3FE2EA9328C898F03F231:43:H8LR+VN7diSBZeylsYVVGw==";
             var password = "Hello Password!";
             Assert.Throws(typeof(FormatException), () => StringEncryption.DecryptString(fabricatedDecryptedText, password));
+        }
+
+        [Fact]
+        public void ArgumentOutOfRangeExceptionOnNegativePbkdf2Iterations()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>("pbkdf2Iterations", () => StringEncryption.EncryptString("Hello World!", "Password", -2));
+        }
+
+        [Fact]
+        public void ArgumentOutOfRangeExceptionOnZeroPbkdf2Iterations()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>("pbkdf2Iterations", () => StringEncryption.EncryptString("Hello World!", "Password", 0));
+        }
+
+        [Fact]
+        public void CanEncryptAndDecryptWithCustomPbkdf2Iterations()
+        {
+            var plainText = "Hello world!";
+            var password = "Password";
+            var encryptedText = StringEncryption.EncryptString(plainText, password, 39);
+            var decryptedText = StringEncryption.DecryptString(encryptedText, password);
+            Assert.Equal(plainText, decryptedText);
+        }
+
+        [Fact]
+        public void EncodesPbkdf2IterationsInOutput()
+        {
+            var encryptedText = StringEncryption.EncryptString("Hello world!", "Password");
+            Assert.StartsWith("1000:", encryptedText);
+        }
+
+        [Fact]
+        public void EncodesPbkdf2IterationsInOutputWithCustomIterationCount()
+        {
+            var encryptedText = StringEncryption.EncryptString("Hello world!", "Password", 50);
+            Assert.StartsWith("50:", encryptedText);
+        }
+
+        [Fact]
+        public void InvalidDataExceptionWhenGivenPbkdf2IterationsNoIntegerButReal()
+        {
+            var encryptedPassword = "10.2:98499D68A1DBB303EBD77F814CC178E95DAA323BD71DC3D942627A149DEB9A51:189BB9A021F5040C9B8572C7C2933248:etyJjoHnziStmEVedWM0iQ==";
+            var password = "P4$$w0|2|)";
+            Assert.Throws<InvalidDataException>(() => StringEncryption.DecryptString(encryptedPassword, password));
+        }
+
+        [Fact]
+        public void InvalidDataExceptionWhenGivenPbkdf2IterationsNoIntegerButString()
+        {
+            var encryptedPassword = "Hello:98499D68A1DBB303EBD77F814CC178E95DAA323BD71DC3D942627A149DEB9A51:189BB9A021F5040C9B8572C7C2933248:etyJjoHnziStmEVedWM0iQ==";
+            var password = "P4$$w0|2|)";
+            Assert.Throws<InvalidDataException>(() => StringEncryption.DecryptString(encryptedPassword, password));
+        }
+
+        [Fact]
+        public void InvalidDataExceptionWhenGivenPbkdf2IterationsNegative()
+        {
+            var encryptedPassword = "-200:98499D68A1DBB303EBD77F814CC178E95DAA323BD71DC3D942627A149DEB9A51:189BB9A021F5040C9B8572C7C2933248:etyJjoHnziStmEVedWM0iQ==";
+            var password = "P4$$w0|2|)";
+            Assert.Throws<InvalidDataException>(() => StringEncryption.DecryptString(encryptedPassword, password));
+        }
+
+        [Fact]
+        public void InvalidDataExceptionWhenGivenPbkdf2IterationsZero()
+        {
+            var encryptedPassword = "0:98499D68A1DBB303EBD77F814CC178E95DAA323BD71DC3D942627A149DEB9A51:189BB9A021F5040C9B8572C7C2933248:etyJjoHnziStmEVedWM0iQ==";
+            var password = "P4$$w0|2|)";
+            Assert.Throws<InvalidDataException>(() => StringEncryption.DecryptString(encryptedPassword, password));
         }
     }
 }
