@@ -1,9 +1,7 @@
 # Dangl.Common
 [![Build Status](https://jenkins.dangl.me/buildStatus/icon?job=Dangl.Common.Tests)](https://jenkins.dangl.me/job/Dangl.Common.Tests/)
 
-This library contains common utilities.
-
-Currently, there is:
+This library contains common, shared functionality.
 
 #### BindableBase
 Base class for property binding with INotifyPropertyChanged.
@@ -19,3 +17,7 @@ Encryption and decryption methods using AES and PBKDF2.
 #### TrulyObservableCollection
 
 Collection that notifies of item changes (add, delete) as well as whenever a child item that implements INotifyPropertyChanged is changed.
+
+---
+
+[MIT License](LICENSE.md)
