@@ -1,20 +1,6 @@
-﻿// **************************************
-// *									*
-// *  Last change: 2015-05-28			*
-// *  © 2015 Georg Dangl				*
-// *  info@georgdangl.de				*
-// *									*
-// **************************************
-
-/*
- * 2015-05-28
- * Added SetProperty overload to attach to given PropertyChangeEventHandler delegates.
- */
-
-using System;
+﻿using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
 namespace Dangl
@@ -51,7 +37,6 @@ namespace Dangl
             {
                 return false;
             }
-
             storage = value;
             OnPropertyChanged(propertyName);
             return true;
@@ -82,12 +67,10 @@ namespace Dangl
             {
                 return false;
             }
-
             if (storage != null)
             {
                 storage.PropertyChanged -= changeEventHook;
             }
-
             storage = value;
             if (storage != null)
             {
@@ -122,12 +105,10 @@ namespace Dangl
             {
                 return false;
             }
-
             if (storage != null)
             {
                 storage.CollectionChanged -= changeEventHook;
             }
-
             storage = value;
             if (storage != null)
             {
@@ -145,19 +126,6 @@ namespace Dangl
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Returns the name of a property as string.
-        /// Must be called in the form of:
-        /// GetPropertyName(() => this.Property);
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="givenProperty">The property for which to return the string.</param>
-        /// <returns></returns>
-        public string GetPropertyName<T>(Expression<Func<T>> givenProperty)
-        {
-            return ((MemberExpression)givenProperty.Body).Member.Name;
         }
 
         /// <summary>

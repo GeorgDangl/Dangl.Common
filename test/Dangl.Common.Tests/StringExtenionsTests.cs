@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Dangl.Common.Tests
 {
-    public class StringExtensionMethodsTests
+    public class StringExtenionsTests
     {
         public class FromBase64
         {
@@ -67,10 +67,8 @@ namespace Dangl.Common.Tests
             [Fact]
             public void SanitizeNullString()
             {
-                string input = null;
-                string expected = null;
-                var actual = input.Sanitize();
-                Assert.Equal(expected, actual);
+                var actual = ((string) null).Sanitize();
+                Assert.Null(actual);
             }
 
             [Fact]

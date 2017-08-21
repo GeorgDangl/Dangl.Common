@@ -9,7 +9,7 @@ namespace Dangl
     /// <summary>
     /// Taken from: http://stackoverflow.com/questions/165808/simple-two-way-encryption-for-c-sharp/26177005#26177005
     /// </summary>
-    public class StringEncryption
+    public static class StringEncryptionExtensions
     {
         private const int KEY_SIZE_BITS = 256;
         private const int SALT_SIZE_BYTES = 32;
@@ -20,8 +20,9 @@ namespace Dangl
         /// </summary>
         /// <param name="plainText">May not be null, empty or only whitespace</param>
         /// <param name="password">May not be null, empty or only whitespace</param>
+        /// <param name="pbkdf2Iterations">Iterations to use in the PBKDF2 password bytes derivation algorithm</param>
         /// <returns></returns>
-        public static string EncryptString(string plainText, string password)
+        public static string Encrypt(this string plainText, string password, int pbkdf2Iterations = PBKDF2_ITERATIONS)
         {
             if (plainText == null)
             {
@@ -31,13 +32,17 @@ namespace Dangl
             {
                 throw new ArgumentNullException(nameof(password));
             }
-
+            if (pbkdf2Iterations <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pbkdf2Iterations), "The count of PBKDF2 iterations must be bigger than zero");
+            }
             var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
             var saltBytes = new byte[SALT_SIZE_BYTES];
             var randomNumberGenerator = RandomNumberGenerator.Create();
             randomNumberGenerator.GetBytes(saltBytes);
-            var passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, PBKDF2_ITERATIONS).GetBytes(KEY_SIZE_BITS / 8);
+            var passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, pbkdf2Iterations).GetBytes(KEY_SIZE_BITS / 8);
             var aes = Aes.Create();
+            System.Diagnostics.Debug.Assert(aes != null);
             aes.Mode = CipherMode.CBC;
             aes.Key = passwordBytes;
             aes.GenerateIV();
@@ -50,7 +55,10 @@ namespace Dangl
                     cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length);
                     cryptoStream.FlushFinalBlock();
                     var cipherTextBytes = memoryStream.ToArray();
-                    return $"{BitConverter.ToString(saltBytes).Replace("-", string.Empty)}:{BitConverter.ToString(initVectorBytes).Replace("-", string.Empty)}:{Convert.ToBase64String(cipherTextBytes)}";
+                    var salt = BitConverter.ToString(saltBytes).Replace("-", string.Empty);
+                    var iv = BitConverter.ToString(initVectorBytes).Replace("-", string.Empty);
+                    var cipherText = Convert.ToBase64String(cipherTextBytes);
+                    return $"{pbkdf2Iterations}:{salt}:{iv}:{cipherText}";
                 }
             }
         }
@@ -61,7 +69,7 @@ namespace Dangl
         /// <param name="encryptedText">May not be null, empty or only whitespace</param>
         /// <param name="password">May not be null, empty or only whitespace</param>
         /// <returns></returns>
-        public static string DecryptString(string encryptedText, string password)
+        public static string DecryptString(this string encryptedText, string password)
         {
             if (string.IsNullOrWhiteSpace(encryptedText))
             {
@@ -77,27 +85,42 @@ namespace Dangl
         private static string DecryptString(string encryptedText, string password, bool useZeroPadding)
         {
             var splitText = encryptedText.Split(':');
-            if (splitText.Length != 3)
+            if (splitText.Length == 3)
             {
-                throw new FormatException("Expecting the decrypted text to be in the form of \"salt_hex:iv_hex:text_base64\"");
+                try
+                {
+                    return DecryptOldVersionWithoutIterationCount(encryptedText, password);
+                }
+                catch { /* Do nothing to propagate failure */ }
             }
-            if (splitText[0].Length != SALT_SIZE_BYTES * 2)
+            if (splitText.Length != 4)
+            {
+                throw new FormatException("Expecting the decrypted text to be in the form of \"pbkdf2_iterations:salt_hex:iv_hex:text_base64\"");
+            }
+            if (!int.TryParse(splitText[0], out var pbkdf2Iterations) || pbkdf2Iterations <= 0)
+            {
+                throw new InvalidDataException($"The first segment is expected to be a positive integer, was: {splitText[0]}");
+            }
+            var saltRaw = splitText[1];
+            if (saltRaw.Length != SALT_SIZE_BYTES * 2)
             {
                 throw new FormatException("Expecting the salt to be " + SALT_SIZE_BYTES + " bytes");
             }
-            if (splitText[1].Length != KEY_SIZE_BITS / 8)
+            var keyRaw = splitText[2];
+            if (keyRaw.Length != KEY_SIZE_BITS / 8)
             {
                 throw new FormatException("Expecting the IV to be " + (KEY_SIZE_BITS / (8 * 2)) + " bytes");
             }
-
-            var encryptedTextBytes = Convert.FromBase64String(splitText[2]);
+            var encryptedRaw = splitText[3];
+            var encryptedTextBytes = Convert.FromBase64String(encryptedRaw);
             using (var memoryStream = new MemoryStream(encryptedTextBytes))
             {
                 memoryStream.Position = 0;
-                var saltBytes = StringToByteArray(splitText[0]);
-                var initVectorBytes = StringToByteArray(splitText[1]);
-                var passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, PBKDF2_ITERATIONS).GetBytes(KEY_SIZE_BITS / 8);
+                var saltBytes = StringToByteArray(saltRaw);
+                var initVectorBytes = StringToByteArray(keyRaw);
+                var passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, Convert.ToInt32(pbkdf2Iterations)).GetBytes(KEY_SIZE_BITS / 8);
                 var aes = Aes.Create();
+                System.Diagnostics.Debug.Assert(aes != null);
                 aes.Mode = CipherMode.CBC;
                 if (useZeroPadding)
                 {
@@ -108,11 +131,9 @@ namespace Dangl
                 {
                     using (var cryptoStream = new CryptoStream(memoryStream, aesDecryptor, CryptoStreamMode.Read))
                     {
-                        byte[] plainTextBytes = new byte[encryptedTextBytes.Length];
-
-                        int decryptedByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);
+                        var plainTextBytes = new byte[encryptedTextBytes.Length];
+                        var decryptedByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);
                         return Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount);
-
                     }
                 }
                 catch (CryptographicException)
@@ -122,6 +143,12 @@ namespace Dangl
             }
         }
 
+        private static string DecryptOldVersionWithoutIterationCount(string encryptedText, string password)
+        {
+            // Old versions do use a PBDKF2 iteration count of 1000 but don't append this to the output
+            var encryptedTextOldVersion = $"1000:{encryptedText}";
+            return DecryptString(encryptedTextOldVersion, password, false);
+        }
 
         private static byte[] StringToByteArray(string hex)
         {
