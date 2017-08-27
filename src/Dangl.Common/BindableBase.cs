@@ -7,6 +7,9 @@ namespace Dangl
 {
     /// <summary>
     /// Implements <see cref="INotifyPropertyChanged"/> and <see cref="IDisposable"/>.
+    /// Extension of Prisms BindableBase, see https://github.com/PrismLibrary/Prism/blob/master/Source/Prism/Mvvm/BindableBase.cs
+    /// Adds overloads for SetProperty to automatically bind to INotifiyPropertyChanged and INotifyCollectionChanged events
+    /// See the Prism Library license at https://github.com/PrismLibrary/Prism/blob/master/LICENSE
     /// </summary>
     public abstract class BindableBase : INotifyPropertyChanged, IDisposable
     {
