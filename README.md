@@ -1,8 +1,15 @@
 # Dangl.Common
 [![Build Status](https://jenkins.dangl.me/buildStatus/icon?job=Dangl.Common.Tests)](https://jenkins.dangl.me/job/Dangl.Common.Tests/)
 [![NuGet](https://img.shields.io/nuget/v/Dangl.Common.svg)](https://www.nuget.org/packages/Dangl.Common)
+[![MyGet](https://img.shields.io/myget/dangl/v/Dangl.Common.svg)]()
 
 This library contains common, shared functionality.
+
+## CI Builds
+
+CI builds are available via MyGet
+
+    https://www.myget.org/F/dangl/api/v3/index.json
 
 #### BindableBase
 Base class for property binding with INotifyPropertyChanged.
