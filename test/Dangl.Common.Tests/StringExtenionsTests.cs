@@ -12,14 +12,14 @@ namespace Dangl.Common.Tests
             public void InvalidInput_HtmlWithNonBase64Chars()
             {
                 var input = "<html>Body</html>";
-                Assert.Throws(typeof (FormatException), () => { input.FromBase64(); });
+                Assert.Throws<FormatException>(() => { input.FromBase64(); });
             }
 
             [Fact]
             public void InvalidInput_RegularStringNonBase64()
             {
                 var input = "SomeString";
-                Assert.Throws(typeof (FormatException), () => { input.FromBase64(); });
+                Assert.Throws<FormatException>(() => { input.FromBase64(); });
             }
 
             [Fact]
