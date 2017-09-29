@@ -38,6 +38,11 @@ foreach ($testProject in $testProjects){
         $testRuns++
 }
 
+"Prepending framework to test method name for better CI visualization"
+$resultsGlobPattern = "testRuns_*.testresults"
+$prependFrameworkScript = ".\AppendxUnitFramework.ps1"
+& $prependFrameworkScript $resultsGlobPattern "$PSScriptRoot\"
+
 "Converting coverage reports to Cobertura format"
 & $latestCoberturaConverter `
     -input:"$PSScriptRoot\OpenCover.coverageresults" `

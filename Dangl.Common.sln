@@ -1,12 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.8
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{23A42A3D-F766-426A-A40B-7944698C8C7B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{29628338-516D-4216-8421-F5C14118659B}"
 	ProjectSection(SolutionItems) = preProject
+		AppendxUnitFramework.ps1 = AppendxUnitFramework.ps1
 		LICENSE.md = LICENSE.md
 		README.md = README.md
 		TestsAndCoverage.ps1 = TestsAndCoverage.ps1
