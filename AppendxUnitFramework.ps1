@@ -19,7 +19,7 @@ function transformTestResultFile {
     
     $frameworkName = getFrameworkNameFromFilename $testResultFile
     $xmlContent = [xml](Get-Content $testResultFile)
-    $testNodes = $xmlContent.SelectNodes("//test/@name")
+    $testNodes = $xmlContent.SelectNodes("//test/@type")
     foreach ($testNode in $testNodes){
         $testNode.Value = $frameworkName + "+" + $testNode.Value
     }
