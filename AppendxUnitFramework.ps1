@@ -16,15 +16,13 @@ function getFrameworkNameFromFilename {
 
 function transformTestResultFile {
     Param($testResultFile)
-    
     $frameworkName = getFrameworkNameFromFilename $testResultFile
     $xmlContent = [xml](Get-Content $testResultFile)
     $testNodes = $xmlContent.SelectNodes("//test/@type")
     foreach ($testNode in $testNodes){
         $testNode.Value = $frameworkName + "+" + $testNode.Value
     }
-    Remove-Item $testResultFile
-    $xmlContent.Save($testResultFile)
+    $xmlContent.Save($testResultFile.FullName)
 }
 
 foreach ($testResultFile in $testResultFiles) {
