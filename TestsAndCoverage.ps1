@@ -15,12 +15,18 @@ If (Test-Path "$PSScriptRoot\Cobertura.coverageresults"){
 	Remove-Item "$PSScriptRoot\Cobertura.coverageresults"
 }
 
+$oldResults = Get-ChildItem -Path "$PSScriptRoot\testRuns_*.testresults"
+if ($oldResults) {
+    Remove-Item $oldResults
+}
+
 & dotnet restore
+& dotnet build -c Debug
 
 $testRuns = 1;
 foreach ($testProject in $testProjects){
     # Arguments for running dotnet
-    $dotnetArguments = "xunit", "-xml `"`"$PSScriptRoot\testRuns_$testRuns.testresults`"`""
+    $dotnetArguments = "xunit", "-nobuild", "-xml `"`"$PSScriptRoot\testRuns_$testRuns.testresults`"`""
 
     "Running tests with OpenCover"
     & $latestOpenCover `
