@@ -5,6 +5,8 @@
 
 This library contains common, shared functionality.
 
+[Link to documentation](https://docs.dangl-it.com/Projects/Dangl.Common)
+
 ## CI Builds
 
 CI builds are available via MyGet

@@ -193,3 +193,8 @@ ModelManifest.xml
 project.lock.json
 *.testresults
 *.coverageresults
+
+generated_docs/**/*
+docs.zip
+
+docs/docfx.console.**/*
