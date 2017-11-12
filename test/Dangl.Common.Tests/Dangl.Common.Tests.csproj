@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.0;netcoreapp1.1;netcoreapp1.0;net47;net461;net46</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;netcoreapp1.1;net47;net461;net46</TargetFrameworks>
     <AssemblyName>Dangl.Common.Tests</AssemblyName>
     <PackageId>Dangl.Common.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
