@@ -1,13 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.0;netcoreapp1.1;net47;net461;net46</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;netcoreapp1.1;net47;net461;net46;net452</TargetFrameworks>
     <AssemblyName>Dangl.Common.Tests</AssemblyName>
     <PackageId>Dangl.Common.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <!-- Required, otherwise multiple 2.0.x frameworks lead to xUnit not discovering the framework to run in -->
+    <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">2.0.0</RuntimeFrameworkVersion>
   </PropertyGroup>
 
   <ItemGroup>

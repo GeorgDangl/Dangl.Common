@@ -13,6 +13,11 @@ CI builds are available via MyGet
 
     https://www.myget.org/F/dangl/api/v3/index.json
 
+## Compatibility
+
+This project targets both `netstandard1.3` and `net45`. Due to .Net 4.5.2 being the currently latest supported version
+by Microsoft and the xUnit test suite, no tests are run for `net45` and `net451`.
+
 #### BindableBase
 Base class for property binding with INotifyPropertyChanged.
 
