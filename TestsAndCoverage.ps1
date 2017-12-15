@@ -15,12 +15,18 @@ If (Test-Path "$PSScriptRoot\Cobertura.coverageresults"){
 	Remove-Item "$PSScriptRoot\Cobertura.coverageresults"
 }
 
+$oldResults = Get-ChildItem -Path "$PSScriptRoot\testRuns_*.testresults"
+if ($oldResults) {
+    Remove-Item $oldResults
+}
+
 & dotnet restore
+& dotnet build -c Debug
 
 $testRuns = 1;
 foreach ($testProject in $testProjects){
     # Arguments for running dotnet
-    $dotnetArguments = "xunit", "-xml `"`"$PSScriptRoot\testRuns_$testRuns.testresults`"`""
+    $dotnetArguments = "xunit", "-nobuild", "-xml `"`"$PSScriptRoot\testRuns_$testRuns.testresults`"`""
 
     "Running tests with OpenCover"
     & $latestOpenCover `
@@ -37,6 +43,11 @@ foreach ($testProject in $testProjects){
 
         $testRuns++
 }
+
+"Prepending framework to test method name for better CI visualization"
+$resultsGlobPattern = "testRuns_*.testresults"
+$prependFrameworkScript = ".\AppendxUnitFramework.ps1"
+& $prependFrameworkScript $resultsGlobPattern "$PSScriptRoot\"
 
 "Converting coverage reports to Cobertura format"
 & $latestCoberturaConverter `

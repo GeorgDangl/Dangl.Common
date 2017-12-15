@@ -181,7 +181,7 @@ namespace Dangl.Common.Tests
         public void ArgumentNullExceptionOnNullText_Encrypt()
         {
             var password = "Hello Password!";
-            Assert.Throws(typeof(ArgumentNullException), () => StringEncryptionExtensions.Encrypt(null, password));
+            Assert.Throws<ArgumentNullException>(() => StringEncryptionExtensions.Encrypt(null, password));
         }
 
         [Fact]
@@ -198,7 +198,7 @@ namespace Dangl.Common.Tests
         public void ArgumentNullExceptionOnNullPassword_Encrypt()
         {
             var inputText = "Hello World";
-            Assert.Throws(typeof(ArgumentNullException), () => inputText.Encrypt(null));
+            Assert.Throws<ArgumentNullException>(() => inputText.Encrypt(null));
         }
 
         [Fact]
@@ -214,7 +214,7 @@ namespace Dangl.Common.Tests
         [Fact]
         public void ArgumentNullExceptionOnNullTextAndPassword_Encrypt()
         {
-            Assert.Throws(typeof(ArgumentNullException), () => StringEncryptionExtensions.Encrypt(null, null));
+            Assert.Throws<ArgumentNullException>(() => StringEncryptionExtensions.Encrypt(null, null));
         }
 
         [Fact]
@@ -231,7 +231,7 @@ namespace Dangl.Common.Tests
         public void ArgumentNullExceptionOnNullText_Decrypt()
         {
             var password = "Hello Password!";
-            Assert.Throws(typeof(ArgumentNullException), () => StringEncryptionExtensions.DecryptString(null, password));
+            Assert.Throws<ArgumentNullException>(() => StringEncryptionExtensions.DecryptString(null, password));
         }
 
         [Fact]
@@ -239,14 +239,14 @@ namespace Dangl.Common.Tests
         {
             var inputText = string.Empty;
             var password = "Hello Password!";
-            Assert.Throws(typeof(ArgumentNullException), () => inputText.DecryptString(password));
+            Assert.Throws<ArgumentNullException>(() => inputText.DecryptString(password));
         }
 
         [Fact]
         public void ArgumentNullExceptionOnNullPassword_Decrypt()
         {
             var inputText = "Hello World!";
-            Assert.Throws(typeof(ArgumentNullException), () => inputText.DecryptString(null));
+            Assert.Throws<ArgumentNullException>(() => inputText.DecryptString(null));
         }
 
         [Fact]
@@ -263,7 +263,7 @@ namespace Dangl.Common.Tests
         [Fact]
         public void ArgumentNullExceptionOnNullTextAndPassword_Decrypt()
         {
-            Assert.Throws(typeof(ArgumentNullException), () => StringEncryptionExtensions.DecryptString(null, null));
+            Assert.Throws<ArgumentNullException>(() => StringEncryptionExtensions.DecryptString(null, null));
         }
 
         [Fact]
@@ -271,7 +271,7 @@ namespace Dangl.Common.Tests
         {
             var inputText = string.Empty;
             var password = string.Empty;
-            Assert.Throws(typeof(ArgumentNullException), () => inputText.DecryptString(password));
+            Assert.Throws<ArgumentNullException>(() => inputText.DecryptString(password));
         }
 
         [Fact]
@@ -279,7 +279,7 @@ namespace Dangl.Common.Tests
         {
             var fabricatedDecryptedText = "1000:2DEC9C6991943FCC4CEDE77173AF229E149ACF1877F1F2DD0BE332CD43429418:0DD41EE10F3FE2EA9328C898F03F231:H8LR+VN7diSBZeylsYVVGw==";
             var password = "Hello Password!";
-            Assert.Throws(typeof(FormatException), () => fabricatedDecryptedText.DecryptString(password));
+            Assert.Throws<FormatException>(() => fabricatedDecryptedText.DecryptString(password));
         }
 
         [Fact]
@@ -287,7 +287,7 @@ namespace Dangl.Common.Tests
         {
             var fabricatedDecryptedText = "1000:2DEC9C6991943FCC4CEDE77173AF229E149ACF1877F1F2DD0BE332CD43429418:760DD41EE10F3FE2EA9328C898F03F231:H8LR+VN7diSBZeylsYVVGw==";
             var password = "Hello Password!";
-            Assert.Throws(typeof(FormatException), () => fabricatedDecryptedText.DecryptString(password));
+            Assert.Throws<FormatException>(() => fabricatedDecryptedText.DecryptString(password));
         }
 
         [Fact]
@@ -295,7 +295,7 @@ namespace Dangl.Common.Tests
         {
             var fabricatedDecryptedText = "1000:DEC9C6991943FCC4CEDE77173AF229E149ACF1877F1F2DD0BE332CD43429418:60DD41EE10F3FE2EA9328C898F03F231:H8LR+VN7diSBZeylsYVVGw==";
             var password = "Hello Password!";
-            Assert.Throws(typeof(FormatException), () => fabricatedDecryptedText.DecryptString(password));
+            Assert.Throws<FormatException>(() => fabricatedDecryptedText.DecryptString(password));
         }
 
         [Fact]
@@ -303,7 +303,7 @@ namespace Dangl.Common.Tests
         {
             var fabricatedDecryptedText = "1000:22DEC9C6991943FCC4CEDE77173AF229E149ACF1877F1F2DD0BE332CD43429418:60DD41EE10F3FE2EA9328C898F03F231:H8LR+VN7diSBZeylsYVVGw==";
             var password = "Hello Password!";
-            Assert.Throws(typeof(FormatException), () => fabricatedDecryptedText.DecryptString(password));
+            Assert.Throws<FormatException>(() => fabricatedDecryptedText.DecryptString(password));
         }
 
         [Fact]
@@ -311,7 +311,7 @@ namespace Dangl.Common.Tests
         {
             var fabricatedDecryptedText = "1000:2DEC9C6991943FCC4CEDE77173AF229E149ACF1877F1F2DD0BE332CD43429418:189BB9A021F5040C9B8572C7C2933248:H8LR+VN7diSBZeylsYVVGw===";
             var password = "Hello Password!";
-            Assert.Throws(typeof(FormatException), () => fabricatedDecryptedText.DecryptString(password));
+            Assert.Throws<FormatException>(() => fabricatedDecryptedText.DecryptString(password));
         }
 
         [Fact]
@@ -319,7 +319,7 @@ namespace Dangl.Common.Tests
         {
             var fabricatedDecryptedText = "1000:2DEC9C6991943FCC4CEDE77173AF229E149ACF1877F1F2DD0BE332CD43429418:189BB9A021F5040C9B8572C7C2933248:bob@example.com";
             var password = "Hello Password!";
-            Assert.Throws(typeof(FormatException), () => fabricatedDecryptedText.DecryptString(password));
+            Assert.Throws<FormatException>(() => fabricatedDecryptedText.DecryptString(password));
         }
 
         [Fact]
@@ -327,7 +327,7 @@ namespace Dangl.Common.Tests
         {
             var fabricatedDecryptedText = "2DEC9C6991943FCC4CEDE77173AF229E149ACF1877F1F2DD0BE332CD43429418:H8LR+VN7diSBZeylsYVVGw==";
             var password = "Hello Password!";
-            Assert.Throws(typeof(FormatException), () => fabricatedDecryptedText.DecryptString(password));
+            Assert.Throws<FormatException>(() => fabricatedDecryptedText.DecryptString(password));
         }
 
         [Fact]
@@ -335,7 +335,7 @@ namespace Dangl.Common.Tests
         {
             var fabricatedDecryptedText = "1000:2DEC9C6991943FCC4CEDE77173AF229E149ACF1877F1F2DD0BE332CD43429418:60DD41EE10F3FE2EA9328C898F03F231:43:H8LR+VN7diSBZeylsYVVGw==";
             var password = "Hello Password!";
-            Assert.Throws(typeof(FormatException), () => fabricatedDecryptedText.DecryptString(password));
+            Assert.Throws<FormatException>(() => fabricatedDecryptedText.DecryptString(password));
         }
 
         [Fact]

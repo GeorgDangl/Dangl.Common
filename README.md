@@ -1,7 +1,22 @@
 # Dangl.Common
 [![Build Status](https://jenkins.dangl.me/buildStatus/icon?job=Dangl.Common.Tests)](https://jenkins.dangl.me/job/Dangl.Common.Tests/)
+[![NuGet](https://img.shields.io/nuget/v/Dangl.Common.svg)](https://www.nuget.org/packages/Dangl.Common)
+[![MyGet](https://img.shields.io/myget/dangl/v/Dangl.Common.svg)]()
 
 This library contains common, shared functionality.
+
+[Link to documentation](https://docs.dangl-it.com/Projects/Dangl.Common)
+
+## CI Builds
+
+CI builds are available via MyGet
+
+    https://www.myget.org/F/dangl/api/v3/index.json
+
+## Compatibility
+
+This project targets both `netstandard1.3` and `net45`. Due to .Net 4.5.2 being the currently latest supported version
+by Microsoft and the xUnit test suite, no tests are run for `net45` and `net451`.
 
 #### BindableBase
 Base class for property binding with INotifyPropertyChanged.
