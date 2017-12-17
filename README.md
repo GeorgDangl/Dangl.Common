@@ -18,6 +18,8 @@ CI builds are available via MyGet
 This project targets both `netstandard1.3` and `net45`. Due to .Net 4.5.2 being the currently latest supported version
 by Microsoft and the xUnit test suite, no tests are run for `net45` and `net451`.
 
+## Classes
+
 #### BindableBase
 Base class for property binding with INotifyPropertyChanged.
 
