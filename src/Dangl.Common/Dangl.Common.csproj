@@ -5,7 +5,7 @@
     <Copyright>(c) $([System.DateTime]::Now.Year) Georg Dangl</Copyright>
     <PackageLicenseUrl>https://github.com/GeorgDangl/Dangl.Common/blob/dev/LICENSE.md</PackageLicenseUrl>
     <AssemblyTitle>Dangl.Common</AssemblyTitle>
-    <VersionPrefix>1.4.2</VersionPrefix>
+    <VersionPrefix>1.4.3</VersionPrefix>
     <VersionSuffix Condition=" '$(GIT_BRANCH)' == 'origin/dev'">build-$(BUILD_NUMBER)</VersionSuffix>
     <GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">True</GeneratePackageOnBuild>
     <Authors>Georg Dangl</Authors>
