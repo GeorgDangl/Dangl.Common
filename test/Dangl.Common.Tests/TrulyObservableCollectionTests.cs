@@ -11,6 +11,38 @@ namespace Dangl.Common.Tests
         private int _eventCatchedCount;
 
         [Fact]
+        public void CanAddNull()
+        {
+            var instance = new TrulyObservableCollectionMock();
+            instance.MockCollection.Add(null);
+            Assert.True(true);
+        }
+
+        [Fact]
+        public void CanRemoveNull()
+        {
+            var instance = new TrulyObservableCollectionMock();
+            instance.MockCollection.Add(null);
+            Assert.True(true);
+            instance.MockCollection.RemoveAt(0);
+            Assert.True(true);
+        }
+
+        [Fact]
+        public void CanInstantiateWithNullValues_01()
+        {
+            var collection = new TrulyObservableCollection<BindableBaseMock> {new BindableBaseMock(), null};
+            Assert.Equal(2, collection.Count);
+        }
+
+        [Fact]
+        public void CanInstantiateWithNullValues_02()
+        {
+            var collection = new TrulyObservableCollection<BindableBaseMock>(new[] {new BindableBaseMock(), null});
+            Assert.Equal(2, collection.Count);
+        }
+
+        [Fact]
         public void CollectionChangedNotifiedWhenInClass()
         {
             var instance = new TrulyObservableCollectionMock();
@@ -116,13 +148,11 @@ namespace Dangl.Common.Tests
                 {
                     origin.Add(currentItem);
                 }
+
                 var obsCol = new TrulyObservableCollection<BindableBaseMock>(origin);
 
                 var changeDetected = false;
-                obsCol.CollectionChanged += (x, y) =>
-                {
-                    changeDetected = true;
-                };
+                obsCol.CollectionChanged += (x, y) => { changeDetected = true; };
 
                 Assert.False(changeDetected);
                 origin[0].StringProperty = "Another Value";

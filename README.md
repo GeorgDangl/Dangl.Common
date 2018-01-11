@@ -18,6 +18,8 @@ CI builds are available via MyGet
 This project targets both `netstandard1.3` and `net45`. Due to .Net 4.5.2 being the currently latest supported version
 by Microsoft and the xUnit test suite, no tests are run for `net45` and `net451`.
 
+## Classes
+
 #### BindableBase
 Base class for property binding with INotifyPropertyChanged.
 
@@ -32,6 +34,20 @@ Encryption and decryption methods using AES and PBKDF2.
 #### TrulyObservableCollection
 
 Collection that notifies of item changes (add, delete) as well as whenever a child item that implements INotifyPropertyChanged is changed.
+
+## Supported Frameworks
+
+The library supports both `netstandard1.3` as well as `net45`. Binaries for the full framework are separately generated for older build tools that do not properly integrate with .NET Standard.
+If supported by the tooling (Visual Studio 2017 or the dotnet CLI should be fine), it's advised to use the `netstandard1.3` target.
+When using .NET Standard, all features should be available on **Windows**, **Linux** and **Mac OS**, but unit and integration tests are only performed for the following frameworks on **Windows**:
+  - `netcoreapp2.0`
+  - `netcoreapp1.1`
+  - `net461`
+  - `net46`
+  - `net47`
+  - `net452`
+
+There are no known issues with other configurations, but neither is their functionality tested.
 
 ---
 
