@@ -42,7 +42,10 @@ namespace Dangl
             CollectionChanged += FullObservableCollectionCollectionChanged;
             foreach (var instantiatedItem in this)
             {
-                instantiatedItem.PropertyChanged += ItemPropertyChanged;
+                if (instantiatedItem != null)
+                {
+                    instantiatedItem.PropertyChanged += ItemPropertyChanged;
+                }
             }
         }
 
@@ -52,14 +55,20 @@ namespace Dangl
             {
                 foreach (var item in e.NewItems)
                 {
-                    ((INotifyPropertyChanged)item).PropertyChanged += ItemPropertyChanged;
+                    if (item != null)
+                    {
+                        ((INotifyPropertyChanged) item).PropertyChanged += ItemPropertyChanged;
+                    }
                 }
             }
             if (e.OldItems != null)
             {
                 foreach (var item in e.OldItems)
                 {
-                    ((INotifyPropertyChanged)item).PropertyChanged -= ItemPropertyChanged;
+                    if (item != null)
+                    {
+                        ((INotifyPropertyChanged) item).PropertyChanged -= ItemPropertyChanged;
+                    }
                 }
             }
         }
