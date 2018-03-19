@@ -3,15 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = ".build", "build\.build.csproj", "{60FFDE2D-EBBC-40B8-B8B2-5408ACED814F}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{23A42A3D-F766-426A-A40B-7944698C8C7B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{29628338-516D-4216-8421-F5C14118659B}"
 	ProjectSection(SolutionItems) = preProject
-		AppendxUnitFramework.ps1 = AppendxUnitFramework.ps1
-		GenerateAndDeployDocs.ps1 = GenerateAndDeployDocs.ps1
+		CHANGELOG.md = CHANGELOG.md
+		docfx.json = docfx.json
+		GitVersion.yml = GitVersion.yml
 		LICENSE.md = LICENSE.md
 		README.md = README.md
-		TestsAndCoverage.ps1 = TestsAndCoverage.ps1
+		toc.yml = toc.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{95083FA9-F7FE-4431-A563-06D05DE3E5DB}"
@@ -26,6 +29,8 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{60FFDE2D-EBBC-40B8-B8B2-5408ACED814F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60FFDE2D-EBBC-40B8-B8B2-5408ACED814F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC3DEC59-A9C9-4D22-B430-7130A6F9CEF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EC3DEC59-A9C9-4D22-B430-7130A6F9CEF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC3DEC59-A9C9-4D22-B430-7130A6F9CEF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
