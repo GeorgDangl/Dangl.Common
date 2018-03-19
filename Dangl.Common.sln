@@ -9,14 +9,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{23A42A3D-F76
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{29628338-516D-4216-8421-F5C14118659B}"
 	ProjectSection(SolutionItems) = preProject
-		AppendxUnitFramework.ps1 = AppendxUnitFramework.ps1
 		CHANGELOG.md = CHANGELOG.md
 		docfx.json = docfx.json
-		GenerateAndDeployDocs.ps1 = GenerateAndDeployDocs.ps1
 		GitVersion.yml = GitVersion.yml
 		LICENSE.md = LICENSE.md
 		README.md = README.md
-		TestsAndCoverage.ps1 = TestsAndCoverage.ps1
 		toc.yml = toc.yml
 	EndProjectSection
 EndProject
