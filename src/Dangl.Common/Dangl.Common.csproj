@@ -9,7 +9,7 @@
     <VersionSuffix Condition=" '$(GIT_BRANCH)' == 'origin/dev'">build-$(BUILD_NUMBER)</VersionSuffix>
     <GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">True</GeneratePackageOnBuild>
     <Authors>Georg Dangl</Authors>
-    <TargetFrameworks>netstandard1.3;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard1.3;net45</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Dangl.Common</AssemblyName>
     <PackageId>Dangl.Common</PackageId>
