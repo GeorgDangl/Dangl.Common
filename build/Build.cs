@@ -30,6 +30,8 @@ using static Nuke.Common.Tooling.ProcessTasks;
 using static Nuke.GitHub.ChangeLogExtensions;
 using static Nuke.GitHub.GitHubTasks;
 using static Nuke.WebDocu.WebDocuTasks;
+using static Nuke.Common.IO.XmlTasks;
+using System.Collections.Generic;
 
 class Build : NukeBuild
 {
@@ -99,17 +101,20 @@ class Build : NukeBuild
             foreach (var testProject in testProjects)
             {
                 var projectDirectory = Path.GetDirectoryName(testProject);
-                string testFile = OutputDirectory / $"test_{testRun++}.testresults";
-                // This is so that the global dotnet is used instead of the one that comes with NUKE
-                var dotnetPath = ToolPathResolver.GetPathExecutable("dotnet");
 
-                StartProcess(dotnetPath, "xunit " +
-                                         "-nobuild " +
-                                         $"-xml {testFile.DoubleQuoteIfNeeded()}",
-                        workingDirectory: projectDirectory)
-                    // AssertWairForExit() instead of AssertZeroExitCode()
-                    // because we want to continue all tests even if some fail
-                    .AssertWaitForExit();
+                foreach (var targetFramework in GetTestFrameworksForProjectFile(testProject))
+                {
+                    var dotnetXunitSettings = new ToolSettings()
+                        .SetWorkingDirectory(projectDirectory)
+                        .SetToolPath(ToolPathResolver.GetPathExecutable("dotnet"))
+                        .SetArgumentConfigurator(c => c.Add("test")
+                            .Add("--no-build")
+                            .Add("-f {value}", targetFramework)
+                            .Add("--test-adapter-path:.")
+                            .Add("--logger:xunit;LogFilePath={value}", "\"" + OutputDirectory / $"{testRun++}_testresults-{targetFramework}.xml" + "\""));
+                    ProcessTasks.StartProcess(dotnetXunitSettings)
+                        .AssertWaitForExit();
+                }
             }
 
             PrependFrameworkToTestresults();
@@ -129,14 +134,19 @@ class Build : NukeBuild
                 var snapshotIndex = i;
 
                 string xUnitOutputDirectory = OutputDirectory / $"test_{snapshotIndex:00}.testresults";
-                DotCoverCover(c => c
-                    .SetTargetExecutable(dotnetPath)
-                    .SetTargetWorkingDirectory(projectDirectory)
-                    .SetTargetArguments($"xunit -nobuild -xml {xUnitOutputDirectory.DoubleQuoteIfNeeded()}")
-                    .SetFilters("+:Dangl.Common")
-                    .SetAttributeFilters("System.CodeDom.Compiler.GeneratedCodeAttribute")
-                    .SetOutputFile(OutputDirectory / $"coverage{snapshotIndex:00}.snapshot"));
+                foreach (var targetFramework in GetTestFrameworksForProjectFile(testProject))
+                {
+                    DotCoverCover(c => c
+                        .SetTargetExecutable(dotnetPath)
+                        .SetTargetWorkingDirectory(projectDirectory)
+                        .SetTargetArguments($"test --no-build -f {targetFramework} --test-adapter-path:. \"--logger:xunit;LogFilePath={OutputDirectory}/{snapshotIndex}_testresults-{targetFramework}.xml\"")
+                        .SetFilters("+:Dangl.Common")
+                        .SetAttributeFilters("System.CodeDom.Compiler.GeneratedCodeAttribute")
+                        .SetOutputFile(OutputDirectory / $"coverage{snapshotIndex:00}.snapshot"));
+                }
             }
+
+            PrependFrameworkToTestresults();
 
             var snapshots = testProjects.Select((t, i) => OutputDirectory / $"coverage{i:00}.snapshot")
                 .Select(p => p.ToString())
@@ -166,6 +176,15 @@ class Build : NukeBuild
                 .GetAwaiter()
                 .GetResult();
         });
+
+    IEnumerable<string> GetTestFrameworksForProjectFile(string projectFile)
+    {
+        var targetFrameworks = XmlPeek(projectFile, "//Project/PropertyGroup//TargetFrameworks")
+            .Concat(XmlPeek(projectFile, "//Project/PropertyGroup//TargetFramework"))
+            .Distinct()
+            .SelectMany(f => f.Split(';'));
+        return targetFrameworks;
+    }
 
     Target Push => _ => _
         .DependsOn(Pack)
@@ -262,7 +281,7 @@ class Build : NukeBuild
 
     void PrependFrameworkToTestresults()
     {
-        var testResults = GlobFiles(OutputDirectory, "*.testresults");
+        var testResults = GlobFiles(OutputDirectory, "*testresults*.xml");
         foreach (var testResultFile in testResults)
         {
             var frameworkName = GetFrameworkNameFromFilename(testResultFile);
@@ -285,7 +304,7 @@ class Build : NukeBuild
     string GetFrameworkNameFromFilename(string filename)
     {
         var name = Path.GetFileName(filename);
-        name = name.Substring(0, name.Length - ".testresults".Length);
+        name = name.Substring(0, name.Length - ".xml".Length);
         var startIndex = name.LastIndexOf('-');
         name = name.Substring(startIndex + 1);
         return name;
