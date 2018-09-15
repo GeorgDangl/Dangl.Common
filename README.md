@@ -30,9 +30,10 @@ Base class for property binding with INotifyPropertyChanged.
 Encryption and decryption methods using AES and PBKDF2.
 
 #### StringExtensions
-* Sanitize method to normalize line endings to current environments default and to also trim whitespaces at each line end
-* ToBase64 and FromBase64 methods
-* Compress / Decompress methods using GZip and returning Base64 output
+* `Sanitize()` method to normalize line endings to current environments default and to also trim whitespaces at each line end
+* `ToBase64()` and `FromBase64()` methods
+* `Compress()` / `Decompress` methods using GZip and returning Base64 output
+* `WithMaxLength(int maxLength)` to limit the length of a string by dropping everything above a max length
 
 #### TrulyObservableCollection
 
