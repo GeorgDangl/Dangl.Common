@@ -1,5 +1,5 @@
 # Dangl.Common
-[![Build Status](https://jenkins.dangl.me/buildStatus/icon?job=Dangl.Common.Tests)](https://jenkins.dangl.me/job/Dangl.Common.Tests/)
+[![Build Status](https://jenkins.dangl.me/buildStatus/icon?job=Dangl.Common/dev)](https://jenkins.dangl.me/job/Dangl.Common/job/dev/)
 [![NuGet](https://img.shields.io/nuget/v/Dangl.Common.svg)](https://www.nuget.org/packages/Dangl.Common)
 [![MyGet](https://img.shields.io/myget/dangl/v/Dangl.Common.svg)]()
 
