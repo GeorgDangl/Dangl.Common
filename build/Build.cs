@@ -32,26 +32,33 @@ using static Nuke.GitHub.GitHubTasks;
 using static Nuke.WebDocu.WebDocuTasks;
 using static Nuke.Common.IO.XmlTasks;
 using System.Collections.Generic;
+using Nuke.Azure.KeyVault;
 
 class Build : NukeBuild
 {
     // Console application entry. Also defines the default target.
     public static int Main () => Execute<Build>(x => x.Compile);
 
-    // Auto-injection fields:
+    [KeyVaultSettings(
+        BaseUrlParameterName = nameof(KeyVaultBaseUrl),
+        ClientIdParameterName = nameof(KeyVaultClientId),
+        ClientSecretParameterName = nameof(KeyVaultClientSecret))]
+    readonly KeyVaultSettings KeyVaultSettings;
+    [KeyVault] KeyVault KeyVault;
+
+    [Parameter] string KeyVaultBaseUrl;
+    [Parameter] string KeyVaultClientId;
+    [Parameter] string KeyVaultClientSecret;
 
     [GitVersion] readonly GitVersion GitVersion;
-    // Semantic versioning. Must have 'GitVersion.CommandLine' referenced.
-
     [GitRepository] readonly GitRepository GitRepository;
-    // Parses origin, branch name and head from git config.
 
-    [Parameter] string MyGetSource;
-    [Parameter] string MyGetApiKey;
-    [Parameter] string NuGetApiKey;
-    [Parameter] string DocuApiKey;
-    [Parameter] string DocuApiEndpoint;
-    [Parameter] string GitHubAuthenticationToken;
+    [KeyVaultSecret] string DocuApiEndpoint;
+    [KeyVaultSecret] string MyGetSource;
+    [KeyVaultSecret] string MyGetApiKey;
+    [KeyVaultSecret] string NuGetApiKey;
+    [KeyVaultSecret("DanglCommon-DocuApiKey")] string DocuApiKey;
+    [KeyVaultSecret] string GitHubAuthenticationToken;
 
     string DocFxFile => SolutionDirectory / "docfx.json";
 

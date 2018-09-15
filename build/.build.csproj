@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="Dangl.Nuke.CoberturaConverter" Version="1.2.0" />
+    <PackageReference Include="Nuke.Azure.KeyVault" Version="0.4.2" />
     <PackageReference Include="Nuke.Common" Version="0.8.0" />
     <PackageReference Include="Nuke.CodeGeneration" Version="$(NukeVersion)" Condition="'$(NukeCodeGeneration)' == 'True'" />
     <PackageReference Include="GitVersion.CommandLine" Version="4.0.0-beta0012" />
