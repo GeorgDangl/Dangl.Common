@@ -35,6 +35,9 @@ Encryption and decryption methods using AES and PBKDF2.
 * `Compress()` / `Decompress` methods using GZip and returning Base64 output
 * `WithMaxLength(int maxLength)` to limit the length of a string by dropping everything above a max length
 
+#### DecimalExtensions
+* `WithMaxAbsoluteValue(int maxValueAbsolute)` to limit a decimal to a maximum value. This works for both negative and positive decimals, e.g. `-3m.WithMaxAbsoluteValue(2)` returns `-2`
+
 #### TrulyObservableCollection
 
 Collection that notifies of item changes (add, delete) as well as whenever a child item that implements INotifyPropertyChanged is changed.
