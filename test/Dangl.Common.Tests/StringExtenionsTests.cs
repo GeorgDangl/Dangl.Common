@@ -67,7 +67,7 @@ namespace Dangl.Common.Tests
             [Fact]
             public void SanitizeNullString()
             {
-                var actual = ((string) null).Sanitize();
+                var actual = ((string)null).Sanitize();
                 Assert.Null(actual);
             }
 
@@ -158,6 +158,43 @@ namespace Dangl.Common.Tests
                 var input = builder.ToString();
                 var compressed = input.Compress();
                 Assert.True(compressed.Length < input.Length);
+            }
+        }
+
+        public class WithMaxLength
+        {
+            [Fact]
+            public void DoesNotTrimStringBelowThreshold()
+            {
+                var input = "0123456789012345678901234567890123456789";
+                var actual = input.WithMaxLength(40);
+                Assert.Equal(input, actual);
+            }
+
+            [Fact]
+            public void KeepsStringWithExactLength()
+            {
+                var input = "0123456789012345678901234567890123456789";
+                var actual = input.WithMaxLength(40);
+                var expected = "0123456789012345678901234567890123456789";
+                Assert.Equal(expected, actual);
+            }
+
+            [Fact]
+            public void ReturnsNullForNullInput()
+            {
+                var actual = ((string)null).WithMaxLength(10);
+                Assert.Null(actual);
+            }
+
+            [Theory]
+            [InlineData("Hello", 3, "Hel")]
+            [InlineData("Hello", 5, "Hello")]
+            [InlineData("Hello", 7, "Hello")]
+            public void TrimsString(string source, int maxLength, string expected)
+            {
+                var actual = source.WithMaxLength(maxLength);
+                Assert.Equal(expected, actual);
             }
         }
     }

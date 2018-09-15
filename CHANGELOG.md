@@ -2,6 +2,10 @@
 
 All notable changes to **Dangl.Common** are documented here.
 
+## v1.4.4
+- Add `WithMaxLength()` to `StringExtensions`
+- Add `WithMaxAbsoluteValue()` on new `DecimalExtensions`
+
 ## v1.4.3
 - Add `netstandard2.0` target
 - Switch build system to NUKE

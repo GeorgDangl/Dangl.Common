@@ -1,5 +1,5 @@
 # Dangl.Common
-[![Build Status](https://jenkins.dangl.me/buildStatus/icon?job=Dangl.Common.Tests)](https://jenkins.dangl.me/job/Dangl.Common.Tests/)
+[![Build Status](https://jenkins.dangl.me/buildStatus/icon?job=Dangl.Common/dev)](https://jenkins.dangl.me/job/Dangl.Common/job/dev/)
 [![NuGet](https://img.shields.io/nuget/v/Dangl.Common.svg)](https://www.nuget.org/packages/Dangl.Common)
 [![MyGet](https://img.shields.io/myget/dangl/v/Dangl.Common.svg)]()
 
@@ -30,9 +30,13 @@ Base class for property binding with INotifyPropertyChanged.
 Encryption and decryption methods using AES and PBKDF2.
 
 #### StringExtensions
-* Sanitize method to normalize line endings to current environments default and to also trim whitespaces at each line end
-* ToBase64 and FromBase64 methods
-* Compress / Decompress methods using GZip and returning Base64 output
+* `Sanitize()` method to normalize line endings to current environments default and to also trim whitespaces at each line end
+* `ToBase64()` and `FromBase64()` methods
+* `Compress()` / `Decompress` methods using GZip and returning Base64 output
+* `WithMaxLength(int maxLength)` to limit the length of a string by dropping everything above a max length
+
+#### DecimalExtensions
+* `WithMaxAbsoluteValue(int maxValueAbsolute)` to limit a decimal to a maximum value. This works for both negative and positive decimals, e.g. `-3m.WithMaxAbsoluteValue(2)` returns `-2`
 
 #### TrulyObservableCollection
 
@@ -40,11 +44,11 @@ Collection that notifies of item changes (add, delete) as well as whenever a chi
 
 ## Supported Frameworks
 
-The library supports both `netstandard1.3` as well as `net45`. Binaries for the full framework are separately generated for older build tools that do not properly integrate with .NET Standard.
+The library supports `netstandard1.3`, `netstandard2.0` as well as `net45`. Binaries for the full framework are separately generated for older build tools that do not properly integrate with .NET Standard.
 If supported by the tooling (Visual Studio 2017 or the dotnet CLI should be fine), it's advised to use the `netstandard1.3` target.
 When using .NET Standard, all features should be available on **Windows**, **Linux** and **Mac OS**, but unit and integration tests are only performed for the following frameworks on **Windows**:
+  - `netcoreapp2.1`
   - `netcoreapp2.0`
-  - `netcoreapp1.1`
   - `net461`
   - `net46`
   - `net47`
