@@ -54,8 +54,8 @@ class Build : NukeBuild
     [GitRepository] readonly GitRepository GitRepository;
 
     [KeyVaultSecret] string DocuApiEndpoint;
-    [KeyVaultSecret] string MyGetSource;
-    [KeyVaultSecret] string MyGetApiKey;
+    [KeyVaultSecret] string PublicMyGetSource;
+    [KeyVaultSecret] string PublicMyGetApiKey;
     [KeyVaultSecret] string NuGetApiKey;
     [KeyVaultSecret("DanglCommon-DocuApiKey")] string DocuApiKey;
     [KeyVaultSecret] string GitHubAuthenticationToken;
@@ -196,8 +196,8 @@ class Build : NukeBuild
 
     Target Push => _ => _
         .DependsOn(Pack)
-        .Requires(() => MyGetSource)
-        .Requires(() => MyGetApiKey)
+        .Requires(() => PublicMyGetSource)
+        .Requires(() => PublicMyGetApiKey)
         .Requires(() => NuGetApiKey)
         .Requires(() => Configuration.EqualsOrdinalIgnoreCase("Release"))
         .Executes(() =>
@@ -208,8 +208,8 @@ class Build : NukeBuild
                 {
                     DotNetNuGetPush(s => s
                         .SetTargetPath(x)
-                        .SetSource(MyGetSource)
-                        .SetApiKey(MyGetApiKey));
+                        .SetSource(PublicMyGetSource)
+                        .SetApiKey(PublicMyGetApiKey));
 
                     if (GitVersion.BranchName.Equals("master") || GitVersion.BranchName.Equals("origin/master"))
                     {
