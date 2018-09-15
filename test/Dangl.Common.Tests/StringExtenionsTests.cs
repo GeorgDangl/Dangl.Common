@@ -172,7 +172,7 @@ namespace Dangl.Common.Tests
             }
 
             [Fact]
-            public void TrimsTooLongString()
+            public void KeepsStringWithExactLength()
             {
                 var input = "0123456789012345678901234567890123456789";
                 var actual = input.WithMaxLength(40);
@@ -185,6 +185,16 @@ namespace Dangl.Common.Tests
             {
                 var actual = ((string)null).WithMaxLength(10);
                 Assert.Null(actual);
+            }
+
+            [Theory]
+            [InlineData("Hello", 3, "Hel")]
+            [InlineData("Hello", 5, "Hello")]
+            [InlineData("Hello", 7, "Hello")]
+            public void TrimsString(string source, int maxLength, string expected)
+            {
+                var actual = source.WithMaxLength(maxLength);
+                Assert.Equal(expected, actual);
             }
         }
     }
