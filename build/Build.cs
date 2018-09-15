@@ -208,8 +208,6 @@ class Build : NukeBuild
                     {
                         // Stable releases are published to NuGet
                         DotNetNuGetPush(s => s
-                            // Need to set it here, otherwise it takes the one from NUKEs .tmp directory
-                            .SetToolPath(ToolPathResolver.GetPathExecutable("dotnet"))
                             .SetTargetPath(x)
                             .SetSource("https://api.nuget.org/v3/index.json")
                             .SetApiKey(NuGetApiKey));
