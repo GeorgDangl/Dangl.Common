@@ -1,6 +1,6 @@
 ﻿using Nuke.CoberturaConverter;
 using Nuke.Common.Git;
-using Nuke.Common.Tools.DocFx;
+using Nuke.DocFX;
 using Nuke.Common.Tools.DotCover;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitVersion;
@@ -19,24 +19,23 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using static Nuke.CoberturaConverter.CoberturaConverterTasks;
 using static Nuke.Common.ChangeLog.ChangelogTasks;
-using static Nuke.Common.Tools.DocFx.DocFxTasks;
+using static Nuke.DocFX.DocFXTasks;
 using static Nuke.Common.Tools.DotCover.DotCoverTasks;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
 using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
-using static Nuke.Common.Tooling.ProcessTasks;
 using static Nuke.GitHub.ChangeLogExtensions;
 using static Nuke.GitHub.GitHubTasks;
 using static Nuke.WebDocu.WebDocuTasks;
 using static Nuke.Common.IO.XmlTasks;
 using System.Collections.Generic;
 using Nuke.Azure.KeyVault;
+using Nuke.Common.ProjectModel;
 
 class Build : NukeBuild
 {
-    // Console application entry. Also defines the default target.
     public static int Main () => Execute<Build>(x => x.Compile);
 
     [KeyVaultSettings(
@@ -50,8 +49,21 @@ class Build : NukeBuild
     [Parameter] string KeyVaultClientId;
     [Parameter] string KeyVaultClientSecret;
 
+    private string _configuration;
+    [Parameter]
+    string Configuration
+    {
+        get => _configuration ?? (Host == HostType.Console ? "Debug" : "Release"); // Defaults to "Release" in CI server
+        set => _configuration = value;
+    }
+
     [GitVersion] readonly GitVersion GitVersion;
     [GitRepository] readonly GitRepository GitRepository;
+
+    [Solution("Dangl.Common.sln")] readonly Solution Solution;
+    AbsolutePath SolutionDirectory => Solution.Directory;
+    AbsolutePath OutputDirectory => SolutionDirectory / "output";
+    AbsolutePath SourceDirectory => SolutionDirectory / "src";
 
     [KeyVaultSecret] string DocuApiEndpoint;
     [KeyVaultSecret] string PublicMyGetSource;
@@ -78,16 +90,19 @@ class Build : NukeBuild
             .DependsOn(Clean)
             .Executes(() =>
             {
-                DotNetRestore(s => DefaultDotNetRestore);
+                DotNetRestore();
             });
 
     Target Compile => _ => _
             .DependsOn(Restore)
             .Executes(() =>
             {
-                DotNetBuild(s => DefaultDotNetBuild
+                DotNetBuild(x => x
+                    .SetConfiguration(Configuration)
+                    .EnableNoRestore()
                     .SetFileVersion(GitVersion.GetNormalizedFileVersion())
-                    .SetAssemblyVersion(GitVersion.AssemblySemVer));
+                    .SetAssemblyVersion(GitVersion.AssemblySemVer)
+                    .SetInformationalVersion(GitVersion.InformationalVersion));
             });
 
     Target Pack => _ => _
@@ -96,8 +111,13 @@ class Build : NukeBuild
         {
             var changeLog = GetCompleteChangeLog(ChangeLogFile)
                 .EscapeStringPropertyForMsBuild();
-            DotNetPack(s => DefaultDotNetPack
-                .SetPackageReleaseNotes(changeLog));
+
+            DotNetPack(x => x
+                .SetConfiguration(Configuration)
+                .SetPackageReleaseNotes(changeLog)
+                .EnableNoBuild()
+                .SetOutputDirectory(OutputDirectory)
+                .SetVersion(GitVersion.NuGetVersion));
         });
 
     Target Test => _ => _
@@ -231,7 +251,7 @@ class Build : NukeBuild
             var dotnetPath = Path.GetDirectoryName(ToolPathResolver.GetPathExecutable("dotnet.exe"));
             var msBuildPath = Path.Combine(dotnetPath, "sdk", DocFxDotNetSdkVersion, "MSBuild.dll");
             SetVariable("MSBUILD_EXE_PATH", msBuildPath);
-            DocFxMetadata(DocFxFile, s => s.SetLogLevel(DocFxLogLevel.Info));
+            DocFXMetadata(x => x.SetProjects(DocFxFile));
         });
 
     Target BuildDocumentation => _ => _
@@ -247,9 +267,7 @@ class Build : NukeBuild
 
             File.Copy(SolutionDirectory / "README.md", SolutionDirectory / "index.md");
 
-            DocFxBuild(DocFxFile, s => s
-                .ClearXRefMaps()
-                .SetLogLevel(DocFxLogLevel.Info));
+            DocFXBuild(x => x.SetConfigFile(DocFxFile));
 
             File.Delete(SolutionDirectory / "index.md");
             Directory.Delete(SolutionDirectory / "api", true);
