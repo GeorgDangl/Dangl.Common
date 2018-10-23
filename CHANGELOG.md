@@ -2,6 +2,9 @@
 
 All notable changes to **Dangl.Common** are documented here.
 
+## v1.4.5
+- Add `StringHashExtensions` with `ToMd5()` and `ToSha256()`
+
 ## v1.4.4
 - Add `WithMaxLength()` to `StringExtensions`
 - Add `WithMaxAbsoluteValue()` on new `DecimalExtensions`
