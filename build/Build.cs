@@ -65,7 +65,7 @@ class Build : NukeBuild
     AbsolutePath OutputDirectory => SolutionDirectory / "output";
     AbsolutePath SourceDirectory => SolutionDirectory / "src";
 
-    [KeyVaultSecret] string DocuApiEndpoint;
+    [KeyVaultSecret] string DocuBaseUrl;
     [KeyVaultSecret] string PublicMyGetSource;
     [KeyVaultSecret] string PublicMyGetApiKey;
     [KeyVaultSecret] string NuGetApiKey;
@@ -73,9 +73,6 @@ class Build : NukeBuild
     [KeyVaultSecret] string GitHubAuthenticationToken;
 
     string DocFxFile => SolutionDirectory / "docfx.json";
-
-    // This is used to to infer which dotnet sdk version to use when generating DocFX metadata
-    string DocFxDotNetSdkVersion = "2.1.4";
     string ChangeLogFile => RootDirectory / "CHANGELOG.md";
 
     Target Clean => _ => _
@@ -246,11 +243,6 @@ class Build : NukeBuild
         .DependsOn(Restore)
         .Executes(() =>
         {
-            // So it uses a fixed, known version of MsBuild to generate the metadata. Otherwise,
-            // updates of dotnet or Visual Studio could introduce incompatibilities and generation failures
-            var dotnetPath = Path.GetDirectoryName(ToolPathResolver.GetPathExecutable("dotnet.exe"));
-            var msBuildPath = Path.Combine(dotnetPath, "sdk", DocFxDotNetSdkVersion, "MSBuild.dll");
-            SetVariable("MSBUILD_EXE_PATH", msBuildPath);
             DocFXMetadata(x => x.SetProjects(DocFxFile));
         });
 
@@ -278,11 +270,11 @@ class Build : NukeBuild
         .DependsOn(Push) // To have a relation between pushed package version and published docs version
         .DependsOn(BuildDocumentation)
         .Requires(() => DocuApiKey)
-        .Requires(() => DocuApiEndpoint)
+        .Requires(() => DocuBaseUrl)
         .Executes(() =>
         {
             WebDocu(s => s
-                .SetDocuApiEndpoint(DocuApiEndpoint)
+                .SetDocuBaseUrl(DocuBaseUrl)
                 .SetDocuApiKey(DocuApiKey)
                 .SetSourceDirectory(OutputDirectory / "docs")
                 .SetVersion(GitVersion.NuGetVersion)
