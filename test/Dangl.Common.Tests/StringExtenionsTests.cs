@@ -197,5 +197,30 @@ namespace Dangl.Common.Tests
                 Assert.Equal(expected, actual);
             }
         }
+
+        public class WithoutLinebreaks
+        {
+            [Fact]
+            public void ReturnsNullForNullInput()
+            {
+                var actual = ((string)null).WithoutLinebreaks();
+                Assert.Null(actual);
+            }
+
+            [Theory]
+            [InlineData("", "")]
+            [InlineData("Hello World!", "Hello World!")]
+            [InlineData("Hello\rWorld!", "HelloWorld!")]
+            [InlineData("Hello\nWorld!", "HelloWorld!")]
+            [InlineData("Hello\r\nWorld!", "HelloWorld!")]
+            [InlineData("\r", "")]
+            [InlineData("\n", "")]
+            [InlineData(" \n ", "  ")]
+            public void KeepsStringWithExactLength(string input, string expected)
+            {
+                var actual = input.WithoutLinebreaks();
+                Assert.Equal(expected, actual);
+            }
+        }
     }
 }

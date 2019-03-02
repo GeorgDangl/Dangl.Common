@@ -107,5 +107,19 @@ namespace Dangl
 
             return value.Substring(0, maxLength);
         }
+
+        /// <summary>
+        /// This returns null for null input, otherwise the original string with all linebreaks removed
+        /// </summary>
+        /// <param name="value"></param>
+        public static string WithoutLinebreaks(this string value)
+        {
+            if (value == null)
+            {
+                return value;
+            }
+
+            return Regex.Replace(value, "[\r\n]", string.Empty);
+        }
     }
 }
