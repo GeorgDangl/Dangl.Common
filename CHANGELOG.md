@@ -4,6 +4,7 @@ All notable changes to **Dangl.Common** are documented here.
 
 ## v1.4.7:
 - Tests are now also run in Linux
+- Drop tests for `netcoreapp2.0`, add tests for `netcoreapp2.2`
 
 ## v1.4.6:
 - Add `WithoutLinebreaks` to `StringExtensions`
