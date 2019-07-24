@@ -2,6 +2,9 @@
 
 All notable changes to **Dangl.Common** are documented here.
 
+## v1.4.7:
+- Tests are now also run in Linux
+
 ## v1.4.6:
 - Add `WithoutLinebreaks` to `StringExtensions`
 
