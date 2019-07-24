@@ -191,8 +191,7 @@ class Build : NukeBuild
 
             PrependFrameworkToTestresults();
 
-            var snapshots = testProjects.Select((t, i) => OutputDirectory / $"coverage{i:00}.snapshot")
-                .Select(p => p.ToString())
+            var snapshots = GlobFiles(OutputDirectory, "*.snapshot")
                 .Aggregate((c, n) => c + ";" + n);
 
             DotCoverMerge(c => c
