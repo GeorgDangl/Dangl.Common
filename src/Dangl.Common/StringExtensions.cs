@@ -12,7 +12,7 @@ namespace Dangl
     public static class StringExtensions
     {
         /// <summary>
-        /// Will replace all linebreaks with <see cref="Environment.NewLine"/> and remove white spaces as line ends as well as any trailing white spaces.
+        /// Will replace all linebreaks with <see cref="Environment.NewLine"/> and remove white spaces at line ends as well as any trailing white spaces.
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
