@@ -51,14 +51,25 @@ Collection that notifies of item changes (add, delete) as well as whenever a chi
 The library supports `netstandard1.3`, `netstandard2.0` as well as `net45`. Binaries for the full framework are separately generated for older build tools that do not properly integrate with .NET Standard.
 If supported by the tooling (Visual Studio 2017 or the dotnet CLI should be fine), it's advised to use the `netstandard1.3` target.
 When using .NET Standard, all features should be available on **Windows**, **Linux** and **Mac OS**, but unit and integration tests are only performed for the following frameworks on **Windows**:
+  - `netcoreapp2.2`
   - `netcoreapp2.1`
-  - `netcoreapp2.0`
   - `net461`
   - `net46`
   - `net47`
   - `net452`
 
+And on these frameworks in **Linux**:
+  - `netcoreapp2.2`
+
 There are no known issues with other configurations, but neither is their functionality tested.
+
+## Assembly Strong Naming & Usage in Signed Applications
+
+This module produces strong named assemblies when compiled. When consumers of this package require strongly named assemblies, for example when they
+themselves are signed, the outputs should work as-is.
+The key file to create the strong name is adjacent to the `csproj` file in the root of the source project. Please note that this does not increase
+security or provide tamper-proof binaries, as the key is available in the source code per 
+[Microsoft guidelines](https://msdn.microsoft.com/en-us/library/wd40t7ad(v=vs.110).aspx)
 
 ---
 
