@@ -14,7 +14,7 @@
     <PackageReference Include="Nuke.Azure.KeyVault" Version="0.5.0" />
     <PackageReference Include="Nuke.Common" Version="0.21.2" />
     <PackageReference Include="Nuke.DocFX" Version="0.2.0" />
-    <PackageReference Include="GitVersion.CommandLine.DotNetCore" Version="5.0.0-beta5.10">
+    <PackageReference Include="GitVersion.CommandLine.DotNetCore" Version="5.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
@@ -24,8 +24,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="ReportGenerator" Version="4.2.11" />
-    <PackageReference Include="docfx.console" Version="2.43.2">
+    <PackageReference Include="ReportGenerator" Version="4.2.12" />
+    <PackageReference Include="docfx.console" Version="2.44.0">
       <ExcludeAssets>build</ExcludeAssets>
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; native; contentfiles; analyzers</IncludeAssets>
