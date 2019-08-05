@@ -18,6 +18,8 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <RootNamespace>Dangl</RootNamespace>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Dangl.Common.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <!-- This is required for code coverage -->

@@ -2,6 +2,9 @@
 
 All notable changes to **Dangl.Common** are documented here.
 
+## v1.5.0:
+- The generated assemblies now have a strong name. This is a breaking change of the binary API and will require recompilation on all systems that consume this package. The strong name of the generated assembly allows compatibility with other, signed tools. Please note that this does not increase security or provide tamper-proof binaries, as the key is available in the source code per [Microsoft guidelines](https://msdn.microsoft.com/en-us/library/wd40t7ad(v=vs.110).aspx)
+
 ## v1.4.7:
 - Tests are now also run in Linux
 - Drop tests for `netcoreapp2.0`, add tests for `netcoreapp2.2`
