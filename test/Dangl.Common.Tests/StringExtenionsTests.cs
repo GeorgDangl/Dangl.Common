@@ -222,5 +222,26 @@ namespace Dangl.Common.Tests
                 Assert.Equal(expected, actual);
             }
         }
+
+        public class WithoutUnprintableCharacters
+        {
+            [Fact]
+            public void ReturnsNullForNullInput()
+            {
+                var actual = ((string)null).WithoutUnprintableCharacters();
+                Assert.Null(actual);
+            }
+
+            [Theory]
+            [InlineData("", "")]
+            [InlineData("Hello World", "Hello World")]
+            [InlineData("Hello\u0081 World", "Hello World")]
+            [InlineData("ÄÖÜäöü!?=", "ÄÖÜäöü!?=")]
+            public void RemovesUnprintableAsciiCharacters(string input, string expected)
+            {
+                var actual = input.WithoutUnprintableCharacters();
+                Assert.Equal(expected, actual);
+            }
+        }
     }
 }

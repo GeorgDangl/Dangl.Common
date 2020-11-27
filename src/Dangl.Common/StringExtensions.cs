@@ -121,5 +121,21 @@ namespace Dangl
 
             return Regex.Replace(value, "[\r\n]", string.Empty);
         }
+
+        /// <summary>
+        /// This removes unprintable characters from the string.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string WithoutUnprintableCharacters(this string value)
+        {
+            if (value == null)
+            {
+                return value;
+            }
+
+            var regexPatternNotPrintableAscii = "[\x00-\x08\x0B\x0C\x0E-\x1F\x81]";
+            return Regex.Replace(value, regexPatternNotPrintableAscii, string.Empty);
+        }
     }
 }

@@ -35,6 +35,7 @@ Encryption and decryption methods using AES and PBKDF2.
 * `Compress()` / `Decompress` methods using GZip and returning Base64 output
 * `WithMaxLength(int maxLength)` to limit the length of a string by dropping everything above a max length
 * `WithoutLinebreaks` to remove all linebreaks in a string
+* `WithoutUnprintableCharacters` to remove unprintable characters
 
 #### StringHashExtensions
 Extensions to produce MD5 and SHA256 values for strings.
