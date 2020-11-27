@@ -1,5 +1,5 @@
 # Dangl.Common
-[![Build Status](https://jenkins.dangl.me/buildStatus/icon?job=Dangl.Common/dev)](https://jenkins.dangl.me/job/Dangl.Common/job/dev/)
+[![Build Status](https://jenkins.dangl.me/buildStatus/icon?job=GeorgDangl%2FDangl.Common%2Fdev)](https://jenkins.dangl.me/job/GeorgDangl/job/Dangl.Common/job/dev/)  
 [![NuGet](https://img.shields.io/nuget/v/Dangl.Common.svg)](https://www.nuget.org/packages/Dangl.Common)
 [![MyGet](https://img.shields.io/myget/dangl/v/Dangl.Common.svg)]()
 
@@ -18,7 +18,7 @@ CI builds are available via MyGet
 
 ## Compatibility
 
-This project targets both `netstandard1.3` and `net45`. Due to .Net 4.5.2 being the currently latest supported version
+This project targets `netstandard2.0`, `netstandard1.3` and `net45`. Due to .Net 4.5.2 being the currently latest supported version
 by Microsoft and the xUnit test suite, no tests are run for `net45` and `net451`.
 
 ## Classes
@@ -35,6 +35,7 @@ Encryption and decryption methods using AES and PBKDF2.
 * `Compress()` / `Decompress` methods using GZip and returning Base64 output
 * `WithMaxLength(int maxLength)` to limit the length of a string by dropping everything above a max length
 * `WithoutLinebreaks` to remove all linebreaks in a string
+* `WithoutUnprintableCharacters` to remove unprintable characters
 
 #### StringHashExtensions
 Extensions to produce MD5 and SHA256 values for strings.
@@ -51,7 +52,7 @@ Collection that notifies of item changes (add, delete) as well as whenever a chi
 The library supports `netstandard1.3`, `netstandard2.0` as well as `net45`. Binaries for the full framework are separately generated for older build tools that do not properly integrate with .NET Standard.
 If supported by the tooling (Visual Studio 2017 or the dotnet CLI should be fine), it's advised to use the `netstandard1.3` target.
 When using .NET Standard, all features should be available on **Windows**, **Linux** and **Mac OS**, but unit and integration tests are only performed for the following frameworks on **Windows**:
-  - `netcoreapp2.2`
+  - `netcoreapp3.1`
   - `netcoreapp2.1`
   - `net461`
   - `net46`
@@ -59,7 +60,7 @@ When using .NET Standard, all features should be available on **Windows**, **Lin
   - `net452`
 
 And on these frameworks in **Linux**:
-  - `netcoreapp2.2`
+  - `netcoreapp3.1`
 
 There are no known issues with other configurations, but neither is their functionality tested.
 
