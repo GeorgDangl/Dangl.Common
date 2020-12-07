@@ -47,6 +47,10 @@ Extensions to produce MD5 and SHA256 values for strings.
 
 Collection that notifies of item changes (add, delete) as well as whenever a child item that implements INotifyPropertyChanged is changed.
 
+#### ObservableDictionary<TKey, TValue>
+
+This is internally using a Dictionary<TKey, TValue> and raises events when elements are changed.
+
 ## Supported Frameworks
 
 The library supports `netstandard1.3`, `netstandard2.0` as well as `net45`. Binaries for the full framework are separately generated for older build tools that do not properly integrate with .NET Standard.

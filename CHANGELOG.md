@@ -2,6 +2,9 @@
 
 All notable changes to **Dangl.Common** are documented here.
 
+## v1.6.0:
+- Add `ObservableDictionary<TKey, TValue>` class
+
 ## v1.5.1:
 - Drop tests for `netcoreapp2.2` and add tests for `netcoreapp3.1`
 - Add `StringExtensions.WithoutUnprintableCharacters()`
