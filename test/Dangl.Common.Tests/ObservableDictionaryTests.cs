@@ -12,8 +12,8 @@ namespace Dangl.Common.Tests
         private bool _eventCatched;
         private int _eventCatchedCount;
         private NotifyCollectionChangedAction _action;
-        private List<string> _newItems = new List<string>();
-        private List<string> _oldItems = new List<string>();
+        private List<KeyValuePair<string, string>> _newItems = new List<KeyValuePair<string, string>>();
+        private List<KeyValuePair<string, string>> _oldItems = new List<KeyValuePair<string, string>>();
 
         [Fact]
         public void CanNotAddNull()
@@ -111,11 +111,11 @@ namespace Dangl.Common.Tests
             _eventCatched = true;
             if (e.NewItems != null)
             {
-                _newItems.AddRange(e.NewItems.Cast<string>());
+                _newItems.AddRange(e.NewItems.Cast<KeyValuePair<string, string>>());
             }
             if (e.OldItems != null)
             {
-                _oldItems.AddRange(e.OldItems.Cast<string>());
+                _oldItems.AddRange(e.OldItems.Cast<KeyValuePair<string, string>>());
             }
             _action = e.Action;
         }

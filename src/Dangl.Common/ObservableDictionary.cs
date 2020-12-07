@@ -27,7 +27,7 @@ namespace Dangl
                 if (_dictionary.TryGetValue(key, out var existing))
                 {
                     _dictionary[key] = value;
-                    var eventArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, value, existing);
+                    var eventArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, new KeyValuePair<TKey, TValue>(key, value), new KeyValuePair<TKey, TValue>(key, existing));
                     CollectionChanged?.Invoke(this, eventArgs);
                 }
                 else
@@ -59,6 +59,7 @@ namespace Dangl
 
         /// <summary>
         /// This event is raised when items in the underlying <see cref="Dictionary{TKey, TValue}"/> change.
+        /// The elements reported in the event arguments are of type <see cref="KeyValuePair{TKey, TValue}"/>.
         /// </summary>
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
@@ -70,7 +71,7 @@ namespace Dangl
         public void Add(TKey key, TValue value)
         {
             _dictionary.Add(key, value);
-            var eventArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, value);
+            var eventArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new KeyValuePair<TKey, TValue>(key, value));
             CollectionChanged?.Invoke(this, eventArgs);
         }
 
@@ -146,7 +147,7 @@ namespace Dangl
         {
             if (_dictionary.TryGetValue(key, out var oldValue))
             {
-                var eventArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, oldValue);
+                var eventArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, new KeyValuePair<TKey, TValue>(key, oldValue));
                 var hasRemoved = _dictionary.Remove(key);
                 if (hasRemoved)
                 {
