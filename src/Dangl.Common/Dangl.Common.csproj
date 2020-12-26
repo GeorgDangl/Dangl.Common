@@ -6,7 +6,7 @@
     <PackageLicenseUrl>https://github.com/GeorgDangl/Dangl.Common/blob/dev/LICENSE.md</PackageLicenseUrl>
     <AssemblyTitle>Dangl.Common</AssemblyTitle>
     <Authors>Georg Dangl</Authors>
-    <TargetFrameworks>netstandard2.0;netstandard1.3;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard1.3;net45;net40</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Dangl.Common</AssemblyName>
     <PackageId>Dangl.Common</PackageId>
@@ -20,6 +20,10 @@
     <RootNamespace>Dangl</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Dangl.Common.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net40'">
+    <DefineConstants>$(DefineConstants);NET40</DefineConstants>
   </PropertyGroup>
 
   <!-- This is required for code coverage -->
