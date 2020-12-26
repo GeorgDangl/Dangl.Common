@@ -2,6 +2,9 @@
 
 All notable changes to **Dangl.Common** are documented here.
 
+## v1.6.1:
+- Add `net40` as target framework
+
 ## v1.6.0:
 - Add `ObservableDictionary<TKey, TValue>` class
 
