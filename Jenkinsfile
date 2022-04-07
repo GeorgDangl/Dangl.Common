@@ -67,7 +67,7 @@ pipeline {
 									xUnitDotNet(deleteOutputFiles: true, failIfNotNew: true, pattern: '**/*testresults.xml', stopProcessingIfError: false)
 								])
 							cobertura(
-								coberturaReportFile: 'output/cobertura_coverage.xml',
+								coberturaReportFile: 'output/Cobertura.xml',
 								failUnhealthy: false,
 								failUnstable: false,
 								maxNumberOfBuilds: 0,

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -16,10 +16,6 @@
     <PackageReference Include="Nuke.Common" Version="6.0.1" />
     <PackageReference Include="Nuke.WebDocu" Version="4.0.0" />
     <PackageReference Include="Nuke.GitHub" Version="3.0.0" />
-    <PackageReference Include="JetBrains.dotCover.CommandLineTools" Version="2021.3.4">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="ReportGenerator" Version="5.1.4" />
     <PackageReference Include="docfx.console" Version="2.59.1">
       <ExcludeAssets>build</ExcludeAssets>
