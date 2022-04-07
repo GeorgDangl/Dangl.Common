@@ -23,7 +23,6 @@ using static Nuke.Common.Tools.DocFX.DocFXTasks;
 using static Nuke.Common.Tools.DotCover.DotCoverTasks;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
-using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 using static Nuke.GitHub.ChangeLogExtensions;
@@ -53,7 +52,7 @@ class Build : NukeBuild
 
     private string _configuration;
     [Parameter]
-    string Configuration = Host == HostType.Console? "Debug" : "Release"; // Defaults to "Release" in CI server
+    string Configuration = IsLocalBuild ? "Debug" : "Release"; // Defaults to "Release" in CI server
 
     [GitVersion(Framework = "netcoreapp3.1")] readonly GitVersion GitVersion;
     [GitRepository] readonly GitRepository GitRepository;
@@ -132,7 +131,7 @@ class Build : NukeBuild
                             .Select(targetFramework => cc
                                 .SetFramework(targetFramework)
                                 .SetProcessWorkingDirectory(Path.GetDirectoryName(testProject))
-                                .SetLogger($"xunit;LogFilePath={OutputDirectory / $"{testRun++}_testresults-{targetFramework}.xml"}")))),
+                                .SetLoggers($"xunit;LogFilePath={OutputDirectory / $"{testRun++}_testresults-{targetFramework}.xml"}")))),
                                 degreeOfParallelism: Environment.ProcessorCount);
             }
             finally
@@ -150,7 +149,7 @@ class Build : NukeBuild
                 DotNetTest(x => x
                    .SetTestAdapterPath(".")
                    .SetFramework("netcoreapp3.1")
-                   .SetLogger($"xunit;LogFilePath={OutputDirectory / $"testresults-linux.xml"}")
+                   .SetLoggers($"xunit;LogFilePath={OutputDirectory / $"testresults-linux.xml"}")
                    // See here for more information:
                    // https://github.com/dotnet/cli/issues/9397
                    // There's a bug where the 'dotnet test' process hangs for 15 minutes after
@@ -203,7 +202,7 @@ class Build : NukeBuild
 
             // This is the report that's pretty and visualized in Jenkins
             ReportGenerator(c => c
-                .SetFramework("netcoreapp3.0")
+                .SetFramework("net5.0")
                 .SetReports(OutputDirectory / "coverage.xml")
                 .SetTargetDirectory(OutputDirectory / "CoverageReport"));
 
