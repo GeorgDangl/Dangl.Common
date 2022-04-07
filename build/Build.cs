@@ -1,4 +1,4 @@
-﻿using Nuke.CoberturaConverter;
+using Nuke.CoberturaConverter;
 using Nuke.Common.Git;
 using Nuke.Common.Tools.DocFX;
 using Nuke.Common.Tools.DotCover;
@@ -148,7 +148,7 @@ class Build : NukeBuild
             {
                 DotNetTest(x => x
                    .SetTestAdapterPath(".")
-                   .SetFramework("netcoreapp3.1")
+                   .SetFramework("net5.0")
                    .SetLoggers($"xunit;LogFilePath={OutputDirectory / $"testresults-linux.xml"}")
                    // See here for more information:
                    // https://github.com/dotnet/cli/issues/9397
