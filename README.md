@@ -3,8 +3,6 @@
 [![NuGet](https://img.shields.io/nuget/v/Dangl.Common.svg)](https://www.nuget.org/packages/Dangl.Common)
 [![MyGet](https://img.shields.io/myget/dangl/v/Dangl.Common.svg)]()
 
-[![Built with Nuke](http://nuke.build/rounded)](https://www.nuke.build)  
-
 This library contains common, shared functionality.
 
 [Link to documentation](https://docs.dangl-it.com/Projects/Dangl.Common)  
