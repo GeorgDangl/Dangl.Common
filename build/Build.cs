@@ -200,12 +200,6 @@ class Build : NukeBuild
                 .SetOutputFile(OutputDirectory / "coverage.xml")
                 .SetReportType(DotCoverReportType.DetailedXml));
 
-            // This is the report that's pretty and visualized in Jenkins
-            ReportGenerator(c => c
-                .SetFramework("net5.0")
-                .SetReports(OutputDirectory / "coverage.xml")
-                .SetTargetDirectory(OutputDirectory / "CoverageReport"));
-
             // This is the report in Cobertura format that integrates so nice in Jenkins
             // dashboard and allows to extract more metrics and set build health based
             // on coverage readings
