@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using Xunit;
 
@@ -101,7 +101,7 @@ namespace Dangl.Common.Tests
         }
 
         [Fact]
-        public void CollectionItemChangedNotified_DetachEventWhenItemRemovedFromList()
+        public void CollectionItemChangedNotified_DetachEventWhenItemRemovedFromList_ViaRemove()
         {
             var testCollection = new TrulyObservableCollection<BindableBaseMock>();
             var mockInstance = new BindableBaseMock();
@@ -113,6 +113,27 @@ namespace Dangl.Common.Tests
             _eventCatched = false;
             Assert.False(_eventCatched);
             testCollection.Remove(mockInstance);
+            Assert.True(_eventCatched);
+            _eventCatched = false;
+            Assert.False(_eventCatched);
+            mockInstance.StringProperty = "Second Change";
+            Assert.False(_eventCatched);
+        }
+
+        [Fact]
+        public void CollectionItemChangedNotified_DetachEventWhenItemRemovedFromList_ViaClear()
+        {
+            var testCollection = new TrulyObservableCollection<BindableBaseMock>();
+            var mockInstance = new BindableBaseMock();
+            testCollection.Add(mockInstance);
+            testCollection.CollectionChanged += TestCollection_CollectionChanged;
+            Assert.False(_eventCatched);
+            mockInstance.StringProperty = "First Change";
+            Assert.True(_eventCatched);
+            _eventCatched = false;
+            Assert.False(_eventCatched);
+            testCollection.Clear();
+
             Assert.True(_eventCatched);
             _eventCatched = false;
             Assert.False(_eventCatched);

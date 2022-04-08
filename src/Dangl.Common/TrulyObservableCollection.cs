@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Taken from simon's answer at:
  * http://stackoverflow.com/questions/1427471/observablecollection-not-noticing-when-item-in-it-changes-even-with-inotifyprop
  *
@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 
 namespace Dangl
 {
@@ -47,6 +48,23 @@ namespace Dangl
                     instantiatedItem.PropertyChanged += ItemPropertyChanged;
                 }
             }
+        }
+
+        /// <summary>
+        /// This first removes all event subscriptions to 'PropertyChanged' on the
+        /// 'Items' and then calls the base method.
+        /// </summary>
+        protected override void ClearItems()
+        {
+            if (Items != null)
+            {
+                foreach (var item in Items.Where(i => i != null))
+                {
+                    item.PropertyChanged -= ItemPropertyChanged;
+                }
+            }
+
+            base.ClearItems();
         }
 
         private void FullObservableCollectionCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
