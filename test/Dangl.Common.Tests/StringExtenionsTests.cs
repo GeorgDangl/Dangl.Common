@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Dangl.Common.Tests
 {
-    public class StringExtenionsTests
+    public static class StringExtenionsTests
     {
         public class FromBase64
         {
