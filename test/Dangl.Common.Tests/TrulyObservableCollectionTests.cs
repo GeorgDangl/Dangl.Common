@@ -1,3 +1,4 @@
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using Xunit;
@@ -178,6 +179,148 @@ namespace Dangl.Common.Tests
                 Assert.False(changeDetected);
                 origin[0].StringProperty = "Another Value";
                 Assert.True(changeDetected);
+            }
+        }
+
+        public class AddRange
+        {
+            [Fact]
+            public void ArgumentNullExceptionForNullItems()
+            {
+                var collection = new TrulyObservableCollection<BindableBaseMock>();
+                Assert.Throws<ArgumentNullException>("collection", () => collection.AddRange(null));
+            }
+
+            [Fact]
+            public void NoEventAndNoChangesWhenAddingEmptyCollection()
+            {
+                var collection = new TrulyObservableCollection<BindableBaseMock>();
+                var hasRaised = false;
+                collection.CollectionChanged += (e, s) => hasRaised = true;
+                collection.AddRange(new List<BindableBaseMock>());
+                Assert.False(hasRaised);
+
+            }
+
+            [Fact]
+            public void RaisesEventWhenAddingNewItems()
+            {
+                var collection = new TrulyObservableCollection<BindableBaseMock>();
+                var hasRaised = false;
+                collection.CollectionChanged += (e, s) => hasRaised = true;
+                collection.AddRange(new[] { new BindableBaseMock() });
+                Assert.True(hasRaised);
+            }
+
+            [Fact]
+            public void AddsItems()
+            {
+                var collection = new TrulyObservableCollection<BindableBaseMock>();
+                Assert.Empty(collection);
+                collection.AddRange(new[] { new BindableBaseMock() });
+                Assert.Single(collection);
+            }
+        }
+
+        public class InsertRange
+        {
+            [Fact]
+            public void ArgumentNullExceptionForNullItems()
+            {
+                var collection = new TrulyObservableCollection<BindableBaseMock>();
+                Assert.Throws<ArgumentNullException>("collection", () => collection.InsertRange(0, null));
+            }
+
+            [Fact]
+            public void ArgumentOutOfRangeExceptionForNegativeIndex()
+            {
+                var collection = new TrulyObservableCollection<BindableBaseMock>();
+                var items = new List<BindableBaseMock> { new BindableBaseMock() };
+                Assert.Throws<ArgumentOutOfRangeException>("index", () => collection.InsertRange(-1, items));
+            }
+
+            [Fact]
+            public void ArgumentOutOfRangeExceptionForTooHighIndex()
+            {
+                var collection = new TrulyObservableCollection<BindableBaseMock>();
+                var items = new List<BindableBaseMock> { new BindableBaseMock() };
+                Assert.Throws<ArgumentOutOfRangeException>("index", () => collection.InsertRange(1, items));
+            }
+
+            [Fact]
+            public void RaisesEventWhenAddingNewItems_SingleNewItem()
+            {
+                var collection = new TrulyObservableCollection<BindableBaseMock>();
+                var eventCount = 0;
+                collection.CollectionChanged += (e, s) => eventCount++;
+                collection.InsertRange(0, new[] { new BindableBaseMock() });
+                Assert.Equal(1, eventCount);
+            }
+
+            [Fact]
+            public void RaisesEventWhenAddingNewItems_MultipleNewItems()
+            {
+                var collection = new TrulyObservableCollection<BindableBaseMock>();
+                var eventCount = 0;
+                collection.CollectionChanged += (e, s) => eventCount++;
+                collection.InsertRange(0, new[] { new BindableBaseMock(), new BindableBaseMock() });
+                Assert.Equal(1, eventCount);
+            }
+
+            [Fact]
+            public void AddsItems_AtEnd()
+            {
+                var collection = new TrulyObservableCollection<BindableBaseMock>();
+                collection.Add(new BindableBaseMock { StringProperty = "Prev" });
+                collection.Add(new BindableBaseMock { StringProperty = "Prev" });
+                collection.Add(new BindableBaseMock { StringProperty = "Prev" });
+                collection.InsertRange(3, new List<BindableBaseMock> { new BindableBaseMock { StringProperty = "New" } });
+                Assert.Equal(4, collection.Count);
+                Assert.Equal("New", collection[3].StringProperty);
+            }
+
+            [Fact]
+            public void AddsItems_AtStart()
+            {
+                var collection = new TrulyObservableCollection<BindableBaseMock>();
+                collection.Add(new BindableBaseMock { StringProperty = "Prev" });
+                collection.Add(new BindableBaseMock { StringProperty = "Prev" });
+                collection.Add(new BindableBaseMock { StringProperty = "Prev" });
+                collection.InsertRange(0, new List<BindableBaseMock> { new BindableBaseMock { StringProperty = "New" } });
+                Assert.Equal(4, collection.Count);
+                Assert.Equal("New", collection[0].StringProperty);
+            }
+
+            [Fact]
+            public void AddsItems_Inside()
+            {
+                var collection = new TrulyObservableCollection<BindableBaseMock>();
+                collection.Add(new BindableBaseMock { StringProperty = "Prev" });
+                collection.Add(new BindableBaseMock { StringProperty = "Prev" });
+                collection.Add(new BindableBaseMock { StringProperty = "Prev" });
+                collection.InsertRange(2, new List<BindableBaseMock> { new BindableBaseMock { StringProperty = "New" } });
+                Assert.Equal(4, collection.Count);
+                Assert.Equal("New", collection[2].StringProperty);
+            }
+
+            [Fact]
+            public void SubscribesToEventsInNewItemsAddedAndCorrectlyManagesEventLifetime()
+            {
+                var collection = new TrulyObservableCollection<BindableBaseMock>();
+                var changedCount = 0;
+                collection.CollectionChanged += (s, e) => changedCount++;
+                var newItem = new BindableBaseMock();
+                collection.InsertRange(0, new [] { newItem });
+
+                changedCount = 0;
+                newItem.StringProperty = "New";
+                Assert.Equal(1, changedCount);
+
+                collection.Clear();
+                Assert.Equal(2, changedCount);
+
+                newItem.StringProperty = "Another";
+                Assert.Equal(2, changedCount);
             }
         }
 
