@@ -2,6 +2,10 @@
 
 All notable changes to **Dangl.Common** are documented here.
 
+## v1.6.2:
+- Fixed a bug where `TrulyObservableCollection.Clear()` kept event subscriptions to child elements alive, those are now properly unsubscribed
+- Added `TrulyObservableCollection.AddRange()` and `TrulyObservableCollection.InsertRange()`
+
 ## v1.6.1:
 - Add `net40` as target framework
 

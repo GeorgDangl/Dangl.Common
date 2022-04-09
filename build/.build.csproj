@@ -2,25 +2,22 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <RootNamespace></RootNamespace>
     <IsPackable>False</IsPackable>
     <NoWarn>CS0649;CS0169</NoWarn>
+    <NukeTelemetryVersion>1</NukeTelemetryVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageDownload Include="GitVersion.Tool" Version="[5.5.1]"></PackageDownload>
+    <PackageDownload Include="GitVersion.Tool" Version="[5.8.1]"></PackageDownload>
     <PackageReference Include="Dangl.Nuke.CoberturaConverter" Version="2.0.0" />
-    <PackageReference Include="Nuke.Common" Version="5.0.2" />
-    <PackageReference Include="Nuke.WebDocu" Version="2.0.0" />
-    <PackageReference Include="Nuke.GitHub" Version="2.0.0" />
-    <PackageReference Include="JetBrains.dotCover.CommandLineTools" Version="2020.2.4">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="ReportGenerator" Version="4.8.1" />
-    <PackageReference Include="docfx.console" Version="2.56.5">
+    <PackageReference Include="Nuke.Common" Version="6.0.1" />
+    <PackageReference Include="Nuke.WebDocu" Version="4.0.0" />
+    <PackageReference Include="Nuke.GitHub" Version="3.0.0" />
+    <PackageReference Include="ReportGenerator" Version="5.1.4" />
+    <PackageReference Include="docfx.console" Version="2.59.1">
       <ExcludeAssets>build</ExcludeAssets>
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; native; contentfiles; analyzers</IncludeAssets>
@@ -29,7 +26,6 @@
 
   <ItemGroup>
     <NukeMetadata Include="**/*.json" Exclude="bin/**;obj/**" />
-    <None Remove="*.csproj.DotSettings;*.ref.*.txt" />
   </ItemGroup>
 
 </Project>
