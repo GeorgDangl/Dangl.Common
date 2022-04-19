@@ -149,7 +149,7 @@ class Build : NukeBuild
             {
                 DotNetTest(x => x
                    .SetTestAdapterPath(".")
-                   .SetFramework("net5.0")
+                   .SetFramework("net6.0")
                    .SetLoggers($"xunit;LogFilePath={OutputDirectory / $"testresults-linux.xml"}")
                    // See here for more information:
                    // https://github.com/dotnet/cli/issues/9397

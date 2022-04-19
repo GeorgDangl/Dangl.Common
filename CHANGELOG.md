@@ -2,6 +2,10 @@
 
 All notable changes to **Dangl.Common** are documented here.
 
+## v1.6.3:
+- Fixed a bug when decrypting and / or decompressing long strings with a pattern that resembles random strings, e.g. long Base64 strings. This only applies for .NET 6 runtimes
+- Added tests for `net6.0`
+
 ## v1.6.2:
 - Fixed a bug where `TrulyObservableCollection.Clear()` kept event subscriptions to child elements alive, those are now properly unsubscribed
 - Added `TrulyObservableCollection.AddRange()` and `TrulyObservableCollection.InsertRange()`
