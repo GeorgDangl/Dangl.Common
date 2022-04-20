@@ -86,7 +86,21 @@ namespace Dangl
                 ms.Position = 0;
                 using (var zip = new GZipStream(ms, CompressionMode.Decompress))
                 {
-                    zip.Read(buffer, 0, buffer.Length);
+                    // For the actual reading, please see below:
+                    // https://stackoverflow.com/questions/70933327/net-6-failing-at-decompress-large-gzip-text
+                    // There was an issue discovered with a Dangl.AVA project in JSON format, which
+                    // surfaced when tests that worked fine in .NET 5 failed with .NET 6. The errorenous
+                    // decompression occured during an embedded image in base64 format.
+                    int totalRead = 0;
+                    while (totalRead < buffer.Length)
+                    {
+                        int bytesRead = zip.Read(buffer, totalRead, buffer.Length - totalRead);
+                        if (bytesRead == 0)
+                        {
+                            break;
+                        }
+                        totalRead += bytesRead;
+                    }
                 }
                 return Encoding.UTF8.GetString(buffer);
             }
