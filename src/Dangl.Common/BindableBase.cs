@@ -64,7 +64,7 @@ namespace Dangl
         ///     True if the value was changed, false if the existing value matched the
         ///     desired value.
         /// </returns>
-        protected bool SetProperty<T>(ref T storage, T value, PropertyChangedEventHandler changeEventHook, [CallerMemberName] String propertyName = null) where T : INotifyPropertyChanged
+        protected bool SetProperty<T>(ref T storage, T value, PropertyChangedEventHandler changeEventHook, [CallerMemberName] string propertyName = null) where T : INotifyPropertyChanged
         {
             if (Equals(storage, value))
             {
@@ -102,7 +102,7 @@ namespace Dangl
         ///     True if the value was changed, false if the existing value matched the
         ///     desired value.
         /// </returns>
-        protected bool SetProperty<T>(ref T storage, T value, NotifyCollectionChangedEventHandler changeEventHook, [CallerMemberName] String propertyName = null) where T : INotifyCollectionChanged
+        protected bool SetProperty<T>(ref T storage, T value, NotifyCollectionChangedEventHandler changeEventHook, [CallerMemberName] string propertyName = null) where T : INotifyCollectionChanged
         {
             if (Equals(storage, value))
             {
