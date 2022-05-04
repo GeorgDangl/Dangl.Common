@@ -24,6 +24,10 @@ by Microsoft and the xUnit test suite, no tests are run for `net45` and `net451`
 #### BindableBase
 Base class for property binding with INotifyPropertyChanged.
 
+#### ObjectExtensions
+
+The `ObjectExtensions.DeepClone()` method may be used to create copies or clones of objects that are value but not reference equal.
+
 #### StringEncryptionExtensions
 Encryption and decryption methods using AES and PBKDF2.
 
