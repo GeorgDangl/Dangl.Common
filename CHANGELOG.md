@@ -2,6 +2,10 @@
 
 All notable changes to **Dangl.Common** are documented here.
 
+## v1.7.0:
+- Added `ObjectExtensions.DeepClone()` to allow easy cloning of objects
+- The build for `netstandard1.3` has a new dependency on _System.Reflection.TypeExtensions_
+
 ## v1.6.3:
 - Fixed a bug when decrypting and / or decompressing long strings with a pattern that resembles random strings, e.g. long Base64 strings. This only applies for .NET 6 runtimes
 - Added tests for `net6.0`
