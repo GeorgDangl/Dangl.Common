@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -43,9 +43,9 @@ namespace Dangl.ObjectCopy
                 return originalObject;
             }
 
-            if (visited.ContainsKey(originalObject))
+            if (visited.TryGetValue(originalObject, out var previouslyVisitedObject))
             {
-                return visited[originalObject];
+                return previouslyVisitedObject;
             }
 
             if (typeof(Delegate).IsAssignableFrom(typeToReflect))
