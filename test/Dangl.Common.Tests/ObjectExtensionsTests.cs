@@ -196,6 +196,22 @@ namespace Dangl.Common.Tests
                 Assert.Null(actual.Action);
             }
 
+            [Fact]
+            public void CanCopyComplexObjectWithNullProperty()
+            {
+                var source = new TestObject();
+                source.Name = "Test";
+                source.Nested = null;
+
+                var actual = source.DeepCopy();
+
+                Assert.False(ReferenceEquals(source, actual));
+                Assert.Equal("Test", source.Name);
+                Assert.Equal("Test", actual.Name);
+                Assert.Null(source.Nested);
+                Assert.Null(actual.Nested);
+            }
+
             private class TestObject
             {
                 public string Name { get; set; }

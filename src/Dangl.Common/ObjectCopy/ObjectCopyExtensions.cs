@@ -10,7 +10,8 @@ namespace Dangl.ObjectCopy
     {
         public static object DeepCopy(this object originalObject)
         {
-            return InternalCopy(originalObject, new Dictionary<object, object>(new ReferenceEqualityComparer()));
+            return InternalCopy(originalObject,
+                new Dictionary<object, object>());
         }
 
         private static readonly MethodInfo CloneMethod = typeof(object).GetMethod("MemberwiseClone", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -43,9 +44,9 @@ namespace Dangl.ObjectCopy
                 return originalObject;
             }
 
-            if (visited.ContainsKey(originalObject))
+            if (visited.TryGetValue(originalObject, out var previouslyVisitedObject))
             {
-                return visited[originalObject];
+                return previouslyVisitedObject;
             }
 
             if (typeof(Delegate).IsAssignableFrom(typeToReflect))
