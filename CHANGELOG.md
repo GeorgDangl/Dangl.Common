@@ -2,6 +2,9 @@
 
 All notable changes to **Dangl.Common** are documented here.
 
+## v1.7.1:
+- The `ObjectExtensions.DeepClone()` was optimized to be faster, especially for large object trees
+
 ## v1.7.0:
 - Added `ObjectExtensions.DeepClone()` to allow easy cloning of objects
 - The build for `netstandard1.3` has a new dependency on _System.Reflection.TypeExtensions_
