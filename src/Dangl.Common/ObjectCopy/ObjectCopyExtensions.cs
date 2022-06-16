@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -10,7 +10,8 @@ namespace Dangl.ObjectCopy
     {
         public static object DeepCopy(this object originalObject)
         {
-            return InternalCopy(originalObject, new Dictionary<object, object>(new ReferenceEqualityComparer()));
+            return InternalCopy(originalObject,
+                new Dictionary<object, object>());
         }
 
         private static readonly MethodInfo CloneMethod = typeof(object).GetMethod("MemberwiseClone", BindingFlags.NonPublic | BindingFlags.Instance);
