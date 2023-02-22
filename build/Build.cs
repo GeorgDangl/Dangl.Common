@@ -149,7 +149,7 @@ class Build : NukeBuild
             {
                 DotNetTest(x => x
                    .SetTestAdapterPath(".")
-                   .SetFramework("net6.0")
+                   .SetFramework("net7.0")
                    .SetLoggers($"xunit;LogFilePath={OutputDirectory / $"testresults-linux.xml"}")
                    // See here for more information:
                    // https://github.com/dotnet/cli/issues/9397
@@ -204,7 +204,7 @@ class Build : NukeBuild
             // Merge coverage reports, otherwise they might not be completely
             // picked up by Jenkins
             ReportGenerator(c => c
-                .SetFramework("net5.0")
+                .SetFramework("net6.0")
                 .SetReports(OutputDirectory / "**/*cobertura.xml")
                 .SetTargetDirectory(OutputDirectory)
                 .SetReportTypes(ReportTypes.Cobertura));

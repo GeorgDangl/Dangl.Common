@@ -59,16 +59,15 @@ The library supports `netstandard1.3`, `netstandard2.0` as well as `net45` and `
 The .NET 4.0 target is for compatibility reasons, it is not tested and requires .NET compilers for version 4.5 or newer to properly function.
 If supported by the tooling (Visual Studio 2017 or the dotnet CLI should be fine), it's advised to use the `netstandard1.3` target.
 When using .NET Standard, all features should be available on **Windows**, **Linux** and **Mac OS**, but unit and integration tests are only performed for the following frameworks on **Windows**:
+  - `net7.0`
   - `net6.0`
-  - `net5.0`
-  - `netcoreapp3.1`
   - `net461`
   - `net46`
   - `net47`
   - `net452`
 
 And on these frameworks in **Linux**:
-  - `net6.0`
+  - `net7.0`
 
 There are no known issues with other configurations, but neither is their functionality tested.
 
