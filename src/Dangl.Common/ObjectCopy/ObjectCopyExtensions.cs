@@ -20,7 +20,7 @@ namespace Dangl.ObjectCopy
         {
             if (type == typeof(string))
             {
-                return true;         
+                return true;
             }
 
 #if NETSTANDARD_1_3
