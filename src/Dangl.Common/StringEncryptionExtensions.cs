@@ -40,7 +40,11 @@ namespace Dangl
             var saltBytes = new byte[SALT_SIZE_BYTES];
             var randomNumberGenerator = RandomNumberGenerator.Create();
             randomNumberGenerator.GetBytes(saltBytes);
+#if MODERN_NET
+            var passwordBytes = Rfc2898DeriveBytes.Pbkdf2(password, saltBytes, pbkdf2Iterations, HashAlgorithmName.SHA256, KEY_SIZE_BITS / 8);
+#else
             var passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, pbkdf2Iterations).GetBytes(KEY_SIZE_BITS / 8);
+#endif
             var aes = Aes.Create();
             System.Diagnostics.Debug.Assert(aes != null);
             aes.Mode = CipherMode.CBC;
@@ -118,7 +122,12 @@ namespace Dangl
                 memoryStream.Position = 0;
                 var saltBytes = StringToByteArray(saltRaw);
                 var initVectorBytes = StringToByteArray(keyRaw);
-                var passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, Convert.ToInt32(pbkdf2Iterations)).GetBytes(KEY_SIZE_BITS / 8);
+#if MODERN_NET
+                var passwordBytes = Rfc2898DeriveBytes.Pbkdf2(password, saltBytes, Convert.ToInt32(pbkdf2Iterations), HashAlgorithmName.SHA256, KEY_SIZE_BITS / 8);
+#else
+                var passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, Convert.ToInt32(pbkdf2Iterations)).GetBytes
+                (KEY_SIZE_BITS / 8);
+#endif
                 var aes = Aes.Create();
                 System.Diagnostics.Debug.Assert(aes != null);
                 aes.Mode = CipherMode.CBC;

@@ -26,6 +26,10 @@
     <DefineConstants>$(DefineConstants);NET40</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net10.0'">
+    <DefineConstants>$(DefineConstants);MODERN_NET</DefineConstants>
+  </PropertyGroup>
+
   <!-- This is required for code coverage -->
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <DebugType>portable</DebugType>
