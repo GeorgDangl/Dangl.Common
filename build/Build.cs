@@ -59,8 +59,8 @@ class Build : FalloutBuild
     AbsolutePath SourceDirectory => SolutionDirectory / "src";
 
     [AzureKeyVaultSecret] string DocuBaseUrl;
-    [AzureKeyVaultSecret] string PublicMyGetSource;
-    [AzureKeyVaultSecret] string PublicMyGetApiKey;
+    [AzureKeyVaultSecret] readonly string DanglPublicFeedSource;
+    [AzureKeyVaultSecret] readonly string FeedzAccessToken;
     [AzureKeyVaultSecret] string NuGetApiKey;
     [AzureKeyVaultSecret("DanglCommon-DocuApiKey")] string DocuApiKey;
     [AzureKeyVaultSecret] string GitHubAuthenticationToken;
@@ -279,8 +279,8 @@ class Build : FalloutBuild
 
     Target Push => _ => _
         .DependsOn(Pack)
-        .Requires(() => PublicMyGetSource)
-        .Requires(() => PublicMyGetApiKey)
+        .Requires(() => DanglPublicFeedSource)
+        .Requires(() => FeedzAccessToken)
         .Requires(() => NuGetApiKey)
         .Requires(() => Configuration.EqualsOrdinalIgnoreCase("Release"))
         .Executes(() =>
@@ -294,8 +294,8 @@ class Build : FalloutBuild
                 {
                     DotNetNuGetPush(s => s
                         .SetTargetPath(x)
-                        .SetSource(PublicMyGetSource)
-                        .SetApiKey(PublicMyGetApiKey));
+                        .SetSource(DanglPublicFeedSource)
+                        .SetApiKey(FeedzAccessToken));
 
                     if (GitVersion.BranchName.Equals("master") || GitVersion.BranchName.Equals("origin/master"))
                     {
