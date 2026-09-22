@@ -3,7 +3,7 @@
 All notable changes to **Dangl.Common** are documented here.
 
 ## v1.7.2:
-- Dropped tests for `netcoreapp3.1` and `net5.0`, added tests for `net7.0`
+- Dropped tests for `netcoreapp3.1` and `net5.0`, added tests for `net10.0` and `net9.0`
 
 ## v1.7.1:
 - The `ObjectExtensions.DeepClone()` was optimized to be faster, especially for large object trees

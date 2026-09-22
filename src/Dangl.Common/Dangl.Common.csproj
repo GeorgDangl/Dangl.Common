@@ -6,7 +6,7 @@
     <PackageLicenseUrl>https://github.com/GeorgDangl/Dangl.Common/blob/dev/LICENSE.md</PackageLicenseUrl>
     <AssemblyTitle>Dangl.Common</AssemblyTitle>
     <Authors>Georg Dangl</Authors>
-    <TargetFrameworks>netstandard2.0;netstandard1.3;net45;net40</TargetFrameworks>
+    <TargetFrameworks>net10.0;netstandard2.0;netstandard1.3;net45;net40</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Dangl.Common</AssemblyName>
     <PackageId>Dangl.Common</PackageId>
