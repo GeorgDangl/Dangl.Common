@@ -16,7 +16,7 @@ CI builds are available via MyGet
 
 ## Compatibility
 
-This project targets `net10.0`, `netstandard2.0`, `netstandard1.3` and `net45`. Due to .Net 4.5.2 being the currently latest supported version
+This project targets `net10.0`, `netstandard2.0` and `net45`. Due to .Net 4.5.2 being the currently latest supported version
 by Microsoft and the xUnit test suite, no tests are run for `net45` and `net451`.
 
 ## Classes
@@ -55,7 +55,7 @@ This is internally using a Dictionary<TKey, TValue> and raises events when eleme
 
 ## Supported Frameworks
 
-The library supports `netstandard1.3`, `netstandard2.0` as well as `net45` and `net40`. Binaries for the full framework are separately generated for older build tools that do not properly integrate with .NET Standard.
+The library supports `net10.0`, `netstandard2.0` as well as `net45` and `net40`. Binaries for the full framework are separately generated for older build tools that do not properly integrate with .NET Standard.
 The .NET 4.0 target is for compatibility reasons, it is not tested and requires .NET compilers for version 4.5 or newer to properly function.
 If supported by the tooling (Visual Studio 2017 or the dotnet CLI should be fine), it's advised to use the `netstandard1.3` target.
 When using .NET Standard, all features should be available on **Windows**, **Linux** and **Mac OS**, but unit and integration tests are only performed for the following frameworks on **Windows**:

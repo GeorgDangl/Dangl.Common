@@ -23,12 +23,7 @@ namespace Dangl.ObjectCopy
                 return true;
             }
 
-#if NETSTANDARD_1_3
-            return type.GetTypeInfo().IsValueType & type.GetTypeInfo().IsPrimitive;
-
-#else
             return type.IsValueType & type.IsPrimitive;
-#endif
         }
 
         private static object InternalCopy(object originalObject, IDictionary<object, object> visited)
@@ -74,19 +69,11 @@ namespace Dangl.ObjectCopy
 
         private static void RecursiveCopyBaseTypePrivateFields(object originalObject, IDictionary<object, object> visited, object cloneObject, Type typeToReflect)
         {
-#if NETSTANDARD_1_3
-            if (typeToReflect.GetTypeInfo().BaseType != null)
-            {
-                RecursiveCopyBaseTypePrivateFields(originalObject, visited, cloneObject, typeToReflect.GetTypeInfo().BaseType);
-                CopyFields(originalObject, visited, cloneObject, typeToReflect.GetTypeInfo().BaseType, BindingFlags.Instance | BindingFlags.NonPublic, info => info.IsPrivate);
-            }
-#else
             if (typeToReflect.BaseType != null)
             {
                 RecursiveCopyBaseTypePrivateFields(originalObject, visited, cloneObject, typeToReflect.BaseType);
                 CopyFields(originalObject, visited, cloneObject, typeToReflect.BaseType, BindingFlags.Instance | BindingFlags.NonPublic, info => info.IsPrivate);
             }
-#endif
         }
 
         private static void CopyFields(object originalObject, IDictionary<object, object> visited, object cloneObject, Type typeToReflect, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy, Func<FieldInfo, bool> filter = null)
