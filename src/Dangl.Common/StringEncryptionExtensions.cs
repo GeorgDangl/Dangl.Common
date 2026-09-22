@@ -41,7 +41,7 @@ namespace Dangl
             var randomNumberGenerator = RandomNumberGenerator.Create();
             randomNumberGenerator.GetBytes(saltBytes);
 #if MODERN_NET
-            var passwordBytes = Rfc2898DeriveBytes.Pbkdf2(password, saltBytes, pbkdf2Iterations, HashAlgorithmName.SHA256, KEY_SIZE_BITS / 8);
+            var passwordBytes = Rfc2898DeriveBytes.Pbkdf2(password, saltBytes, pbkdf2Iterations, HashAlgorithmName.SHA1, KEY_SIZE_BITS / 8);
 #else
             var passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, pbkdf2Iterations).GetBytes(KEY_SIZE_BITS / 8);
 #endif
@@ -123,7 +123,7 @@ namespace Dangl
                 var saltBytes = StringToByteArray(saltRaw);
                 var initVectorBytes = StringToByteArray(keyRaw);
 #if MODERN_NET
-                var passwordBytes = Rfc2898DeriveBytes.Pbkdf2(password, saltBytes, Convert.ToInt32(pbkdf2Iterations), HashAlgorithmName.SHA256, KEY_SIZE_BITS / 8);
+                var passwordBytes = Rfc2898DeriveBytes.Pbkdf2(password, saltBytes, Convert.ToInt32(pbkdf2Iterations), HashAlgorithmName.SHA1, KEY_SIZE_BITS / 8);
 #else
                 var passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, Convert.ToInt32(pbkdf2Iterations)).GetBytes
                 (KEY_SIZE_BITS / 8);
