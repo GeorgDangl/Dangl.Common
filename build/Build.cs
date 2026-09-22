@@ -1,20 +1,18 @@
-﻿using Nuke.Common;
-using Nuke.Common.Git;
-using Nuke.Common.IO;
-using Nuke.Common.ProjectModel;
-using Nuke.Common.Tooling;
-using Nuke.Common.Tools.AzureKeyVault;
-using Nuke.Common.Tools.AzureKeyVault.Attributes;
-using Nuke.Common.Tools.Coverlet;
-using Nuke.Common.Tools.DocFX;
-using Nuke.Common.Tools.DotCover;
-using Nuke.Common.Tools.DotNet;
-using Nuke.Common.Tools.GitVersion;
-using Nuke.Common.Tools.ReportGenerator;
-using Nuke.Common.Utilities;
-using Nuke.Common.Utilities.Collections;
-using Nuke.GitHub;
-using Nuke.WebDocu;
+using Fallout.Common;
+using Fallout.Common.Git;
+using Fallout.Common.IO;
+using Fallout.Common.ProjectModel;
+using Fallout.Common.Tooling;
+using Fallout.Common.Tools.AzureKeyVault;
+using Fallout.Common.Tools.Coverlet;
+using Fallout.Common.Tools.DotCover;
+using Fallout.Common.Tools.DotNet;
+using Fallout.Common.Tools.GitVersion;
+using Fallout.Common.Tools.ReportGenerator;
+using Fallout.Common.Utilities;
+using Fallout.Common.Utilities.Collections;
+using Fallout.GitHub;
+using Fallout.WebDocu;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,33 +20,30 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using static Nuke.Common.ChangeLog.ChangelogTasks;
-using static Nuke.Common.IO.FileSystemTasks;
-using static Nuke.Common.IO.PathConstruction;
-using static Nuke.Common.IO.TextTasks;
-using static Nuke.Common.IO.XmlTasks;
-using static Nuke.Common.Tools.DocFX.DocFXTasks;
-using static Nuke.Common.Tools.DotNet.DotNetTasks;
-using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
-using static Nuke.GitHub.ChangeLogExtensions;
-using static Nuke.GitHub.GitHubTasks;
-using static Nuke.WebDocu.WebDocuTasks;
+using static Fallout.Common.ChangeLog.ChangelogTasks;
+using static Fallout.Common.IO.XmlTasks;
+using static Fallout.Common.Tools.DotNet.DotNetTasks;
+using static Fallout.Common.Tools.ReportGenerator.ReportGeneratorTasks;
+using static Fallout.GitHub.ChangeLogExtensions;
+using static Fallout.GitHub.GitHubTasks;
+using static Fallout.WebDocu.WebDocuTasks;
 
-class Build : NukeBuild
+class Build : FalloutBuild
 {
     public static int Main() => Execute<Build>(x => x.Compile);
 
-    [KeyVaultSettings(
+    [AzureKeyVaultConfiguration(
         BaseUrlParameterName = nameof(KeyVaultBaseUrl),
         ClientIdParameterName = nameof(KeyVaultClientId),
-        ClientSecretParameterName = nameof(KeyVaultClientSecret))]
-    readonly KeyVaultSettings KeyVaultSettings;
-
-    [KeyVault] KeyVault KeyVault;
+        ClientSecretParameterName = nameof(KeyVaultClientSecret),
+        TenantIdParameterName = nameof(KeyVaultTenantId))]
+    readonly AzureKeyVaultConfiguration KeyVaultSettings;
+    [AzureKeyVault] AzureKeyVault KeyVault;
 
     [Parameter] string KeyVaultBaseUrl;
     [Parameter] string KeyVaultClientId;
     [Parameter] string KeyVaultClientSecret;
+    [Parameter] string KeyVaultTenantId;
 
     private string _configuration;
 
@@ -63,12 +58,18 @@ class Build : NukeBuild
     AbsolutePath OutputDirectory => SolutionDirectory / "output";
     AbsolutePath SourceDirectory => SolutionDirectory / "src";
 
-    [KeyVaultSecret] string DocuBaseUrl;
-    [KeyVaultSecret] string PublicMyGetSource;
-    [KeyVaultSecret] string PublicMyGetApiKey;
-    [KeyVaultSecret] string NuGetApiKey;
-    [KeyVaultSecret("DanglCommon-DocuApiKey")] string DocuApiKey;
-    [KeyVaultSecret] string GitHubAuthenticationToken;
+    [AzureKeyVaultSecret] string DocuBaseUrl;
+    [AzureKeyVaultSecret] readonly string DanglPublicFeedSource;
+    [AzureKeyVaultSecret] readonly string FeedzAccessToken;
+    [AzureKeyVaultSecret] string NuGetApiKey;
+    [AzureKeyVaultSecret("DanglCommon-DocuApiKey")] string DocuApiKey;
+    [AzureKeyVaultSecret] string GitHubAuthenticationToken;
+    [AzureKeyVaultSecret] string CodeSigningCertificateName;
+    [AzureKeyVaultSecret] string CodeSigningCertificateKeyVaultBaseUrl;
+    [AzureKeyVaultSecret] string CodeSigningKeyVaultTenantId;
+
+    [NuGetPackage("AzureSignTool", "tools/net10.0/any/AzureSignTool.dll")]
+    readonly Tool AzureSign;
 
     string DocFxFile => SolutionDirectory / "docfx.json";
     string ChangeLogFile => RootDirectory / "CHANGELOG.md";
@@ -76,9 +77,9 @@ class Build : NukeBuild
     Target Clean => _ => _
             .Executes(() =>
             {
-                GlobDirectories(SourceDirectory, "**/bin", "**/obj").ForEach(DeleteDirectory);
-                GlobDirectories(RootDirectory / "test", "**/bin", "**/obj").ForEach(DeleteDirectory);
-                EnsureCleanDirectory(OutputDirectory);
+                SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(d => d.DeleteDirectory());
+                (RootDirectory / "test").GlobDirectories("**/bin", "**/obj").ForEach(d => d.DeleteDirectory());
+                OutputDirectory.CreateOrCleanDirectory();
             });
 
     Target Restore => _ => _
@@ -100,8 +101,34 @@ class Build : NukeBuild
                     .SetInformationalVersion(GitVersion.InformationalVersion));
             });
 
-    Target Pack => _ => _
+    Target SignDlls => _ => _
         .DependsOn(Compile)
+        .OnlyWhenDynamic(() => IsServerBuild)
+        .Executes(() =>
+        {
+            Assert.NotNull(CodeSigningCertificateKeyVaultBaseUrl);
+            Assert.NotNull(KeyVaultClientId);
+            Assert.NotNull(KeyVaultClientSecret);
+            Assert.NotNull(CodeSigningKeyVaultTenantId);
+            Assert.NotNull(CodeSigningCertificateName);
+
+            var inputFiles = (SourceDirectory).GlobFiles("**/*Dangl.Common*.dll").ToList();
+            var filesListPath = OutputDirectory / $"{Guid.NewGuid()}.txt";
+            filesListPath.WriteAllText(inputFiles.Select(f => f.ToString()).Join(Environment.NewLine) + Environment.NewLine);
+            var azureSignArguments = string.Empty;
+            azureSignArguments += "sign";
+            azureSignArguments += $" --azure-key-vault-url \"{CodeSigningCertificateKeyVaultBaseUrl}\"";
+            azureSignArguments += $" --azure-key-vault-client-id \"{KeyVaultClientId}\"";
+            azureSignArguments += $" --azure-key-vault-client-secret \"{KeyVaultClientSecret}\"";
+            azureSignArguments += $" --azure-key-vault-tenant-id \"{CodeSigningKeyVaultTenantId}\"";
+            azureSignArguments += $" --azure-key-vault-certificate \"{CodeSigningCertificateName}\"";
+            azureSignArguments += $" --input-file-list \"{filesListPath}\"";
+            azureSignArguments += $" --timestamp-rfc3161 \"{"http://timestamp.digicert.com"}\"";
+            AzureSign($"{azureSignArguments:nq}");
+        });
+
+    Target Pack => _ => _
+        .DependsOn(SignDlls)
         .Executes(() =>
         {
             var changeLog = GetCompleteChangeLog(ChangeLogFile)
@@ -119,7 +146,7 @@ class Build : NukeBuild
         .DependsOn(Compile)
         .Executes(() =>
         {
-            var testProjects = GlobFiles(SolutionDirectory / "test", "**/*.csproj");
+            var testProjects = (SolutionDirectory / "test").GlobFiles("**/*.csproj");
             var testRun = 1;
 
             try
@@ -149,13 +176,8 @@ class Build : NukeBuild
             {
                 DotNetTest(x => x
                    .SetTestAdapterPath(".")
-                   .SetFramework("net6.0")
-                   .SetLoggers($"xunit;LogFilePath={OutputDirectory / $"testresults-linux.xml"}")
-                   // See here for more information:
-                   // https://github.com/dotnet/cli/issues/9397
-                   // There's a bug where the 'dotnet test' process hangs for 15 minutes after
-                   // test completion
-                   .SetProcessArgumentConfigurator(ac => ac.Add("-nodereuse:false")));
+                   .SetFramework("net10.0")
+                   .SetLoggers($"xunit;LogFilePath={OutputDirectory / $"testresults-linux.xml"}"));
             }
             finally
             {
@@ -167,20 +189,19 @@ class Build : NukeBuild
         .DependsOn(Compile)
         .Executes(() =>
         {
-            var testProjects = GlobFiles(SolutionDirectory / "test", "**/*.csproj").ToList();
+            var testProjects = (SolutionDirectory / "test").GlobFiles("**/*.csproj").ToList();
 
             var hasFailedTests = false;
             try
             {
                 DotNetTest(c => c
-                    .EnableCollectCoverage()
-                    .SetCoverletOutputFormat(CoverletOutputFormat.cobertura)
+                    .SetDataCollector("XPlat Code Coverage")
+                    .SetResultsDirectory(OutputDirectory)
+                    .AddRunSetting("DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format", "cobertura")
+                    .AddRunSetting("DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Include", "[Dangl.Common]*")
+                    .AddRunSetting("DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.ExcludeByAttribute", "Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute")
                     .EnableNoBuild()
                     .SetTestAdapterPath(".")
-                    .SetProcessArgumentConfigurator(a => a
-                        .Add($"/p:Include=[Dangl.Common]*")
-                        .Add($"/p:ExcludeByAttribute=\\\"Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute\\\"")
-                        )
                     .CombineWith(cc => testProjects
                         .SelectMany(testProject =>
                         {
@@ -190,8 +211,7 @@ class Build : NukeBuild
                             return targetFrameworks.Select(targetFramework => cc
                                 .SetProjectFile(testProject)
                                 .SetFramework(targetFramework)
-                                .SetLoggers($"xunit;LogFilePath={OutputDirectory / projectName}_testresults-{targetFramework}.xml")
-                                .SetCoverletOutput($"{OutputDirectory / projectName}_coverage.xml"));
+                                .SetLoggers($"xunit;LogFilePath={OutputDirectory / projectName}_testresults-{targetFramework}.xml"));
                         })),
                             degreeOfParallelism: Environment.ProcessorCount,
                             completeOnFailure: true);
@@ -206,8 +226,8 @@ class Build : NukeBuild
             // Merge coverage reports, otherwise they might not be completely
             // picked up by Jenkins
             ReportGenerator(c => c
-                .SetFramework("net5.0")
-                .SetReports(OutputDirectory / "*_coverage*.xml")
+                .SetFramework("net6.0")
+                .SetReports(OutputDirectory / "**/*cobertura.xml")
                 .SetTargetDirectory(OutputDirectory)
                 .SetReportTypes(ReportTypes.Cobertura));
 
@@ -219,9 +239,9 @@ class Build : NukeBuild
             }
         });
 
-    private void MakeSourceEntriesRelativeInCoberturaFormat(string coberturaReportPath)
+    private void MakeSourceEntriesRelativeInCoberturaFormat(AbsolutePath coberturaReportPath)
     {
-        var originalText = ReadAllText(coberturaReportPath);
+        var originalText = coberturaReportPath.ReadAllText();
         var xml = XDocument.Parse(originalText);
 
         var xDoc = XDocument.Load(coberturaReportPath);
@@ -259,14 +279,14 @@ class Build : NukeBuild
 
     Target Push => _ => _
         .DependsOn(Pack)
-        .Requires(() => PublicMyGetSource)
-        .Requires(() => PublicMyGetApiKey)
+        .Requires(() => DanglPublicFeedSource)
+        .Requires(() => FeedzAccessToken)
         .Requires(() => NuGetApiKey)
         .Requires(() => Configuration.EqualsOrdinalIgnoreCase("Release"))
         .Executes(() =>
         {
-            var packages = GlobFiles(OutputDirectory, "*.nupkg")
-                .Where(x => !x.EndsWith("symbols.nupkg"))
+            var packages = OutputDirectory.GlobFiles("*.nupkg")
+                .Where(x => !x.ToString().EndsWith("symbols.nupkg"))
                 .ToList();
             Assert.NotEmpty(packages);
             packages
@@ -274,8 +294,8 @@ class Build : NukeBuild
                 {
                     DotNetNuGetPush(s => s
                         .SetTargetPath(x)
-                        .SetSource(PublicMyGetSource)
-                        .SetApiKey(PublicMyGetApiKey));
+                        .SetSource(DanglPublicFeedSource)
+                        .SetApiKey(FeedzAccessToken));
 
                     if (GitVersion.BranchName.Equals("master") || GitVersion.BranchName.Equals("origin/master"))
                     {
@@ -292,7 +312,10 @@ class Build : NukeBuild
         .DependsOn(Restore)
         .Executes(() =>
         {
-            DocFXMetadata(x => x.SetProjects(DocFxFile));
+            var environmentVariables = EnvironmentInfo.Variables.ToDictionary();
+            environmentVariables.Add("DOCFX_SOURCE_BRANCH_NAME", GitVersion.BranchName);
+            var docFxPath = NuGetToolPathResolver.GetPackageExecutable("docfx", "tools/net8.0/any/docfx.dll");
+            DotNet($"{docFxPath} metadata {DocFxFile}", environmentVariables: environmentVariables);
         });
 
     Target BuildDocumentation => _ => _
@@ -308,11 +331,13 @@ class Build : NukeBuild
 
             File.Copy(SolutionDirectory / "README.md", SolutionDirectory / "index.md");
 
-            DocFXBuild(x => x.SetConfigFile(DocFxFile));
+            var environmentVariables = EnvironmentInfo.Variables.ToDictionary();
+            environmentVariables.Add("DOCFX_SOURCE_BRANCH_NAME", GitVersion.BranchName);
+            var docFxPath = NuGetToolPathResolver.GetPackageExecutable("docfx", "tools/net8.0/any/docfx.dll");
+            DotNet($"{docFxPath} {DocFxFile}", environmentVariables: environmentVariables);
 
             File.Delete(SolutionDirectory / "index.md");
             Directory.Delete(SolutionDirectory / "api", true);
-            Directory.Delete(SolutionDirectory / "obj", true);
         });
 
     Target UploadDocumentation => _ => _
@@ -347,11 +372,11 @@ class Build : NukeBuild
             var completeChangeLog = $"## {releaseTag}" + Environment.NewLine + latestChangeLog;
 
             var repositoryInfo = GetGitHubRepositoryInfo(GitRepository);
-            var nuGetPackages = GlobFiles(OutputDirectory, "*.nupkg").ToArray();
+            var nuGetPackages = OutputDirectory.GlobFiles("*.nupkg").ToArray();
             Assert.NotEmpty(nuGetPackages);
 
             await PublishRelease(x => x
-                    .SetArtifactPaths(nuGetPackages)
+                    .SetArtifactPaths(nuGetPackages.Select(a => a.ToString()).ToArray())
                     .SetCommitSha(GitVersion.Sha)
                     .SetReleaseNotes(completeChangeLog)
                     .SetRepositoryName(repositoryInfo.repositoryName)
@@ -362,7 +387,7 @@ class Build : NukeBuild
 
     private void PrependFrameworkToTestresults()
     {
-        var testResults = GlobFiles(OutputDirectory, "*testresults*.xml").ToList();
+        var testResults = OutputDirectory.GlobFiles("*testresults*.xml").ToList();
         Serilog.Log.Information($"Found {testResults.Count} test result files on which to append the framework.");
         foreach (var testResultFile in testResults)
         {
@@ -409,7 +434,7 @@ class Build : NukeBuild
         }
 
         firstXdoc.Save(OutputDirectory / "testresults.xml");
-        testResults.ForEach(DeleteFile);
+        testResults.ForEach(d => d.DeleteFile());
     }
 
     private string GetFrameworkNameFromFilename(string filename)

@@ -212,6 +212,37 @@ namespace Dangl.Common.Tests
                 Assert.Null(actual.Nested);
             }
 
+            [Fact]
+            public void CanCopyLazyInitializedProperty_WhenAccessedBefore()
+            {
+                var source = new IdElement();
+                Assert.NotEqual(default, source.Id);
+                var actual = source.DeepCopy();
+                Assert.NotEqual(default, actual.Id);
+                Assert.Equal(source.Id, actual.Id);
+            }
+
+            [Fact]
+            public void CanNotCopyLazyInitializedProperty_WhenNotAccessedBefore()
+            {
+                var source = new IdElement();
+                var actual = source.DeepCopy();
+                Assert.NotEqual(default, source.Id);
+                Assert.NotEqual(default, actual.Id);
+                Assert.NotEqual(source.Id, actual.Id);
+            }
+
+            public class IdElement
+            {
+                private Guid _id;
+
+                public Guid Id
+                {
+                    get => _id == Guid.Empty ? (_id = Guid.NewGuid()) : _id;
+                    set => _id = value;
+                }
+            }
+
             private class TestObject
             {
                 public string Name { get; set; }

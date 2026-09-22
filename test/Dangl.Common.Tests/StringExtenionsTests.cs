@@ -236,6 +236,8 @@ namespace Dangl.Common.Tests
             [InlineData("", "")]
             [InlineData("Hello World", "Hello World")]
             [InlineData("Hello\u0081 World", "Hello World")]
+            [InlineData("Hello\u0008 World", "Hello World")]
+            [InlineData("Hello\u0002 World", "Hello World")]
             [InlineData("ÄÖÜäöü!?=", "ÄÖÜäöü!?=")]
             public void RemovesUnprintableAsciiCharacters(string input, string expected)
             {
