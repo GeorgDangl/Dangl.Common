@@ -198,3 +198,5 @@ docs.zip
 
 docs/docfx.console.**/*
 output/
+
+.fallout/temp/
