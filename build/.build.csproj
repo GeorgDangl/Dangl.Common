@@ -17,6 +17,7 @@
     <PackageReference Include="Dangl.Fallout.GitHub" Version="8.0.0" />
     <PackageReference Include="ReportGenerator" Version="5.1.17" />
     <PackageDownload Include="docfx" Version="[2.78.5]" />
+    <PackageDownload Include="AzureSignTool" Version="[7.0.1]" />
   </ItemGroup>
 
   <ItemGroup>

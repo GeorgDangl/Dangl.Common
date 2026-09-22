@@ -64,6 +64,12 @@ class Build : FalloutBuild
     [AzureKeyVaultSecret] string NuGetApiKey;
     [AzureKeyVaultSecret("DanglCommon-DocuApiKey")] string DocuApiKey;
     [AzureKeyVaultSecret] string GitHubAuthenticationToken;
+    [AzureKeyVaultSecret] string CodeSigningCertificateName;
+    [AzureKeyVaultSecret] string CodeSigningCertificateKeyVaultBaseUrl;
+    [AzureKeyVaultSecret] string CodeSigningKeyVaultTenantId;
+
+    [NuGetPackage("AzureSignTool", "tools/net10.0/any/AzureSignTool.dll")]
+    readonly Tool AzureSign;
 
     string DocFxFile => SolutionDirectory / "docfx.json";
     string ChangeLogFile => RootDirectory / "CHANGELOG.md";
@@ -95,8 +101,34 @@ class Build : FalloutBuild
                     .SetInformationalVersion(GitVersion.InformationalVersion));
             });
 
-    Target Pack => _ => _
+    Target SignDlls => _ => _
         .DependsOn(Compile)
+        .OnlyWhenDynamic(() => IsServerBuild)
+        .Executes(() =>
+        {
+            Assert.NotNull(CodeSigningCertificateKeyVaultBaseUrl);
+            Assert.NotNull(KeyVaultClientId);
+            Assert.NotNull(KeyVaultClientSecret);
+            Assert.NotNull(CodeSigningKeyVaultTenantId);
+            Assert.NotNull(CodeSigningCertificateName);
+
+            var inputFiles = (SourceDirectory).GlobFiles("**/*Dangl.AVA.IO*.dll").ToList();
+            var filesListPath = OutputDirectory / $"{Guid.NewGuid()}.txt";
+            filesListPath.WriteAllText(inputFiles.Select(f => f.ToString()).Join(Environment.NewLine) + Environment.NewLine);
+            var azureSignArguments = string.Empty;
+            azureSignArguments += "sign";
+            azureSignArguments += $" --azure-key-vault-url \"{CodeSigningCertificateKeyVaultBaseUrl}\"";
+            azureSignArguments += $" --azure-key-vault-client-id \"{KeyVaultClientId}\"";
+            azureSignArguments += $" --azure-key-vault-client-secret \"{KeyVaultClientSecret}\"";
+            azureSignArguments += $" --azure-key-vault-tenant-id \"{CodeSigningKeyVaultTenantId}\"";
+            azureSignArguments += $" --azure-key-vault-certificate \"{CodeSigningCertificateName}\"";
+            azureSignArguments += $" --input-file-list \"{filesListPath}\"";
+            azureSignArguments += $" --timestamp-rfc3161 \"{"http://timestamp.digicert.com"}\"";
+            AzureSign($"{azureSignArguments:nq}");
+        });
+
+    Target Pack => _ => _
+        .DependsOn(SignDlls)
         .Executes(() =>
         {
             var changeLog = GetCompleteChangeLog(ChangeLogFile)
