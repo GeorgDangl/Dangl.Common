@@ -2,6 +2,9 @@
 
 All notable changes to **Dangl.Common** are documented here.
 
+## v1.7.3:
+- **Dangl.Common** now also produces Markdown documentation. This can be easily accessed by AI agents via the MCP server implementation in **Dangl**Docu.
+
 ## v1.7.2:
 - Dropped tests for `netcoreapp3.1` and `net5.0`, added tests for `net10.0` and `net9.0`
 - The generated dlls are now signed with an Authenticode certificate
