@@ -82,3 +82,7 @@ security or provide tamper-proof binaries, as the key is available in the source
 ---
 
 [MIT License](LICENSE.md)
+
+### Markdown documentation
+
+`BuildDocumentation` also creates Markdown documentation in `output/docs-markdown`, with an adjacent ZIP archive. Each bundle starts at `index.md` and contains the same articles and resources selected for the corresponding HTML site, plus Markdown API reference files where applicable. The existing documentation upload publishes the Markdown archive to DanglDocu for the same version, making it available to AI agents through the DanglDocu MCP server.
